@@ -1,16 +1,12 @@
 import { usePalette } from "./PaletteContext"
 import { DropCapTitle } from "./DropCapTitle"
+import { ColorSwatch } from "./ColorSwatch"
+import { CopyPalettePopover } from "./CopyPalettePopover"
 import { getCombinationColors } from "../data"
 
 export function Hero() {
   const { theme, combination } = usePalette()
   const palette = getCombinationColors(combination)
-
-  // White text + difference blend = always legible over any swatch color.
-  const overlay: React.CSSProperties = {
-    color: "#fff",
-    mixBlendMode: "difference",
-  }
 
   return (
     <header
@@ -46,29 +42,32 @@ export function Hero() {
           of Color Combinations
         </DropCapTitle>
 
-        {/* the active palette, shown big */}
-        <div className="mt-10 flex flex-col gap-1 sm:flex-row sm:gap-1.5">
-          {palette.map((c) => (
+        {/* the active palette, shown big — same tile as the grid, so clicking
+            a block filters the carousel too */}
+        <div className="mt-10 flex items-center justify-between gap-4">
+          <p
+            className="font-mono text-[0.65rem] uppercase tracking-[0.3em]"
+            style={{ color: theme.onHero, opacity: 0.7 }}
+          >
+            The active palette
+          </p>
+          <CopyPalettePopover
+            combination={combination}
+            colors={palette}
+            theme={theme}
+            triggerColor={theme.onHero}
+          />
+        </div>
+        <div className="mt-3 grid auto-cols-fr grid-flow-row gap-1 sm:grid-flow-col sm:gap-1.5">
+          {palette.map((c, i) => (
             <div
               key={c.id}
-              className="relative flex h-40 flex-1 items-end overflow-hidden p-4 sm:h-64"
+              className="h-40 sm:h-64"
               style={{
-                backgroundColor: c.oklch,
-                boxShadow: `inset 0 0 0 1px color-mix(in oklch, ${theme.onHero} 35%, transparent)`,
+                border: `1px solid color-mix(in oklch, ${theme.onHero} 28%, transparent)`,
               }}
             >
-              <span
-                className="absolute left-4 top-4 font-mono text-xs tracking-widest"
-                style={overlay}
-              >
-                {String(c.id).padStart(3, "0")}
-              </span>
-              <span
-                className="font-serif text-xl font-semibold leading-tight sm:text-2xl"
-                style={overlay}
-              >
-                {c.name}
-              </span>
+              <ColorSwatch color={c} index={i} variant="feature" />
             </div>
           ))}
         </div>

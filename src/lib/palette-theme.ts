@@ -63,6 +63,52 @@ function pickOn(css: string, ink: string, paper: string): string {
   return wcagContrast(css, paper) >= wcagContrast(css, ink) ? paper : ink
 }
 
+export type ReadableText = { color: string; mixBlendMode?: "difference" }
+
+export type ReadablePair = {
+  /** Text style to lay over the color (solid when legible, blended otherwise). */
+  text: ReadableText
+  /** A solid high-contrast color (light or dark) tuned to the hue. */
+  onSolid: string
+  /** The opposite solid — useful as a hairline against `onSolid`. */
+  offSolid: string
+}
+
+const READABLE_THRESHOLD = 4.5
+
+/**
+ * Decide on a fixed light or dark text color for any swatch instead of always
+ * relying on mix-blend-mode. Dark colors get a tonal near-white, light colors a
+ * tonal near-black. Only genuinely ambiguous mid-tones (where neither reaches
+ * the WCAG AA threshold) fall back to a difference blend so text stays legible.
+ */
+export function readablePair(css: string): ReadablePair {
+  const o = parse(css)
+  const dark = fmt({
+    mode: "oklch",
+    l: 0.17,
+    c: Math.min(0.04, (o.c ?? 0) * 0.3 + 0.006),
+    h: o.h ?? 0,
+  })
+  const light = fmt({
+    mode: "oklch",
+    l: 0.985,
+    c: Math.min(0.025, (o.c ?? 0) * 0.15 + 0.003),
+    h: o.h ?? 0,
+  })
+  const cLight = wcagContrast(css, light)
+  const cDark = wcagContrast(css, dark)
+  const useLight = cLight >= cDark
+  const onSolid = useLight ? light : dark
+  const offSolid = useLight ? dark : light
+  const best = Math.max(cLight, cDark)
+  const text: ReadableText =
+    best >= READABLE_THRESHOLD
+      ? { color: onSolid }
+      : { color: "#fff", mixBlendMode: "difference" }
+  return { text, onSolid, offSolid }
+}
+
 export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   // Guard against an empty palette.
   const source = palette.length ? palette : []

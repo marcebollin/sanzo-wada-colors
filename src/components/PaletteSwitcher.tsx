@@ -38,22 +38,21 @@ export function PaletteSwitcher() {
   const activeIdRef = useRef(combination.id)
   activeIdRef.current = combination.id
 
-  // Drive the page theme from whichever palette sits furthest left in view.
+  // The start-aligned (leftmost) slide is the single source of truth for the
+  // active palette. We commit on embla's "select" event — which fires once per
+  // palette crossed, even during a momentum flick — instead of on every scroll
+  // frame, so rapid re-themes never interrupt a smooth scrollTo animation.
   useEffect(() => {
     if (!api) return
     const update = () => {
-      const inView = api.slidesInView()
-      if (!inView.length) return
-      const leftmost = Math.min(...inView)
-      const combo = filtered[leftmost]
+      const i = api.selectedScrollSnap()
+      const combo = filtered[i]
       if (combo && combo.id !== activeIdRef.current) select(combo.id)
     }
     update()
-    api.on("scroll", update)
     api.on("select", update)
     api.on("reInit", update)
     return () => {
-      api.off("scroll", update)
       api.off("select", update)
       api.off("reInit", update)
     }
@@ -125,26 +124,27 @@ export function PaletteSwitcher() {
             </div>
           </div>
 
-          {/* scrollable palette carousel — scrolling re-themes the page */}
+          {/* scrollable palette carousel — the leftmost slide is the source of
+              truth for the active palette; clicking scrolls it to the left */}
           <div className="min-w-0 flex-1">
             {filtered.length > 0 ? (
               <Carousel opts={opts} setApi={setApi} className="w-full">
-                <CarouselContent className="-ml-2">
-                  {filtered.map((c) => {
+                <CarouselContent className="-ml-2 py-1">
+                  {filtered.map((c, idx) => {
                     const active = c.id === combination.id
                     const chip = getCombinationColors(c)
                     return (
                       <CarouselItem key={c.id} className="basis-auto pl-2">
                         <button
                           type="button"
-                          onClick={() => select(c.id)}
+                          onClick={() => (api ? api.scrollTo(idx) : select(c.id))}
                           aria-pressed={active}
                           title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
-                          className="group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:-translate-y-0.5"
-                          style={{
-                            borderColor: active ? theme.accent : "transparent",
-                            opacity: active ? 1 : 0.78,
-                          }}
+                          className={
+                            "group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
+                            (active ? "opacity-100" : "opacity-70")
+                          }
+                          style={{ borderColor: active ? theme.accent : "transparent" }}
                         >
                           {chip.map((sc) => (
                             <span
