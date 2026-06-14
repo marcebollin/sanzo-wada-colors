@@ -1,78 +1,267 @@
+import { useEffect, useMemo, useRef, useState } from "react"
 import { usePalette } from "./PaletteContext"
-import { getCombinationColors } from "../data"
+import { getCombinationColors, getColor } from "../data"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "./ui/carousel"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
-/**
- * A fixed dock that drives the entire page theme. Selecting a combination
- * re-skins every section through the OKLCH theme engine.
- */
+const SIZES = [2, 3, 4] as const
+
 export function PaletteSwitcher() {
-  const { combination, combinations, theme, select } = usePalette()
+  const {
+    combination,
+    combinations,
+    filtered,
+    theme,
+    select,
+    sizeFilter,
+    setSizeFilter,
+    colorFilterId,
+    setColorFilter,
+  } = usePalette()
+
+  const [api, setApi] = useState<CarouselApi>()
+  const opts = useMemo(
+    () => ({ align: "start" as const, dragFree: true, containScroll: "trimSnaps" as const }),
+    [],
+  )
+
+  const subtle = `color-mix(in oklch, ${theme.paper} 22%, transparent)`
+  const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
+
+  // Keep the latest active id in a ref so the scroll listener stays mounted
+  // (no resubscribe churn) even as the theme changes during a fast flick.
+  const activeIdRef = useRef(combination.id)
+  activeIdRef.current = combination.id
+
+  // Drive the page theme from whichever palette sits furthest left in view.
+  useEffect(() => {
+    if (!api) return
+    const update = () => {
+      const inView = api.slidesInView()
+      if (!inView.length) return
+      const leftmost = Math.min(...inView)
+      const combo = filtered[leftmost]
+      if (combo && combo.id !== activeIdRef.current) select(combo.id)
+    }
+    update()
+    api.on("scroll", update)
+    api.on("select", update)
+    api.on("reInit", update)
+    return () => {
+      api.off("scroll", update)
+      api.off("select", update)
+      api.off("reInit", update)
+    }
+  }, [api, filtered, select])
+
+  // Snap back to the start whenever the filtered set changes.
+  useEffect(() => {
+    if (api) api.scrollTo(0, true)
+  }, [api, sizeFilter, colorFilterId])
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-3 sm:px-4 sm:pb-4">
       <div
-        className="pointer-events-auto flex w-full max-w-4xl flex-col gap-3 border-2 p-3 shadow-[0_10px_40px_-12px_rgba(0,0,0,0.55)] backdrop-blur sm:flex-row sm:items-center sm:gap-4"
-        style={{
-          backgroundColor: theme.ink,
-          color: theme.paper,
-          borderColor: theme.accent,
-        }}
+        className="pointer-events-auto w-full max-w-4xl overflow-hidden rounded-2xl border-2 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.6)] backdrop-blur"
+        style={{ backgroundColor: theme.ink, color: theme.paper, borderColor: theme.accent }}
       >
-        <div className="flex min-w-0 items-center gap-3">
-          {/* current palette swatches */}
+        {/* color-filter banner (only one color at a time) */}
+        {filterColor && (
           <div
-            className="flex h-10 shrink-0 overflow-hidden border"
-            style={{ borderColor: `color-mix(in oklch, ${theme.paper} 30%, transparent)` }}
-            aria-hidden="true"
+            className="flex items-center gap-3 px-3 py-2 sm:px-4"
+            style={{ backgroundColor: theme.accent, color: theme.onAccent }}
           >
-            {theme.swatches.map((s) => (
-              <span key={s.id} className="h-full w-4 sm:w-5" style={{ backgroundColor: s.css }} />
-            ))}
-          </div>
-          <div className="min-w-0">
-            <p className="font-mono text-[0.6rem] uppercase tracking-[0.25em] opacity-70">
-              Palette
+            <span
+              className="h-5 w-5 shrink-0 rounded-sm border border-black/20"
+              style={{ backgroundColor: filterColor.oklch }}
+              aria-hidden="true"
+            />
+            <p className="min-w-0 flex-1 truncate font-mono text-[0.7rem] uppercase tracking-[0.18em]">
+              Palettes with{" "}
+              <span className="font-semibold">{filterColor.name}</span>
+              <span className="opacity-70"> · {filtered.length} found</span>
             </p>
-            <p className="font-display text-2xl leading-none">
-              {String(combination.id).padStart(2, "0")}
-              <span className="ml-1 align-top font-mono text-[0.6rem] opacity-70">
-                / {combinations.length}
-              </span>
-            </p>
+            <button
+              type="button"
+              onClick={() => setColorFilter(null)}
+              className="flex h-6 shrink-0 items-center gap-1 rounded-full border border-current px-2 font-mono text-[0.65rem] uppercase tracking-widest transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70"
+            >
+              <CloseIcon /> Clear
+            </button>
           </div>
-        </div>
+        )}
 
-        {/* combination chips */}
-        <div className="-mx-1 flex flex-1 gap-1.5 overflow-x-auto px-1 pb-1 sm:justify-end sm:pb-0 [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
-          {combinations.map((c) => {
-            const active = c.id === combination.id
-            const chip = getCombinationColors(c)
-            return (
+        <div className="flex items-center gap-3 p-3 sm:gap-4">
+          {/* active palette readout */}
+          <div className="flex shrink-0 items-center gap-3">
+            <div
+              className="flex h-12 overflow-hidden rounded-md border"
+              style={{ borderColor: subtle }}
+              aria-hidden="true"
+            >
+              {theme.swatches.map((s) => (
+                <span
+                  key={s.id}
+                  className="h-full w-3.5 sm:w-4"
+                  style={{ backgroundColor: s.css }}
+                />
+              ))}
+            </div>
+            <div className="hidden min-w-0 leading-none sm:block">
+              <p className="font-mono text-[0.55rem] uppercase tracking-[0.3em] opacity-60">
+                配色 · Palette
+              </p>
+              <p className="font-display text-3xl">
+                {String(combination.id).padStart(2, "0")}
+                <span className="ml-1 align-top font-mono text-[0.6rem] opacity-60">
+                  / {combinations.length}
+                </span>
+              </p>
+            </div>
+          </div>
+
+          {/* scrollable palette carousel — scrolling re-themes the page */}
+          <div className="min-w-0 flex-1">
+            {filtered.length > 0 ? (
+              <Carousel opts={opts} setApi={setApi} className="w-full">
+                <CarouselContent className="-ml-2">
+                  {filtered.map((c) => {
+                    const active = c.id === combination.id
+                    const chip = getCombinationColors(c)
+                    return (
+                      <CarouselItem key={c.id} className="basis-auto pl-2">
+                        <button
+                          type="button"
+                          onClick={() => select(c.id)}
+                          aria-pressed={active}
+                          title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
+                          className="group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:-translate-y-0.5"
+                          style={{
+                            borderColor: active ? theme.accent : "transparent",
+                            opacity: active ? 1 : 0.78,
+                          }}
+                        >
+                          {chip.map((sc) => (
+                            <span
+                              key={sc.id}
+                              className="h-full w-4 sm:w-5"
+                              style={{ backgroundColor: sc.oklch }}
+                            />
+                          ))}
+                        </button>
+                      </CarouselItem>
+                    )
+                  })}
+                </CarouselContent>
+              </Carousel>
+            ) : (
+              <p className="font-mono text-xs uppercase tracking-widest opacity-70">
+                No palettes match this filter.
+              </p>
+            )}
+          </div>
+
+          {/* size filter popover */}
+          <Popover>
+            <PopoverTrigger asChild>
               <button
-                key={c.id}
                 type="button"
-                onClick={() => select(c.id)}
-                aria-pressed={active}
-                title={`Palette ${String(c.id).padStart(2, "0")}`}
-                className="group flex h-9 shrink-0 items-center gap-px overflow-hidden border-2 px-px transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:-translate-y-0.5"
+                title="Filter palettes by color count"
+                className="flex h-12 shrink-0 items-center gap-1.5 rounded-md border-2 px-2.5 font-mono text-[0.65rem] uppercase tracking-widest transition-colors focus:outline-none sm:px-3"
                 style={{
-                  borderColor: active ? theme.accent : "transparent",
-                  outline: active ? "none" : undefined,
-                  opacity: active ? 1 : 0.85,
+                  borderColor: sizeFilter != null ? theme.accent : subtle,
+                  color: theme.paper,
                 }}
               >
-                {chip.map((sc) => (
-                  <span
-                    key={sc.id}
-                    className="h-full w-3.5 sm:w-4"
-                    style={{ backgroundColor: sc.oklch }}
-                  />
-                ))}
+                <SlidersIcon />
+                <span className="hidden sm:inline">
+                  {sizeFilter != null ? `${sizeFilter} colors` : "Filter"}
+                </span>
               </button>
-            )
-          })}
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-56 rounded-xl border-2 p-3"
+              style={{ backgroundColor: theme.ink, color: theme.paper, borderColor: theme.accent }}
+            >
+              <p className="mb-2 font-mono text-[0.6rem] uppercase tracking-[0.25em] opacity-70">
+                Colors per palette
+              </p>
+              <div className="flex gap-1.5">
+                <FilterPill
+                  active={sizeFilter == null}
+                  onClick={() => setSizeFilter(null)}
+                  theme={theme}
+                >
+                  All
+                </FilterPill>
+                {SIZES.map((n) => (
+                  <FilterPill
+                    key={n}
+                    active={sizeFilter === n}
+                    onClick={() => setSizeFilter(n)}
+                    theme={theme}
+                  >
+                    {n}
+                  </FilterPill>
+                ))}
+              </div>
+            </PopoverContent>
+          </Popover>
         </div>
       </div>
     </div>
+  )
+}
+
+function FilterPill({
+  active,
+  onClick,
+  theme,
+  children,
+}: {
+  active: boolean
+  onClick: () => void
+  theme: ReturnType<typeof usePalette>["theme"]
+  children: React.ReactNode
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className="flex h-9 flex-1 items-center justify-center rounded-md border-2 font-mono text-sm transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:-translate-y-0.5"
+      style={{
+        backgroundColor: active ? theme.accent : "transparent",
+        color: active ? theme.onAccent : theme.paper,
+        borderColor: active ? theme.accent : `color-mix(in oklch, ${theme.paper} 22%, transparent)`,
+      }}
+    >
+      {children}
+    </button>
+  )
+}
+
+function CloseIcon() {
+  return (
+    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+      <path d="M5 5l14 14M19 5L5 19" />
+    </svg>
+  )
+}
+
+function SlidersIcon() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+      <path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h7M15 18h5" />
+      <circle cx="16" cy="6" r="2" fill="currentColor" stroke="none" />
+      <circle cx="8" cy="12" r="2" fill="currentColor" stroke="none" />
+      <circle cx="13" cy="18" r="2" fill="currentColor" stroke="none" />
+    </svg>
   )
 }

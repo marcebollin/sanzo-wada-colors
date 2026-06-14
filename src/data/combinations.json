@@ -46,5 +46,23 @@
     "name": "Harvest Field",
     "note": "Olive, naples yellow and ocher red — late-autumn agriculture.",
     "colorIds": [11, 9, 4]
+  },
+  {
+    "id": 9,
+    "name": "Vermilion Snow",
+    "note": "A two-color essential — a single vermilion stroke on cool cream.",
+    "colorIds": [6, 21]
+  },
+  {
+    "id": 10,
+    "name": "Indigo Citron",
+    "note": "Two voices only: deep indigo answered by a sharp citron.",
+    "colorIds": [17, 10]
+  },
+  {
+    "id": 11,
+    "name": "Koi & Reed",
+    "note": "Vermilion and emerald, the simplest pond contrast.",
+    "colorIds": [6, 13]
   }
 ]

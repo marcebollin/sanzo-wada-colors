@@ -26,7 +26,7 @@ export function ColorGrid() {
 
       {/* dense, flexible grid of the full color set — tiles flow side by side */}
       <div
-        className="grid gap-1 p-1 pb-28"
+        className="grid gap-1 p-1 pb-44"
         style={{ gridTemplateColumns: "repeat(auto-fill, minmax(8.5rem, 1fr))" }}
       >
         {colors.map((c, i) => (

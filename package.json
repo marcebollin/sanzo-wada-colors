@@ -10,9 +10,14 @@
     "colors:convert": "node scripts/cmyk-to-oklch.mjs"
   },
   "dependencies": {
+    "@radix-ui/react-popover": "^1.1.16",
     "@tanstack/react-router": "^1.170.15",
+    "clsx": "^2.1.1",
+    "embla-carousel-react": "^8.6.0",
+    "lucide-react": "^1.18.0",
     "react": "^19",
-    "react-dom": "^19"
+    "react-dom": "^19",
+    "tailwind-merge": "^3.6.0"
   },
   "devDependencies": {
     "@tailwindcss/vite": "^4.3.1",
