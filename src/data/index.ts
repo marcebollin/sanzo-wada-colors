@@ -17,6 +17,8 @@ export type SanzoColor = {
   id: number
   /** Natural name as recorded by Sanzo Wada, e.g. "Ocher Red". */
   name: string
+  /** Japanese name for the color, e.g. "朱色". */
+  nameJa: string
   /** Source of truth: CMYK in the Japanese print format (0-100 per channel). */
   cmyk: CMYK
   /**

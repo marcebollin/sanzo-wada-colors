@@ -1,4 +1,4 @@
-import { type SanzoColor } from "../data"
+import { type SanzoColor, formatCmyk } from "../data"
 
 type Props = {
   color: SanzoColor
@@ -21,18 +21,30 @@ export function ColorSwatch({ color, index = 0 }: Props) {
       className="group relative flex aspect-[4/5] flex-col justify-between overflow-hidden p-3 transition-transform duration-300 ease-out hover:-translate-y-1 focus-within:-translate-y-1"
       style={{ backgroundColor: color.oklch, animationDelay: `${index * 24}ms` }}
     >
-      <span
-        className="font-mono text-xs tabular-nums tracking-widest"
-        style={overlay}
-      >
-        {String(color.id).padStart(3, "0")}
-      </span>
-      <h3
-        className="font-serif text-base font-semibold leading-tight text-balance"
-        style={overlay}
-      >
-        {color.name}
-      </h3>
+      <div className="flex items-start justify-between" style={overlay}>
+        <span className="font-mono text-xs tabular-nums tracking-widest">
+          {String(color.id).padStart(3, "0")}
+        </span>
+        <span className="font-serif text-sm leading-none" lang="ja">
+          {color.nameJa}
+        </span>
+      </div>
+
+      <div className="flex flex-col gap-1" style={overlay}>
+        <h3 className="font-serif text-base font-semibold leading-tight text-balance">
+          {color.name}
+        </h3>
+        <dl className="font-mono text-[0.6rem] uppercase leading-relaxed tracking-wide">
+          <div className="flex gap-1">
+            <dt className="sr-only">CMYK</dt>
+            <dd>{formatCmyk(color.cmyk)}</dd>
+          </div>
+          <div className="flex gap-1">
+            <dt className="sr-only">OKLCH</dt>
+            <dd className="break-all normal-case">{color.oklch}</dd>
+          </div>
+        </dl>
+      </div>
     </article>
   )
 }
