@@ -7,6 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "deploy": "pnpm run build && wrangler deploy",
     "colors:convert": "node scripts/cmyk-to-oklch.mjs"
   },
   "dependencies": {
@@ -30,6 +31,7 @@
     "culori": "^4.0.2",
     "tailwindcss": "^4.2.0",
     "typescript": "5.7.3",
-    "vite": "^8.0.16"
+    "vite": "^8.0.16",
+    "wrangler": "^4.100.0"
   }
 }
