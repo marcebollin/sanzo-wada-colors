@@ -25,8 +25,12 @@ export function PaletteSwitcher() {
   } = usePalette()
 
   const [api, setApi] = useState<CarouselApi>()
+  // Snap (no dragFree) so each settle lands cleanly on one palette, and
+  // containScroll:false keeps every snap — including the last palettes — so any
+  // of them can be brought fully to the left edge (the trailing spacer below
+  // provides the room to do so).
   const opts = useMemo(
-    () => ({ align: "start" as const, dragFree: true, containScroll: "trimSnaps" as const }),
+    () => ({ align: "start" as const, containScroll: false as const }),
     [],
   )
 
@@ -157,6 +161,11 @@ export function PaletteSwitcher() {
                       </CarouselItem>
                     )
                   })}
+                  {/* spacer lets the final palettes scroll all the way left */}
+                  <CarouselItem
+                    aria-hidden="true"
+                    className="pointer-events-none basis-[80%] pl-2 sm:basis-[60%]"
+                  />
                 </CarouselContent>
               </Carousel>
             ) : (
