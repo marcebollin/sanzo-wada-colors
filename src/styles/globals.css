@@ -1,54 +1,42 @@
 @import "tailwindcss";
 
 @theme {
+  --font-display: "Anton", "Shippori Mincho", ui-sans-serif, system-ui, sans-serif;
   --font-sans: "Zen Kaku Gothic New", ui-sans-serif, system-ui, sans-serif;
   --font-serif: "Shippori Mincho", ui-serif, Georgia, serif;
   --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
 
-  /* Washi paper + sumi ink core palette */
-  --color-background: oklch(0.94 0.018 92);
-  --color-foreground: oklch(0.22 0.012 60);
-
-  --color-paper: oklch(0.94 0.018 92);
-  --color-paper-deep: oklch(0.9 0.026 88);
+  /* Static fallbacks. The live theme overrides these per selected palette. */
   --color-ink: oklch(0.22 0.012 60);
-  --color-ink-soft: oklch(0.42 0.014 65);
-
-  /* Accents drawn from the Sanzo palette itself */
-  --color-vermilion: oklch(0.62 0.21 30);
-  --color-vermilion-foreground: oklch(0.96 0.02 92);
-  --color-indigo: oklch(0.42 0.1 255);
-  --color-indigo-foreground: oklch(0.96 0.02 92);
-
-  --color-border: oklch(0.22 0.012 60 / 0.18);
+  --color-paper: oklch(0.97 0.012 92);
 
   --radius: 0.25rem;
 }
 
 @layer base {
-  * {
-    border-color: var(--color-border);
-  }
-
   html {
     font-family: var(--font-sans);
     scroll-behavior: smooth;
+    background-color: var(--color-ink);
   }
 
   body {
-    background-color: var(--color-background);
-    color: var(--color-foreground);
-    /* subtle washi paper grain */
-    background-image:
-      radial-gradient(oklch(0.22 0.012 60 / 0.022) 1px, transparent 1px),
-      radial-gradient(oklch(0.22 0.012 60 / 0.018) 1px, transparent 1px);
-    background-size: 18px 18px, 26px 26px;
-    background-position: 0 0, 9px 13px;
+    margin: 0;
+    color: var(--color-ink);
+    background-color: var(--color-paper);
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
   }
 
   ::selection {
-    background-color: var(--color-vermilion);
-    color: var(--color-vermilion-foreground);
+    background-color: var(--p-accent, oklch(0.62 0.21 30));
+    color: var(--p-on-accent, oklch(0.97 0.02 92));
+  }
+
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
 }
 
@@ -58,9 +46,37 @@
     text-orientation: upright;
   }
 
-  .paper-edge {
-    box-shadow:
-      0 1px 0 oklch(1 0 0 / 0.4) inset,
-      0 18px 40px -24px oklch(0.22 0.012 60 / 0.5);
+  /* Heavy outlined display text, used for oversized ghost words. */
+  .text-outline {
+    -webkit-text-stroke: 2px currentColor;
+    color: transparent;
+  }
+
+  .paper-grain {
+    background-image:
+      radial-gradient(currentColor 0.5px, transparent 0.5px),
+      radial-gradient(currentColor 0.5px, transparent 0.5px);
+    background-size: 16px 16px, 22px 22px;
+    background-position: 0 0, 8px 11px;
+    opacity: 0.04;
+  }
+
+  .marquee-track {
+    animation: marquee 32s linear infinite;
+  }
+
+  @keyframes marquee {
+    from {
+      transform: translateX(0);
+    }
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .marquee-track {
+      animation: none;
+    }
   }
 }

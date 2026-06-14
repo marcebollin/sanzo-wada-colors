@@ -46,7 +46,7 @@ export function ColorSwatch({ color, index = 0 }: Props) {
       </div>
 
       <div className="flex flex-col gap-2">
-        <h3 className="font-serif text-lg leading-tight text-balance">{color.name}</h3>
+        <h3 className="font-serif text-lg font-semibold leading-tight text-balance">{color.name}</h3>
         <div className="flex flex-col gap-0.5 font-mono text-[0.65rem] uppercase tracking-wide" style={{ color: subColor }}>
           <span>{formatCmyk(color.cmyk)}</span>
           <span className="truncate">{color.oklch}</span>
