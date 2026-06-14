@@ -41,6 +41,8 @@ export type PaletteTheme = {
   /** The most chromatic color — used for drop caps, shapes, accents. */
   accent: string
   onAccent: string
+  /** A palette color guaranteed to read against `hero` — the hero drop cap. */
+  heroCap: string
   /** A second accent (next most chromatic, distinct hue). */
   accent2: string
   onAccent2: string
@@ -63,10 +65,10 @@ function pickOn(css: string, ink: string, paper: string): string {
   return wcagContrast(css, paper) >= wcagContrast(css, ink) ? paper : ink
 }
 
-export type ReadableText = { color: string; mixBlendMode?: "difference" }
+export type ReadableText = { color: string }
 
 export type ReadablePair = {
-  /** Text style to lay over the color (solid when legible, blended otherwise). */
+  /** Text style to lay over the color (a solid light or dark color). */
   text: ReadableText
   /** A solid high-contrast color (light or dark) tuned to the hue. */
   onSolid: string
@@ -74,13 +76,10 @@ export type ReadablePair = {
   offSolid: string
 }
 
-const READABLE_THRESHOLD = 4.5
-
 /**
- * Decide on a fixed light or dark text color for any swatch instead of always
- * relying on mix-blend-mode. Dark colors get a tonal near-white, light colors a
- * tonal near-black. Only genuinely ambiguous mid-tones (where neither reaches
- * the WCAG AA threshold) fall back to a difference blend so text stays legible.
+ * Decide on a fixed light or dark text color for any swatch. Dark colors get a
+ * tonal near-white, light colors a tonal near-black — whichever reads with more
+ * contrast against the swatch wins.
  */
 export function readablePair(css: string): ReadablePair {
   const o = parse(css)
@@ -96,17 +95,10 @@ export function readablePair(css: string): ReadablePair {
     c: Math.min(0.025, (o.c ?? 0) * 0.15 + 0.003),
     h: o.h ?? 0,
   })
-  const cLight = wcagContrast(css, light)
-  const cDark = wcagContrast(css, dark)
-  const useLight = cLight >= cDark
+  const useLight = wcagContrast(css, light) >= wcagContrast(css, dark)
   const onSolid = useLight ? light : dark
   const offSolid = useLight ? dark : light
-  const best = Math.max(cLight, cDark)
-  const text: ReadableText =
-    best >= READABLE_THRESHOLD
-      ? { color: onSolid }
-      : { color: "#fff", mixBlendMode: "difference" }
-  return { text, onSolid, offSolid }
+  return { text: { color: onSolid }, onSolid, offSolid }
 }
 
 export function buildTheme(palette: SanzoColor[]): PaletteTheme {
@@ -165,6 +157,22 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   const accentColor = byChroma[0]?.color.oklch ?? hero
   const accent2Color = byChroma[1]?.color.oklch ?? accentColor
 
+  // Hero drop cap: must always be a *different*, readable color from the hero
+  // field behind it. Prefer the most chromatic other swatch that reads against
+  // the hero; if the palette has nothing distinct (e.g. a single color), derive
+  // a vivid tone by flipping the hero's lightness while keeping its chroma.
+  const heroO = heroPick?.o
+  const heroCap =
+    byChroma.find(
+      (p) => p.color.oklch !== hero && wcagContrast(p.color.oklch, hero) >= 1.4,
+    )?.color.oklch ??
+    fmt({
+      mode: "oklch",
+      l: (heroO?.l ?? 0.5) > 0.5 ? 0.2 : 0.96,
+      c: Math.max(0.12, heroO?.c ?? 0),
+      h: heroO?.h ?? 0,
+    })
+
   const vars: Record<string, string> = {
     "--p-ink": ink,
     "--p-paper": paper,
@@ -174,6 +182,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
     "--p-on-hero": onHero,
     "--p-accent": accentColor,
     "--p-on-accent": pickOn(accentColor, ink, paper),
+    "--p-hero-cap": heroCap,
     "--p-accent-2": accent2Color,
     "--p-on-accent-2": pickOn(accent2Color, ink, paper),
   }
@@ -193,6 +202,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
     onHero,
     accent: accentColor,
     onAccent: vars["--p-on-accent"],
+    heroCap,
     accent2: accent2Color,
     onAccent2: vars["--p-on-accent-2"],
     vars,

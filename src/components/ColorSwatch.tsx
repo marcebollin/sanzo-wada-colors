@@ -1,3 +1,5 @@
+import { useState } from "react"
+import { AnimatePresence, motion } from "motion/react"
 import { type SanzoColor, formatCmyk } from "../data"
 import { usePalette } from "./PaletteContext"
 import { readablePair } from "../lib/palette-theme"
@@ -18,22 +20,38 @@ type Props = {
  * combinations that include this color; a dedicated button copies the color as
  * OKLCH. Text uses a fixed light or dark color chosen for contrast, falling
  * back to a difference blend only for ambiguous mid-tones.
+ *
+ * By default the index and both names are shown, with the English name pinned to
+ * the bottom. On hover/focus the color code and copy control rise in from the
+ * bottom, pushing the English name upward via a Motion layout animation.
  */
 export function ColorSwatch({ color, index = 0, variant = "grid", className }: Props) {
   const { colorFilterId, setColorFilter } = usePalette()
   const active = colorFilterId === color.id
   const feature = variant === "feature"
+  const [revealed, setRevealed] = useState(false)
+
+  // Fast, smooth, near-critically-damped spring shared by the reveal motions.
+  const spring = { type: "spring", stiffness: 600, damping: 38, mass: 0.6 } as const
 
   const { text, onSolid, offSolid } = readablePair(color.oklch)
 
   return (
-    <article
+    <motion.article
       className={cn(
         "group relative flex flex-col justify-between overflow-hidden text-left",
         feature ? "h-full w-full p-4 sm:p-5" : "aspect-[4/5] w-full p-3",
         className,
       )}
       style={{ backgroundColor: color.oklch, animationDelay: `${index * 24}ms` }}
+      whileHover={{ x: -4, y: -4 }}
+      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      onHoverStart={() => setRevealed(true)}
+      onHoverEnd={() => setRevealed(false)}
+      onFocusCapture={() => setRevealed(true)}
+      onBlurCapture={(e) => {
+        if (!e.currentTarget.contains(e.relatedTarget as Node)) setRevealed(false)
+      }}
     >
       {/* full-area filter trigger sits behind the content */}
       <button
@@ -41,7 +59,7 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
         onClick={() => setColorFilter(color.id)}
         aria-pressed={active}
         aria-label={`Show palettes with ${color.name}`}
-        className="absolute inset-0 z-0 cursor-pointer transition-transform duration-300 ease-out focus:outline-none"
+        className="absolute inset-0 z-0 cursor-pointer focus:outline-none"
       />
 
       {/* content layer — non-interactive so clicks reach the filter button */}
@@ -58,35 +76,64 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
           </span>
         </div>
 
-        <div className="flex flex-col gap-1 pr-8">
-          <h3
+        <div className="flex flex-col pr-8">
+          <motion.h3
+            layout
+            transition={spring}
             className={cn(
               "font-serif font-semibold leading-tight text-balance",
               feature ? "text-2xl sm:text-3xl" : "text-base",
             )}
           >
             {color.name}
-          </h3>
-          <dl className={cn("font-mono uppercase leading-relaxed tracking-wide", feature ? "text-xs" : "text-[0.6rem]")}>
-            <div className="flex gap-1">
-              <dt className="sr-only">CMYK</dt>
-              <dd>{formatCmyk(color.cmyk)}</dd>
-            </div>
-            <div className="flex gap-1">
-              <dt className="sr-only">OKLCH</dt>
-              <dd className="break-all normal-case">{color.oklch}</dd>
-            </div>
-          </dl>
+          </motion.h3>
+          <AnimatePresence initial={false}>
+            {revealed && (
+              <motion.dl
+                key="code"
+                initial={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
+                animate={{ opacity: 1, height: "auto", marginTop: 4, y: 0 }}
+                exit={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
+                transition={spring}
+                className={cn(
+                  "overflow-hidden font-mono uppercase leading-relaxed tracking-wide",
+                  feature ? "text-xs" : "text-[0.6rem]",
+                )}
+              >
+                <div className="flex gap-1">
+                  <dt className="sr-only">CMYK</dt>
+                  <dd>{formatCmyk(color.cmyk)}</dd>
+                </div>
+                <div className="flex gap-1">
+                  <dt className="sr-only">OKLCH</dt>
+                  <dd className="break-all normal-case">{color.oklch}</dd>
+                </div>
+              </motion.dl>
+            )}
+          </AnimatePresence>
         </div>
       </div>
 
-      {/* copy control — above the filter trigger */}
-      <CopyButton
-        value={color.oklch}
-        label={`Copy ${color.name} as OKLCH`}
-        color={text.color}
-        className="absolute bottom-2 right-2 z-20 rounded-md p-1.5"
-      />
+      {/* copy control — rises in from the bottom, above the filter trigger */}
+      <AnimatePresence>
+        {revealed && (
+          <motion.div
+            key="copy"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 8 }}
+            transition={spring}
+            className="absolute bottom-2 right-2 z-20"
+          >
+            <CopyButton
+              value={color.oklch}
+              label={`Copy ${color.name} as OKLCH`}
+              color={text.color}
+              className="rounded-md p-1.5"
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* fixed two-tone ring (single inset element = no corner gap) */}
       {active && (
@@ -96,15 +143,6 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
           style={{ boxShadow: `inset 0 0 0 3px ${onSolid}, inset 0 0 0 5px ${offSolid}` }}
         />
       )}
-
-      {active && (
-        <span
-          className="absolute right-2 top-2 z-30 rounded-full px-2 py-0.5 font-mono text-[0.55rem] uppercase tracking-widest"
-          style={{ backgroundColor: onSolid, color: offSolid }}
-        >
-          Filtering
-        </span>
-      )}
-    </article>
+    </motion.article>
   )
 }

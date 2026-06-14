@@ -1,12 +1,6 @@
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useRef } from "react"
 import { usePalette } from "./PaletteContext"
 import { getCombinationColors, getColor } from "../data"
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  type CarouselApi,
-} from "./ui/carousel"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 const SIZES = [2, 3, 4] as const
@@ -24,48 +18,31 @@ export function PaletteSwitcher() {
     setColorFilter,
   } = usePalette()
 
-  const [api, setApi] = useState<CarouselApi>()
-  // Snap (no dragFree) so each settle lands cleanly on one palette, and
-  // containScroll:false keeps every snap — including the last palettes — so any
-  // of them can be brought fully to the left edge (the trailing spacer below
-  // provides the room to do so).
-  const opts = useMemo(
-    () => ({ align: "start" as const, containScroll: false as const }),
-    [],
-  )
+  // Traditional selected-element model: `combination.id` is the source of truth.
+  // Clicking a chip selects it, the arrows step the selection. Scrolling is never
+  // user-driven — we only nudge the selected chip into view so it stays visible.
+  const scrollerRef = useRef<HTMLDivElement>(null)
 
   const subtle = `color-mix(in oklch, ${theme.paper} 22%, transparent)`
   const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
 
-  // Keep the latest active id in a ref so the scroll listener stays mounted
-  // (no resubscribe churn) even as the theme changes during a fast flick.
-  const activeIdRef = useRef(combination.id)
-  activeIdRef.current = combination.id
+  const activeIndex = filtered.findIndex((c) => c.id === combination.id)
+  const canPrev = activeIndex > 0
+  const canNext = activeIndex >= 0 && activeIndex < filtered.length - 1
 
-  // The start-aligned (leftmost) slide is the single source of truth for the
-  // active palette. We commit on embla's "select" event — which fires once per
-  // palette crossed, even during a momentum flick — instead of on every scroll
-  // frame, so rapid re-themes never interrupt a smooth scrollTo animation.
-  useEffect(() => {
-    if (!api) return
-    const update = () => {
-      const i = api.selectedScrollSnap()
-      const combo = filtered[i]
-      if (combo && combo.id !== activeIdRef.current) select(combo.id)
-    }
-    update()
-    api.on("select", update)
-    api.on("reInit", update)
-    return () => {
-      api.off("select", update)
-      api.off("reInit", update)
-    }
-  }, [api, filtered, select])
+  const step = (dir: -1 | 1) => {
+    const next = filtered[activeIndex + dir]
+    if (next) select(next.id)
+  }
 
-  // Snap back to the start whenever the filtered set changes.
+  // Keep the selected chip in view whenever the selection or filtered set changes.
+  // block:"nearest" avoids any vertical page scroll.
   useEffect(() => {
-    if (api) api.scrollTo(0, true)
-  }, [api, sizeFilter, colorFilterId])
+    const el = scrollerRef.current
+    if (!el || activeIndex < 0) return
+    const node = el.querySelector<HTMLElement>(`[data-palette-idx="${activeIndex}"]`)
+    node?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" })
+  }, [activeIndex])
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-3 sm:px-4 sm:pb-4">
@@ -128,46 +105,65 @@ export function PaletteSwitcher() {
             </div>
           </div>
 
-          {/* scrollable palette carousel — the leftmost slide is the source of
-              truth for the active palette; clicking scrolls it to the left */}
-          <div className="min-w-0 flex-1">
+          {/* palette carousel — clicking a chip selects it, the arrows step the
+              selection. The selected chip is kept scrolled into view. */}
+          <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
             {filtered.length > 0 ? (
-              <Carousel opts={opts} setApi={setApi} className="w-full">
-                <CarouselContent className="-ml-2 py-1">
+              <>
+                <ArrowButton
+                  dir="prev"
+                  disabled={!canPrev}
+                  onClick={() => step(-1)}
+                  theme={theme}
+                  subtle={subtle}
+                />
+                <div
+                  ref={scrollerRef}
+                  className="flex min-w-0 flex-1 gap-2 overflow-x-hidden py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
+                >
                   {filtered.map((c, idx) => {
                     const active = c.id === combination.id
                     const chip = getCombinationColors(c)
                     return (
-                      <CarouselItem key={c.id} className="basis-auto pl-2">
-                        <button
-                          type="button"
-                          onClick={() => (api ? api.scrollTo(idx) : select(c.id))}
-                          aria-pressed={active}
-                          title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
-                          className={
-                            "group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
-                            (active ? "opacity-100" : "opacity-70")
-                          }
-                          style={{ borderColor: active ? theme.accent : "transparent" }}
-                        >
-                          {chip.map((sc) => (
-                            <span
-                              key={sc.id}
-                              className="h-full w-4 sm:w-5"
-                              style={{ backgroundColor: sc.oklch }}
-                            />
-                          ))}
-                        </button>
-                      </CarouselItem>
+                      <button
+                        key={c.id}
+                        type="button"
+                        data-palette-idx={idx}
+                        onClick={() => select(c.id)}
+                        aria-pressed={active}
+                        title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
+                        className={
+                          "group flex h-12 shrink-0 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
+                          (active ? "opacity-100" : "opacity-70")
+                        }
+                        style={{
+                          borderColor: active ? theme.accent : "transparent",
+                        }}
+                      >
+                        {chip.map((sc) => (
+                          <span
+                            key={sc.id}
+                            className="h-full w-4 sm:w-5"
+                            style={{ backgroundColor: sc.oklch }}
+                          />
+                        ))}
+                      </button>
                     )
                   })}
-                  {/* spacer lets the final palettes scroll all the way left */}
-                  <CarouselItem
+                  {/* spacer lets the final palettes center when selected */}
+                  <div
                     aria-hidden="true"
-                    className="pointer-events-none basis-[80%] pl-2 sm:basis-[60%]"
+                    className="pointer-events-none w-[80%] shrink-0 sm:w-[60%]"
                   />
-                </CarouselContent>
-              </Carousel>
+                </div>
+                <ArrowButton
+                  dir="next"
+                  disabled={!canNext}
+                  onClick={() => step(1)}
+                  theme={theme}
+                  subtle={subtle}
+                />
+              </>
             ) : (
               <p className="font-mono text-xs uppercase tracking-widest opacity-70">
                 No palettes match this filter.
@@ -252,6 +248,46 @@ function FilterPill({
       }}
     >
       {children}
+    </button>
+  )
+}
+
+function ArrowButton({
+  dir,
+  disabled,
+  onClick,
+  theme,
+  subtle,
+}: {
+  dir: "prev" | "next"
+  disabled: boolean
+  onClick: () => void
+  theme: ReturnType<typeof usePalette>["theme"]
+  subtle: string
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      disabled={disabled}
+      aria-label={dir === "prev" ? "Previous palette" : "Next palette"}
+      className="flex h-12 w-7 shrink-0 items-center justify-center rounded-md border-2 transition-opacity hover:opacity-100 focus:outline-none focus-visible:opacity-100 disabled:cursor-default disabled:opacity-25 sm:w-8"
+      style={{ borderColor: subtle, color: theme.paper, opacity: disabled ? undefined : 0.7 }}
+    >
+      <svg
+        width="14"
+        height="14"
+        viewBox="0 0 24 24"
+        fill="none"
+        stroke="currentColor"
+        strokeWidth="2.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        aria-hidden="true"
+        style={{ transform: dir === "next" ? "rotate(180deg)" : undefined }}
+      >
+        <path d="M15 6l-6 6 6 6" />
+      </svg>
     </button>
   )
 }

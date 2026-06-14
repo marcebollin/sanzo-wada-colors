@@ -35,7 +35,7 @@ export function Hero() {
         </p>
         <DropCapTitle
           as="h1"
-          capColor={theme.accent}
+          capColor={theme.heroCap}
           className="mt-1 max-w-4xl text-[clamp(2rem,6.5vw,5rem)]"
           style={{ color: theme.onHero }}
         >
