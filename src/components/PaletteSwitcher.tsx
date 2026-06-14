@@ -31,10 +31,13 @@ export function PaletteSwitcher() {
           </div>
           <div className="min-w-0">
             <p className="font-mono text-[0.6rem] uppercase tracking-[0.25em] opacity-70">
-              Palette {String(combination.id).padStart(2, "0")} / {combinations.length}
+              Palette
             </p>
-            <p className="truncate font-serif text-lg font-semibold leading-tight">
-              {combination.name}
+            <p className="font-display text-2xl leading-none">
+              {String(combination.id).padStart(2, "0")}
+              <span className="ml-1 align-top font-mono text-[0.6rem] opacity-70">
+                / {combinations.length}
+              </span>
             </p>
           </div>
         </div>
@@ -50,7 +53,7 @@ export function PaletteSwitcher() {
                 type="button"
                 onClick={() => select(c.id)}
                 aria-pressed={active}
-                title={c.name}
+                title={`Palette ${String(c.id).padStart(2, "0")}`}
                 className="group flex h-9 shrink-0 items-center gap-px overflow-hidden border-2 px-px transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:-translate-y-0.5"
                 style={{
                   borderColor: active ? theme.accent : "transparent",

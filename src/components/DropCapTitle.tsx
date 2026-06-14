@@ -1,4 +1,4 @@
-import type { CSSProperties, ReactNode } from "react"
+import type { CSSProperties } from "react"
 
 type Props = {
   children: string
@@ -11,8 +11,10 @@ type Props = {
 }
 
 /**
- * A traditional serif title whose first character is dramatically enlarged
- * and tinted — "the color as the first character" from the brief.
+ * A traditional serif title whose first character is enlarged and tinted —
+ * "the color as the first character" from the brief. The big letter stays
+ * inline and shares the baseline with the rest of the line, so it reads as
+ * one continuous title rather than a floated drop cap.
  */
 export function DropCapTitle({
   children,
@@ -27,38 +29,16 @@ export function DropCapTitle({
 
   return (
     <Tag
-      className={`font-serif font-semibold leading-[0.86] tracking-tight ${className}`}
+      className={`font-serif font-semibold leading-[0.95] tracking-tight ${className}`}
       style={style}
     >
       <span
-        className="float-left mr-[0.06em] font-serif font-bold leading-[0.7]"
-        style={{
-          color: capColor,
-          fontSize: "1.72em",
-          // optical alignment of the cap against the rest of the line
-          marginTop: "-0.06em",
-        }}
+        className="font-serif font-bold"
+        style={{ color: capColor, fontSize: "1.5em" }}
       >
         {first}
       </span>
-      <span>{rest}</span>
+      {rest}
     </Tag>
-  )
-}
-
-export function Eyebrow({
-  children,
-  style,
-}: {
-  children: ReactNode
-  style?: CSSProperties
-}) {
-  return (
-    <p
-      className="mb-4 inline-flex items-center gap-2 font-mono text-[0.7rem] uppercase tracking-[0.28em]"
-      style={style}
-    >
-      {children}
-    </p>
   )
 }
