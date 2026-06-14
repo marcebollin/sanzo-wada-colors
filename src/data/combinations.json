@@ -1,0 +1,50 @@
+[
+  {
+    "id": 1,
+    "name": "Dusk Lantern",
+    "note": "A warm twilight harmony — coral warmth lifted by citron and grounded in deep maroon.",
+    "colorIds": [3, 10, 20]
+  },
+  {
+    "id": 2,
+    "name": "Edo Garden",
+    "note": "Woodblock greens and a single vermilion accent, the classic ukiyo-e contrast.",
+    "colorIds": [13, 11, 6, 22]
+  },
+  {
+    "id": 3,
+    "name": "Indigo Stage",
+    "note": "Deep stage blues with a violet glow, echoing a midnight gig poster.",
+    "colorIds": [17, 18, 1]
+  },
+  {
+    "id": 4,
+    "name": "Tea House",
+    "note": "Quiet earthen neutrals — drab, cream and seal brown for a calm interior.",
+    "colorIds": [23, 22, 21, 24]
+  },
+  {
+    "id": 5,
+    "name": "Koi Pond",
+    "note": "Nile blue water broken by darting vermilion and apricot koi.",
+    "colorIds": [15, 6, 8]
+  },
+  {
+    "id": 6,
+    "name": "Festival Banner",
+    "note": "High-key festival color: orange rufous, citron and emerald shouting together.",
+    "colorIds": [7, 10, 13, 17]
+  },
+  {
+    "id": 7,
+    "name": "Plum Blossom",
+    "note": "Soft pinks against pansy purple, a gentle late-winter bloom.",
+    "colorIds": [1, 2, 19]
+  },
+  {
+    "id": 8,
+    "name": "Harvest Field",
+    "note": "Olive, naples yellow and ocher red — late-autumn agriculture.",
+    "colorIds": [11, 9, 4]
+  }
+]

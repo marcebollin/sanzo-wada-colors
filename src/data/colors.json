@@ -1,0 +1,266 @@
+[
+  {
+    "id": 1,
+    "name": "Hermosa Pink",
+    "cmyk": {
+      "c": 0,
+      "m": 30,
+      "y": 6,
+      "k": 0
+    },
+    "oklch": "oklch(0.839 0.132 334.502)"
+  },
+  {
+    "id": 2,
+    "name": "Corinthian Pink",
+    "cmyk": {
+      "c": 0,
+      "m": 42,
+      "y": 23,
+      "k": 5
+    },
+    "oklch": "oklch(0.739 0.146 353.773)"
+  },
+  {
+    "id": 3,
+    "name": "Coral Red",
+    "cmyk": {
+      "c": 0,
+      "m": 70,
+      "y": 60,
+      "k": 5
+    },
+    "oklch": "oklch(0.637 0.212 18.903)"
+  },
+  {
+    "id": 4,
+    "name": "Ocher Red",
+    "cmyk": {
+      "c": 0,
+      "m": 58,
+      "y": 70,
+      "k": 22
+    },
+    "oklch": "oklch(0.56 0.158 32.462)"
+  },
+  {
+    "id": 5,
+    "name": "Carmine",
+    "cmyk": {
+      "c": 0,
+      "m": 90,
+      "y": 65,
+      "k": 12
+    },
+    "oklch": "oklch(0.571 0.222 17.569)"
+  },
+  {
+    "id": 6,
+    "name": "Vermilion",
+    "cmyk": {
+      "c": 0,
+      "m": 75,
+      "y": 85,
+      "k": 0
+    },
+    "oklch": "oklch(0.65 0.236 30.572)"
+  },
+  {
+    "id": 7,
+    "name": "Orange Rufous",
+    "cmyk": {
+      "c": 0,
+      "m": 55,
+      "y": 95,
+      "k": 8
+    },
+    "oklch": "oklch(0.649 0.187 43.567)"
+  },
+  {
+    "id": 8,
+    "name": "Apricot Yellow",
+    "cmyk": {
+      "c": 0,
+      "m": 22,
+      "y": 80,
+      "k": 0
+    },
+    "oklch": "oklch(0.841 0.163 82.348)"
+  },
+  {
+    "id": 9,
+    "name": "Naples Yellow",
+    "cmyk": {
+      "c": 3,
+      "m": 10,
+      "y": 62,
+      "k": 0
+    },
+    "oklch": "oklch(0.903 0.157 100.818)"
+  },
+  {
+    "id": 10,
+    "name": "Citron Yellow",
+    "cmyk": {
+      "c": 18,
+      "m": 0,
+      "y": 78,
+      "k": 0
+    },
+    "oklch": "oklch(0.931 0.219 123.949)"
+  },
+  {
+    "id": 11,
+    "name": "Olive Green",
+    "cmyk": {
+      "c": 28,
+      "m": 18,
+      "y": 80,
+      "k": 35
+    },
+    "oklch": "oklch(0.551 0.119 119.428)"
+  },
+  {
+    "id": 12,
+    "name": "Cossack Green",
+    "cmyk": {
+      "c": 62,
+      "m": 18,
+      "y": 75,
+      "k": 10
+    },
+    "oklch": "oklch(0.68 0.191 139.905)"
+  },
+  {
+    "id": 13,
+    "name": "Emerald Green",
+    "cmyk": {
+      "c": 80,
+      "m": 5,
+      "y": 60,
+      "k": 0
+    },
+    "oklch": "oklch(0.835 0.242 146.208)"
+  },
+  {
+    "id": 14,
+    "name": "Beryl Green",
+    "cmyk": {
+      "c": 48,
+      "m": 0,
+      "y": 32,
+      "k": 0
+    },
+    "oklch": "oklch(0.902 0.173 151.736)"
+  },
+  {
+    "id": 15,
+    "name": "Nile Blue",
+    "cmyk": {
+      "c": 55,
+      "m": 5,
+      "y": 22,
+      "k": 0
+    },
+    "oklch": "oklch(0.866 0.139 166.581)"
+  },
+  {
+    "id": 16,
+    "name": "Venice Blue",
+    "cmyk": {
+      "c": 90,
+      "m": 45,
+      "y": 18,
+      "k": 5
+    },
+    "oklch": "oklch(0.559 0.136 245.888)"
+  },
+  {
+    "id": 17,
+    "name": "Hortense Blue",
+    "cmyk": {
+      "c": 92,
+      "m": 62,
+      "y": 10,
+      "k": 2
+    },
+    "oklch": "oklch(0.501 0.217 262.305)"
+  },
+  {
+    "id": 18,
+    "name": "Hyssop Violet",
+    "cmyk": {
+      "c": 60,
+      "m": 70,
+      "y": 8,
+      "k": 5
+    },
+    "oklch": "oklch(0.495 0.223 281.199)"
+  },
+  {
+    "id": 19,
+    "name": "Pansy Purple",
+    "cmyk": {
+      "c": 45,
+      "m": 85,
+      "y": 25,
+      "k": 18
+    },
+    "oklch": "oklch(0.406 0.182 309.357)"
+  },
+  {
+    "id": 20,
+    "name": "Maroon",
+    "cmyk": {
+      "c": 25,
+      "m": 88,
+      "y": 62,
+      "k": 45
+    },
+    "oklch": "oklch(0.317 0.113 3.853)"
+  },
+  {
+    "id": 21,
+    "name": "Seal Brown",
+    "cmyk": {
+      "c": 40,
+      "m": 62,
+      "y": 70,
+      "k": 65
+    },
+    "oklch": "oklch(0.241 0.03 39.76)"
+  },
+  {
+    "id": 22,
+    "name": "Cream Color",
+    "cmyk": {
+      "c": 2,
+      "m": 6,
+      "y": 28,
+      "k": 0
+    },
+    "oklch": "oklch(0.941 0.081 98.673)"
+  },
+  {
+    "id": 23,
+    "name": "Drab",
+    "cmyk": {
+      "c": 20,
+      "m": 28,
+      "y": 48,
+      "k": 15
+    },
+    "oklch": "oklch(0.66 0.064 87.784)"
+  },
+  {
+    "id": 24,
+    "name": "Neutral Gray",
+    "cmyk": {
+      "c": 8,
+      "m": 6,
+      "y": 8,
+      "k": 48
+    },
+    "oklch": "oklch(0.544 0.005 145.5)"
+  }
+]

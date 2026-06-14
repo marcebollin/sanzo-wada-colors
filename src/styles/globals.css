@@ -1,0 +1,66 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Zen Kaku Gothic New", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Shippori Mincho", ui-serif, Georgia, serif;
+  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  /* Washi paper + sumi ink core palette */
+  --color-background: oklch(0.94 0.018 92);
+  --color-foreground: oklch(0.22 0.012 60);
+
+  --color-paper: oklch(0.94 0.018 92);
+  --color-paper-deep: oklch(0.9 0.026 88);
+  --color-ink: oklch(0.22 0.012 60);
+  --color-ink-soft: oklch(0.42 0.014 65);
+
+  /* Accents drawn from the Sanzo palette itself */
+  --color-vermilion: oklch(0.62 0.21 30);
+  --color-vermilion-foreground: oklch(0.96 0.02 92);
+  --color-indigo: oklch(0.42 0.1 255);
+  --color-indigo-foreground: oklch(0.96 0.02 92);
+
+  --color-border: oklch(0.22 0.012 60 / 0.18);
+
+  --radius: 0.25rem;
+}
+
+@layer base {
+  * {
+    border-color: var(--color-border);
+  }
+
+  html {
+    font-family: var(--font-sans);
+    scroll-behavior: smooth;
+  }
+
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    /* subtle washi paper grain */
+    background-image:
+      radial-gradient(oklch(0.22 0.012 60 / 0.022) 1px, transparent 1px),
+      radial-gradient(oklch(0.22 0.012 60 / 0.018) 1px, transparent 1px);
+    background-size: 18px 18px, 26px 26px;
+    background-position: 0 0, 9px 13px;
+  }
+
+  ::selection {
+    background-color: var(--color-vermilion);
+    color: var(--color-vermilion-foreground);
+  }
+}
+
+@layer utilities {
+  .text-vertical {
+    writing-mode: vertical-rl;
+    text-orientation: upright;
+  }
+
+  .paper-edge {
+    box-shadow:
+      0 1px 0 oklch(1 0 0 / 0.4) inset,
+      0 18px 40px -24px oklch(0.22 0.012 60 / 0.5);
+  }
+}
