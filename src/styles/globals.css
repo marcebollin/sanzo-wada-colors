@@ -1,9 +1,49 @@
 @import "tailwindcss";
 
+@font-face {
+  font-family: "Anton";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/anton-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Shippori Mincho";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 600;
+  src: url("/fonts/shippori-mincho-latin-600-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "Shippori Mincho";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 700;
+  src: url("/fonts/shippori-mincho-latin-700-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 400;
+  src: url("/fonts/dm-mono-latin-400-normal.woff2") format("woff2");
+}
+
+@font-face {
+  font-family: "DM Mono";
+  font-style: normal;
+  font-display: swap;
+  font-weight: 500;
+  src: url("/fonts/dm-mono-latin-500-normal.woff2") format("woff2");
+}
+
 @theme {
-  --font-display: "Anton", "Shippori Mincho", ui-sans-serif, system-ui, sans-serif;
-  --font-sans: "Zen Kaku Gothic New", ui-sans-serif, system-ui, sans-serif;
-  --font-serif: "Shippori Mincho", ui-serif, Georgia, serif;
+  --font-display: "Anton", Impact, "Arial Narrow", ui-sans-serif, sans-serif;
+  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", YuMincho, ui-serif, Georgia, serif;
   --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
 
   /* Static fallbacks. The live theme overrides these per selected palette. */
@@ -16,6 +56,7 @@
 @layer base {
   html {
     font-family: var(--font-sans);
+    font-synthesis: none;
     scroll-behavior: smooth;
     background-color: var(--color-ink);
   }
