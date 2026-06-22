@@ -1,16 +1,23 @@
+import { motion } from "motion/react"
 import { colors } from "../data"
 import { usePalette } from "./PaletteContext"
 import { ColorSwatch } from "./ColorSwatch"
+import { useAnimatedOklch } from "../lib/use-animated-oklch"
 
 export function ColorGrid() {
   const { theme } = usePalette()
+  // Spring-animate the section surface + marquee band alongside the Hero so
+  // the whole viewport reads as one palette swap.
+  const ink = useAnimatedOklch(theme.ink)
+  const paper = useAnimatedOklch(theme.paper)
+  const accent = useAnimatedOklch(theme.accent)
 
   return (
-    <section style={{ backgroundColor: theme.ink, color: theme.paper }}>
+    <motion.section style={{ backgroundColor: ink, color: paper }}>
       {/* decorative marquee band of every hue */}
-      <div
+      <motion.div
         className="relative overflow-hidden border-y"
-        style={{ borderColor: theme.accent }}
+        style={{ borderColor: accent }}
       >
         <div className="marquee-track flex w-max">
           {[...colors, ...colors].map((c, i) => (
@@ -22,7 +29,7 @@ export function ColorGrid() {
             />
           ))}
         </div>
-      </div>
+      </motion.div>
 
       {/* dense, flexible grid of the full color set — tiles flow side by side */}
       <div
@@ -33,6 +40,6 @@ export function ColorGrid() {
           <ColorSwatch key={c.id} color={c} index={i} />
         ))}
       </div>
-    </section>
+    </motion.section>
   )
 }

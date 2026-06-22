@@ -1,7 +1,12 @@
 import { useEffect, useMemo, useState } from "react"
+import { motion } from "motion/react"
 import { usePalette } from "./PaletteContext"
 import { getCombinationColors, getColor } from "../data"
 import { pickBackdropExcluding } from "../lib/palette-theme"
+import {
+  useAnimatedOklch,
+  useAnimatedOklchArray,
+} from "../lib/use-animated-oklch"
 import {
   Carousel,
   CarouselContent,
@@ -51,6 +56,13 @@ export function PaletteSwitcher() {
       ? pickBackdropExcluding(theme, filterColor.oklch)
       : null
 
+  // Spring-animated roles so the switcher cross-fades in lockstep with the
+  // Hero when the active palette changes.
+  const inkMv = useAnimatedOklch(theme.ink)
+  const paperMv = useAnimatedOklch(theme.paper)
+  const accentMv = useAnimatedOklch(theme.accent)
+  const swatchMvs = useAnimatedOklchArray(theme.swatches.map((s) => s.css))
+
   const activeIndex = filtered.findIndex((c) => c.id === combination.id)
   const canPrev = activeIndex > 0
   const canNext = activeIndex >= 0 && activeIndex < filtered.length - 1
@@ -72,9 +84,9 @@ export function PaletteSwitcher() {
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-3 sm:px-4 sm:pb-4">
-      <div
+      <motion.div
         className="pointer-events-auto w-full max-w-4xl overflow-hidden rounded-2xl border-2 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.6)] backdrop-blur"
-        style={{ color: theme.paper, borderColor: theme.accent }}
+        style={{ color: paperMv, borderColor: accentMv }}
       >
         {/* color-filter banner (only one color at a time) */}
         {filterColor && banner && (
@@ -101,7 +113,7 @@ export function PaletteSwitcher() {
           </div>
         )}
 
-        <div className="flex items-center gap-3 p-3 sm:gap-4" style={{ backgroundColor: theme.ink }}>
+        <motion.div className="flex items-center gap-3 p-3 sm:gap-4" style={{ backgroundColor: inkMv }}>
           {/* active palette readout */}
           <div className="flex shrink-0 items-center gap-3">
             <div
@@ -109,11 +121,11 @@ export function PaletteSwitcher() {
               style={{ borderColor: subtle }}
               aria-hidden="true"
             >
-              {theme.swatches.map((s) => (
-                <span
+              {theme.swatches.map((s, i) => (
+                <motion.span
                   key={s.id}
                   className="h-full w-3.5 sm:w-4"
-                  style={{ backgroundColor: s.css }}
+                  style={{ backgroundColor: swatchMvs[i] }}
                 />
               ))}
             </div>
@@ -241,8 +253,8 @@ export function PaletteSwitcher() {
               </div>
             </PopoverContent>
           </Popover>
-        </div>
-      </div>
+        </motion.div>
+      </motion.div>
     </div>
   )
 }

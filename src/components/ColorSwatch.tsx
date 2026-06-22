@@ -1,5 +1,5 @@
 import { useState } from "react"
-import { AnimatePresence, motion } from "motion/react"
+import { AnimatePresence, motion, type MotionValue } from "motion/react"
 import { type SanzoColor, formatCmyk } from "../data"
 import { usePalette } from "./PaletteContext"
 import { readablePair } from "../lib/palette-theme"
@@ -13,6 +13,13 @@ type Props = {
   /** "grid" = compact tile, "feature" = large hero block that fills its parent. */
   variant?: "grid" | "feature"
   className?: string
+  /**
+   * Optional animated background color. When provided, the swatch binds its
+   * background to this MotionValue (e.g. a spring-animated OKLCH value)
+   * instead of the static `color.oklch`. Used by the Hero to cross-fade the
+   * active palette tile-by-tile while the rest of the swatch metadata stays.
+   */
+  bgColor?: MotionValue<string>
 }
 
 /**
@@ -25,7 +32,7 @@ type Props = {
  * the bottom. On hover/focus the color code and copy control rise in from the
  * bottom, pushing the English name upward via a Motion layout animation.
  */
-export function ColorSwatch({ color, index = 0, variant = "grid", className }: Props) {
+export function ColorSwatch({ color, index = 0, variant = "grid", className, bgColor }: Props) {
   const { colorFilterId, setColorFilter } = usePalette()
   const active = colorFilterId === color.id
   const feature = variant === "feature"
@@ -43,7 +50,10 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
         feature ? "h-full w-full p-4 sm:p-5" : "aspect-[4/5] w-full p-3",
         className,
       )}
-      style={{ backgroundColor: color.oklch, animationDelay: `${index * 24}ms` }}
+      style={{
+        backgroundColor: bgColor ?? color.oklch,
+        animationDelay: `${index * 24}ms`,
+      }}
       data-active={active || undefined}
       onHoverStart={() => setRevealed(true)}
       onHoverEnd={() => setRevealed(false)}
