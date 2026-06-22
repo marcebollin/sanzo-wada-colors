@@ -81,6 +81,78 @@ export type ReadablePair = {
  * tonal near-white, light colors a tonal near-black — whichever reads with more
  * contrast against the swatch wins.
  */
+/**
+ * Pick a backdrop (and its readable text color) for the color-filter banner
+ * that is guaranteed to differ from `exclude` (the active filter swatch).
+ *
+ * The banner normally uses `theme.accent` — the most chromatic palette color —
+ * but every combination in the filtered set contains the filter color, so
+ * `accent` can collide with `exclude`, hiding the preview swatch and the inline
+ * label text. We fall back through the other vivid stage colors, ending at the
+ * derived neutrals (`ink`/`paper`), which are always distinct from any source
+ * swatch.
+ */
+export function pickBackdropExcluding(
+  theme: PaletteTheme,
+  exclude: string,
+): { bg: string; on: string } {
+  for (const c of [theme.accent, theme.accent2, theme.hero]) {
+    if (c && c !== exclude) {
+      return { bg: c, on: pickOn(c, theme.ink, theme.paper) }
+    }
+  }
+  // Last resort: ink and paper are derived from the swatches' lightness, never
+  // equal to a source color, so text stays legible even for single-color
+  // palettes where every swatch equals `exclude`.
+  return { bg: theme.ink, on: theme.paper }
+}
+
+export type SyntaxRoles = {
+  /** `:root`-style selector — pops hardest. */
+  selector: string
+  /** CSS custom-property names. */
+  prop: string
+  /** CSS values. */
+  value: string
+  /** Comments — recede against the dark popover ink. */
+  comment: string
+}
+
+/**
+ * Derive syntax-highlight colors for the CSS preview popover, all pulled from
+ * the active palette and guaranteed readable against `theme.ink`.
+ *
+ * Roles follow a deliberate visual hierarchy: the selector pops hardest, prop
+ * is the next-most-distinct swatch, value a stable third, comments recede by
+ * dimming the page paper. For palettes with only one or two distinct source
+ * colors, later roles fold back onto earlier ones so highlighting never breaks
+ * — it just loses granularity, which is the honest reflection of the palette.
+ */
+export function syntaxRoles(theme: PaletteTheme): SyntaxRoles {
+  // Walk the most vivid theme colors first (most to least chromatic), keeping
+  // only those that read against `theme.ink` and skipping duplicates.
+  const pool = [
+    theme.accent,
+    theme.accent2,
+    ...theme.swatches.map((s) => s.css),
+  ]
+  const seen = new Set<string>()
+  const picks: string[] = []
+  for (const css of pool) {
+    if (!css || seen.has(css)) continue
+    if (wcagContrast(css, theme.ink) < 1.4) continue
+    seen.add(css)
+    picks.push(css)
+  }
+  const selector = picks[0] ?? theme.accent
+  const prop = picks[1] ?? selector
+  const value = picks[2] ?? prop
+  // Comments recede: dim the page paper instead of borrowing a swatch, so
+  // comments read as muted text rather than another palette tile.
+  const comment = `color-mix(in oklch, ${theme.paper} 55%, transparent)`
+  return { selector, prop, value, comment }
+}
+
 export function readablePair(css: string): ReadablePair {
   const o = parse(css)
   const dark = fmt({

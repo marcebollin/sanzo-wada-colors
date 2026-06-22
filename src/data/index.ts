@@ -37,7 +37,9 @@ export type SanzoCombination = {
 }
 
 export const colors: SanzoColor[] = colorsJson as SanzoColor[]
-export const combinations: SanzoCombination[] = combinationsJson as SanzoCombination[]
+export const combinations: SanzoCombination[] = (
+  combinationsJson as SanzoCombination[]
+).slice().sort((a, b) => a.colorIds.length - b.colorIds.length)
 
 const colorById = new Map(colors.map((c) => [c.id, c]))
 

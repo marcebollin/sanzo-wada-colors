@@ -1,6 +1,13 @@
-import { useEffect, useRef } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { usePalette } from "./PaletteContext"
 import { getCombinationColors, getColor } from "../data"
+import { pickBackdropExcluding } from "../lib/palette-theme"
+import {
+  Carousel,
+  CarouselContent,
+  CarouselItem,
+  type CarouselApi,
+} from "./ui/carousel"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 const SIZES = [2, 3, 4] as const
@@ -19,12 +26,30 @@ export function PaletteSwitcher() {
   } = usePalette()
 
   // Traditional selected-element model: `combination.id` is the source of truth.
-  // Clicking a chip selects it, the arrows step the selection. Scrolling is never
-  // user-driven — we only nudge the selected chip into view so it stays visible.
-  const scrollerRef = useRef<HTMLDivElement>(null)
+  // Selection is driven ONLY by clicking a chip or pressing an arrow — the
+  // carousel is freely draggable (mouse/touch) via Embla, but scroll/drag alone
+  // never changes the selection. The selected slide is scrolled into view
+  // whenever the selection changes.
+  const [api, setApi] = useState<CarouselApi>()
+  // snap (no dragFree) so each settle lands on a palette; containScroll:false
+  // keeps every snap, including the last palettes, reachable at the left edge
+  // (the trailing spacer provides the room to do so).
+  const opts = useMemo(
+    () => ({ align: "start" as const, containScroll: false as const }),
+    [],
+  )
 
   const subtle = `color-mix(in oklch, ${theme.paper} 22%, transparent)`
   const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
+  // The filter banner normally borrows `theme.accent` (the most chromatic
+  // palette color) as its backdrop. But every combination in the filtered set
+  // contains the filter color, so `accent` can equal `filterColor` — making the
+  // preview swatch and the inline label text invisible. Pick a backdrop that
+  // is guaranteed to differ from the active filter swatch.
+  const banner =
+    filterColor != null
+      ? pickBackdropExcluding(theme, filterColor.oklch)
+      : null
 
   const activeIndex = filtered.findIndex((c) => c.id === combination.id)
   const canPrev = activeIndex > 0
@@ -35,26 +60,30 @@ export function PaletteSwitcher() {
     if (next) select(next.id)
   }
 
-  // Keep the selected chip in view whenever the selection or filtered set changes.
-  // block:"nearest" avoids any vertical page scroll.
+  // Scroll the carousel to the selected slide whenever the selection changes
+  // (via click or arrow). We never listen to embla's "select" event — dragging
+  // the carousel does not commit a selection.
   useEffect(() => {
-    const el = scrollerRef.current
-    if (!el || activeIndex < 0) return
-    const node = el.querySelector<HTMLElement>(`[data-palette-idx="${activeIndex}"]`)
-    node?.scrollIntoView({ inline: "center", block: "nearest", behavior: "smooth" })
-  }, [activeIndex])
+    if (!api || activeIndex < 0) return
+    api.scrollTo(activeIndex, true)
+  }, [api, activeIndex])
+
+  // Snap back to the start whenever the filtered set changes.
+  useEffect(() => {
+    if (api) api.scrollTo(0, true)
+  }, [api, sizeFilter, colorFilterId])
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-3 sm:px-4 sm:pb-4">
       <div
         className="pointer-events-auto w-full max-w-4xl overflow-hidden rounded-2xl border-2 shadow-[0_18px_50px_-12px_rgba(0,0,0,0.6)] backdrop-blur"
-        style={{ backgroundColor: theme.ink, color: theme.paper, borderColor: theme.accent }}
+        style={{ color: theme.paper, borderColor: theme.accent }}
       >
         {/* color-filter banner (only one color at a time) */}
-        {filterColor && (
+        {filterColor && banner && (
           <div
             className="flex items-center gap-3 px-3 py-2 sm:px-4"
-            style={{ backgroundColor: theme.accent, color: theme.onAccent }}
+            style={{ backgroundColor: banner.bg, color: banner.on }}
           >
             <span
               className="h-5 w-5 shrink-0 rounded-sm border border-black/20"
@@ -62,9 +91,8 @@ export function PaletteSwitcher() {
               aria-hidden="true"
             />
             <p className="min-w-0 flex-1 truncate font-mono text-[0.7rem] uppercase tracking-[0.18em]">
-              Palettes with{" "}
-              <span className="font-semibold">{filterColor.name}</span>
-              <span className="opacity-70"> · {filtered.length} found</span>
+              {`${filtered.length} palettes with `}
+              <span className="font-black" style={{ color: filterColor.oklch }}>{filterColor.name}</span>
             </p>
             <button
               type="button"
@@ -76,7 +104,7 @@ export function PaletteSwitcher() {
           </div>
         )}
 
-        <div className="flex items-center gap-3 p-3 sm:gap-4">
+        <div className="flex items-center gap-3 p-3 sm:gap-4" style={{ backgroundColor: theme.ink }}>
           {/* active palette readout */}
           <div className="flex shrink-0 items-center gap-3">
             <div
@@ -105,9 +133,10 @@ export function PaletteSwitcher() {
             </div>
           </div>
 
-          {/* palette carousel — clicking a chip selects it, the arrows step the
-              selection. The selected chip is kept scrolled into view. */}
-          <div className="flex min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
+          {/* palette carousel — freely draggable (mouse/touch) via Embla, but selection
+              is driven only by clicking a chip or pressing an arrow. The
+              selected slide is scrolled into view whenever the selection changes. */}
+          <div className="flex min-h-12 min-w-0 flex-1 items-center gap-1.5 sm:gap-2">
             {filtered.length > 0 ? (
               <>
                 <ArrowButton
@@ -117,45 +146,42 @@ export function PaletteSwitcher() {
                   theme={theme}
                   subtle={subtle}
                 />
-                <div
-                  ref={scrollerRef}
-                  className="flex min-w-0 flex-1 gap-2 overflow-x-hidden py-1 [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden"
-                >
-                  {filtered.map((c, idx) => {
-                    const active = c.id === combination.id
-                    const chip = getCombinationColors(c)
-                    return (
-                      <button
-                        key={c.id}
-                        type="button"
-                        data-palette-idx={idx}
-                        onClick={() => select(c.id)}
-                        aria-pressed={active}
-                        title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
-                        className={
-                          "group flex h-12 shrink-0 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
-                          (active ? "opacity-100" : "opacity-70")
-                        }
-                        style={{
-                          borderColor: active ? theme.accent : "transparent",
-                        }}
-                      >
-                        {chip.map((sc) => (
-                          <span
-                            key={sc.id}
-                            className="h-full w-4 sm:w-5"
-                            style={{ backgroundColor: sc.oklch }}
-                          />
-                        ))}
-                      </button>
-                    )
-                  })}
-                  {/* spacer lets the final palettes center when selected */}
-                  <div
-                    aria-hidden="true"
-                    className="pointer-events-none w-[80%] shrink-0 sm:w-[60%]"
-                  />
-                </div>
+                <Carousel opts={opts} setApi={setApi} className="min-w-0 flex-1">
+                  <CarouselContent className="-ml-2">
+                    {filtered.map((c, idx) => {
+                      const active = c.id === combination.id
+                      const chip = getCombinationColors(c)
+                      return (
+                        <CarouselItem key={c.id} className="basis-auto pl-2">
+                          <button
+                            type="button"
+                            onClick={() => select(c.id)}
+                            aria-pressed={active}
+                            title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
+                            className={
+                              "group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
+                              (active ? "opacity-100" : "opacity-70")
+                            }
+                            style={{ borderColor: active ? theme.accent : "transparent" }}
+                          >
+                            {chip.map((sc) => (
+                              <span
+                                key={sc.id}
+                                className="h-full w-4 sm:w-5"
+                                style={{ backgroundColor: sc.oklch }}
+                              />
+                            ))}
+                          </button>
+                        </CarouselItem>
+                      )
+                    })}
+                    {/* spacer lets the final palettes scroll all the way left */}
+                    <CarouselItem
+                      aria-hidden="true"
+                      className="pointer-events-none basis-[80%] pl-2 sm:basis-[60%]"
+                    />
+                  </CarouselContent>
+                </Carousel>
                 <ArrowButton
                   dir="next"
                   disabled={!canNext}
@@ -165,7 +191,7 @@ export function PaletteSwitcher() {
                 />
               </>
             ) : (
-              <p className="font-mono text-xs uppercase tracking-widest opacity-70">
+              <p className="w-full text-center font-mono text-xs uppercase tracking-widest opacity-70">
                 No palettes match this filter.
               </p>
             )}

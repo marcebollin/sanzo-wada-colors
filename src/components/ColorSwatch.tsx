@@ -67,73 +67,79 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
         className="pointer-events-none relative z-10 flex h-full flex-col justify-between"
         style={text}
       >
-        <div className="flex items-start justify-between gap-2">
-          <span className={cn("font-mono tabular-nums tracking-widest", feature ? "text-sm" : "text-xs")}>
-            {String(color.id).padStart(3, "0")}
-          </span>
-          <span className={cn("font-serif leading-none", feature ? "text-lg" : "text-sm")} lang="ja">
-            {color.nameJa}
-          </span>
-        </div>
+        {feature && (
+          <div className="flex items-start justify-between gap-2">
+            <span className="font-mono text-sm tabular-nums tracking-widest">
+              {String(color.id).padStart(3, "0")}
+            </span>
+            <span className="font-serif text-lg leading-none" lang="ja">
+              {color.nameJa}
+            </span>
+          </div>
+        )}
 
-        <div className="flex flex-col pr-8">
-          <motion.h3
-            layout
-            transition={spring}
-            className={cn(
-              "font-serif font-semibold leading-tight text-balance",
-              feature ? "text-2xl sm:text-3xl" : "text-base",
-            )}
-          >
-            {color.name}
-          </motion.h3>
-          <AnimatePresence initial={false}>
-            {revealed && (
-              <motion.dl
-                key="code"
-                initial={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
-                animate={{ opacity: 1, height: "auto", marginTop: 4, y: 0 }}
-                exit={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
-                transition={spring}
-                className={cn(
-                  "overflow-hidden font-mono uppercase leading-relaxed tracking-wide",
-                  feature ? "text-xs" : "text-[0.6rem]",
-                )}
-              >
-                <div className="flex gap-1">
-                  <dt className="sr-only">CMYK</dt>
-                  <dd>{formatCmyk(color.cmyk)}</dd>
-                </div>
-                <div className="flex gap-1">
-                  <dt className="sr-only">OKLCH</dt>
-                  <dd className="break-all normal-case">{color.oklch}</dd>
-                </div>
-              </motion.dl>
-            )}
-          </AnimatePresence>
+        <div className={cn("flex flex-col", !feature && "mt-auto", feature && "pr-8")}>
+          {feature ? (
+            <motion.h3
+              layout
+              transition={spring}
+              className="font-serif text-2xl font-semibold leading-tight text-balance sm:text-3xl"
+            >
+              {color.name}
+            </motion.h3>
+          ) : (
+            <span className="font-serif text-lg leading-none" lang="ja">
+              {color.nameJa}
+            </span>
+          )}
+          {feature && (
+            <AnimatePresence initial={false}>
+              {revealed && (
+                <motion.dl
+                  key="code"
+                  initial={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
+                  animate={{ opacity: 1, height: "auto", marginTop: 4, y: 0 }}
+                  exit={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
+                  transition={spring}
+                  className="overflow-hidden font-mono uppercase leading-relaxed tracking-wide text-xs"
+                >
+                  <div className="flex gap-1">
+                    <dt className="sr-only">CMYK</dt>
+                    <dd>{formatCmyk(color.cmyk)}</dd>
+                  </div>
+                  <div className="flex gap-1">
+                    <dt className="sr-only">OKLCH</dt>
+                    <dd className="break-all normal-case">{color.oklch}</dd>
+                  </div>
+                </motion.dl>
+              )}
+            </AnimatePresence>
+          )}
         </div>
       </div>
 
       {/* copy control — rises in from the bottom, above the filter trigger */}
-      <AnimatePresence>
-        {revealed && (
-          <motion.div
-            key="copy"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: 8 }}
-            transition={spring}
-            className="absolute bottom-2 right-2 z-20"
-          >
-            <CopyButton
-              value={color.oklch}
-              label={`Copy ${color.name} as OKLCH`}
-              color={text.color}
-              className="rounded-md p-1.5"
-            />
-          </motion.div>
-        )}
-      </AnimatePresence>
+      {feature && (
+        <AnimatePresence>
+          {revealed && (
+            <motion.div
+              key="copy"
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 8 }}
+              transition={spring}
+              className="absolute bottom-2 right-2 z-20"
+            >
+              <CopyButton
+                value={color.oklch}
+                label={`Copy ${color.name} as OKLCH`}
+                color={text.color}
+                className="rounded-md p-1.5"
+              />
+            </motion.div>
+          )}
+        </AnimatePresence>
+      )}
 
       {/* fixed two-tone ring (single inset element = no corner gap) */}
       {active && (

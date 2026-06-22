@@ -3,6 +3,7 @@ import { formatHex, formatHsl, formatRgb } from "culori"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { CopyButton } from "./CopyButton"
 import type { SanzoColor, SanzoCombination } from "../data"
+import { syntaxRoles } from "../lib/palette-theme"
 import type { PaletteTheme } from "../lib/palette-theme"
 
 type Props = {
@@ -36,13 +37,7 @@ function convert(oklch: string, format: ColorFormat): string {
   }
 }
 
-/** Hand-rolled token colors for the highlighted CSS preview (read on dark ink). */
-const SYNTAX = {
-  selector: "#e5c07b",
-  comment: "#7d8b9a",
-  prop: "#61afef",
-  value: "#98c379",
-} as const
+/** Tokens are derived per-palette inside the component via `syntaxRoles`. */
 
 /** Turn a color name into a CSS custom-property-safe slug. */
 function slug(name: string): string {
@@ -88,6 +83,7 @@ export function CopyPalettePopover({
   const [format, setFormat] = useState<ColorFormat>("oklch")
   const block = paletteBlock(combination, colors, format)
   const css = toCss(block)
+  const syntax = syntaxRoles(theme)
 
   function cycleFormat() {
     setFormat((f) => FORMAT_CYCLE[(FORMAT_CYCLE.indexOf(f) + 1) % FORMAT_CYCLE.length])
@@ -152,16 +148,16 @@ export function CopyPalettePopover({
           style={{ color: theme.paper }}
         >
           <code>
-            <span style={{ color: SYNTAX.selector }}>:root</span>{" "}
+            <span style={{ color: syntax.selector }}>:root</span>{" "}
             <span style={punct}>{"{"}</span>
             {"\n  "}
-            <span style={{ color: SYNTAX.comment }}>{`/* ${block.comment} */`}</span>
+            <span style={{ color: syntax.comment }}>{`/* ${block.comment} */`}</span>
             {block.decls.map((d, i) => (
               <Fragment key={i}>
                 {"\n  "}
-                <span style={{ color: SYNTAX.prop }}>{d.prop}</span>
+                <span style={{ color: syntax.prop }}>{d.prop}</span>
                 <span style={punct}>:</span>{" "}
-                <span style={{ color: SYNTAX.value }}>{d.value}</span>
+                <span style={{ color: syntax.value }}>{d.value}</span>
                 <span style={punct}>;</span>
               </Fragment>
             ))}

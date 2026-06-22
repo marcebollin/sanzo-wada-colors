@@ -8,7 +8,9 @@
     "build": "vite build",
     "preview": "vite preview",
     "deploy": "pnpm run build && wrangler deploy --env production",
-    "colors:convert": "node scripts/cmyk-to-oklch.mjs"
+    "colors:convert": "node scripts/cmyk-to-oklch.mjs",
+    "colors:audit": "node scripts/cmyk-to-oklch.mjs --force --dry --audit",
+    "test:colors": "node --test scripts/cmyk-to-oklch.test.mjs"
   },
   "dependencies": {
     "@radix-ui/react-popover": "^1.1.16",
