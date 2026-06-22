@@ -6,10 +6,15 @@
     "directory": "./dist",
     "not_found_handling": "single-page-application"
   },
-  "routes": [
-    {
-      "pattern": "colors.marcebollin.com",
-      "custom_domain": true
+  "env": {
+    "production": {
+      "name": "sanzo-wada-colors",
+      "routes": [
+        {
+          "pattern": "colors.marcebollin.com",
+          "custom_domain": true
+        }
+      ]
     }
-  ]
+  }
 }
