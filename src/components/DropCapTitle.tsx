@@ -5,9 +5,9 @@ type Props = {
   /** Color for the oversized first character. */
   capColor: string
   className?: string
-  /** Extra styles for the wrapping heading. */
+  /** Extra styles for the wrapping title element. */
   style?: CSSProperties
-  as?: "h1" | "h2" | "h3"
+  as?: "h1" | "h2" | "h3" | "div"
 }
 
 /**

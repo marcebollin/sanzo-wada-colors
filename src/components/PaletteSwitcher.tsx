@@ -62,16 +62,13 @@ export function PaletteSwitcher() {
 
   // Scroll the carousel to the selected slide whenever the selection changes
   // (via click or arrow). We never listen to embla's "select" event — dragging
-  // the carousel does not commit a selection.
+  // the carousel does not commit a selection. When a filter changes the
+  // selection (active palette hidden → first of filtered), `activeIndex`
+  // updates and this same effect brings it into view.
   useEffect(() => {
     if (!api || activeIndex < 0) return
     api.scrollTo(activeIndex, true)
   }, [api, activeIndex])
-
-  // Snap back to the start whenever the filtered set changes.
-  useEffect(() => {
-    if (api) api.scrollTo(0, true)
-  }, [api, sizeFilter, colorFilterId])
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-3 sm:px-4 sm:pb-4">

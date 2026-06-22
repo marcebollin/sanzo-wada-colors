@@ -1,50 +1,54 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @font-face {
-  font-family: "Anton";
+  font-family: 'Anton';
   font-style: normal;
   font-display: swap;
   font-weight: 400;
-  src: url("/fonts/anton-latin-400-normal.woff2") format("woff2");
+  src: url('/fonts/anton-latin-400-normal.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: "Shippori Mincho";
+  font-family: 'Shippori Mincho';
   font-style: normal;
   font-display: swap;
   font-weight: 600;
-  src: url("/fonts/shippori-mincho-latin-600-normal.woff2") format("woff2");
+  src: url('/fonts/shippori-mincho-latin-600-normal.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: "Shippori Mincho";
+  font-family: 'Shippori Mincho';
   font-style: normal;
   font-display: swap;
   font-weight: 700;
-  src: url("/fonts/shippori-mincho-latin-700-normal.woff2") format("woff2");
+  src: url('/fonts/shippori-mincho-latin-700-normal.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: "DM Mono";
+  font-family: 'DM Mono';
   font-style: normal;
   font-display: swap;
   font-weight: 400;
-  src: url("/fonts/dm-mono-latin-400-normal.woff2") format("woff2");
+  src: url('/fonts/dm-mono-latin-400-normal.woff2') format('woff2');
 }
 
 @font-face {
-  font-family: "DM Mono";
+  font-family: 'DM Mono';
   font-style: normal;
   font-display: swap;
   font-weight: 500;
-  src: url("/fonts/dm-mono-latin-500-normal.woff2") format("woff2");
+  src: url('/fonts/dm-mono-latin-500-normal.woff2') format('woff2');
 }
 
 @theme {
-  --font-display: "Anton", Impact, "Arial Narrow", ui-sans-serif, sans-serif;
-  --font-sans: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
-  --font-serif: "Shippori Mincho", "Hiragino Mincho ProN", "Yu Mincho", YuMincho, ui-serif, Georgia, serif;
-  --font-mono: "DM Mono", ui-monospace, "SFMono-Regular", monospace;
+  --font-display: 'Anton', Impact, 'Arial Narrow', ui-sans-serif, sans-serif;
+  --font-sans:
+    ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI',
+    sans-serif;
+  --font-serif:
+    'Shippori Mincho', 'Hiragino Mincho ProN', 'Yu Mincho', YuMincho, ui-serif,
+    Georgia, serif;
+  --font-mono: 'DM Mono', ui-monospace, 'SFMono-Regular', monospace;
 
   /* Static fallbacks. The live theme overrides these per selected palette. */
   --color-ink: oklch(0.22 0.012 60);
@@ -97,8 +101,12 @@
     background-image:
       radial-gradient(currentColor 0.5px, transparent 0.5px),
       radial-gradient(currentColor 0.5px, transparent 0.5px);
-    background-size: 16px 16px, 22px 22px;
-    background-position: 0 0, 8px 11px;
+    background-size:
+      16px 16px,
+      22px 22px;
+    background-position:
+      0 0,
+      8px 11px;
     opacity: 0.04;
   }
 
@@ -119,5 +127,59 @@
     .marquee-track {
       animation: none;
     }
+  }
+}
+
+/* Hero dot: one geometry source feeds both the visible circle and title knockout. */
+.hero-field {
+  --hero-dot-radius: 13rem;
+  --hero-dot-right: -6rem;
+  --hero-dot-top: -7rem;
+  --hero-dot-center-x: calc(100% - var(--hero-dot-right) - var(--hero-dot-radius));
+  --hero-dot-center-y: calc(var(--hero-dot-top) + var(--hero-dot-radius));
+}
+
+.hero-dot {
+  top: var(--hero-dot-top);
+  right: var(--hero-dot-right);
+  width: calc(var(--hero-dot-radius) + var(--hero-dot-radius));
+  height: calc(var(--hero-dot-radius) + var(--hero-dot-radius));
+}
+
+.hero-dot-overlay {
+  z-index: 20;
+  clip-path: circle(
+    var(--hero-dot-radius) at var(--hero-dot-center-x) var(--hero-dot-center-y)
+  );
+}
+
+.hero-title-knockout {
+  -webkit-text-stroke: 0.65px currentColor;
+  paint-order: stroke fill;
+  text-shadow:
+    0.35px 0 currentColor,
+    -0.35px 0 currentColor,
+    0 0.35px currentColor,
+    0 -0.35px currentColor;
+}
+
+@media (min-width: 40rem) {
+  .hero-field {
+    --hero-dot-radius: 17rem;
+  }
+}
+
+/* Grid hover: dim all tiles except the one under the cursor and any active selection. */
+.color-grid > * {
+  transition: filter 0.25s ease;
+}
+.color-grid:hover:has(> [data-active]:not(:hover))
+  > *:not(:hover):not([data-active]) {
+  filter: contrast(0.6);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .color-grid > * {
+    transition: none;
   }
 }

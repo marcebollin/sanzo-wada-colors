@@ -74,6 +74,10 @@ export type ReadablePair = {
   onSolid: string
   /** The opposite solid — useful as a hairline against `onSolid`. */
   offSolid: string
+  /** Near-white tone tuned to the hue. */
+  light: string
+  /** Near-black tone tuned to the hue. */
+  dark: string
 }
 
 /**
@@ -170,7 +174,7 @@ export function readablePair(css: string): ReadablePair {
   const useLight = wcagContrast(css, light) >= wcagContrast(css, dark)
   const onSolid = useLight ? light : dark
   const offSolid = useLight ? dark : light
-  return { text: { color: onSolid }, onSolid, offSolid }
+  return { text: { color: onSolid }, onSolid, offSolid, light, dark }
 }
 
 export function buildTheme(palette: SanzoColor[]): PaletteTheme {
@@ -227,13 +231,26 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   const onHero = pickOn(hero, ink, paper)
 
   const accentColor = byChroma[0]?.color.oklch ?? hero
-  const accent2Color = byChroma[1]?.color.oklch ?? accentColor
+  const heroO = heroPick?.o
+  // The hero dot uses accent2 over the hero field. When the palette only has
+  // one distinct color (or the second swatch equals the hero), accent2 would
+  // blend in — so we derive a contrasting tone by flipping lightness while
+  // keeping the hue, guaranteeing the dot always reads against the hero.
+  const accent2Candidate = byChroma[1]?.color.oklch ?? accentColor
+  const accent2Color =
+    accent2Candidate !== hero
+      ? accent2Candidate
+      : fmt({
+          mode: "oklch",
+          l: (heroO?.l ?? 0.5) > 0.5 ? 0.92 : 0.28,
+          c: Math.max(0.1, heroO?.c ?? 0),
+          h: heroO?.h ?? 0,
+        })
 
   // Hero drop cap: must always be a *different*, readable color from the hero
   // field behind it. Prefer the most chromatic other swatch that reads against
   // the hero; if the palette has nothing distinct (e.g. a single color), derive
   // a vivid tone by flipping the hero's lightness while keeping its chroma.
-  const heroO = heroPick?.o
   const heroCap =
     byChroma.find(
       (p) => p.color.oklch !== hero && wcagContrast(p.color.oklch, hero) >= 1.4,

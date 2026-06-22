@@ -34,7 +34,7 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
   // Fast, smooth, near-critically-damped spring shared by the reveal motions.
   const spring = { type: "spring", stiffness: 600, damping: 38, mass: 0.6 } as const
 
-  const { text, onSolid, offSolid } = readablePair(color.oklch)
+  const { text, light, dark } = readablePair(color.oklch)
 
   return (
     <motion.article
@@ -44,8 +44,7 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
         className,
       )}
       style={{ backgroundColor: color.oklch, animationDelay: `${index * 24}ms` }}
-      whileHover={{ x: -4, y: -4 }}
-      transition={{ type: "spring", stiffness: 400, damping: 30 }}
+      data-active={active || undefined}
       onHoverStart={() => setRevealed(true)}
       onHoverEnd={() => setRevealed(false)}
       onFocusCapture={() => setRevealed(true)}
@@ -83,7 +82,7 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
             <motion.h3
               layout
               transition={spring}
-              className="font-serif text-2xl font-semibold leading-tight text-balance sm:text-3xl"
+              className="font-serif text-xl font-semibold leading-tight text-balance sm:text-2xl"
             >
               {color.name}
             </motion.h3>
@@ -146,7 +145,7 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className }: P
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-30"
-          style={{ boxShadow: `inset 0 0 0 3px ${onSolid}, inset 0 0 0 5px ${offSolid}` }}
+          style={{ boxShadow: `inset 0 0 0 3px ${light}, inset 0 0 0 5px ${dark}` }}
         />
       )}
     </motion.article>

@@ -64,5 +64,23 @@
     "name": "Koi & Reed",
     "note": "Vermilion and emerald, the simplest pond contrast.",
     "colorIds": [6, 13]
+  },
+  {
+    "id": 12,
+    "name": "Carmine & Reed",
+    "note": "A single carmine brushstroke over reed-green and rice-paper cream.",
+    "colorIds": [5, 12, 22]
+  },
+  {
+    "id": 13,
+    "name": "Spring Thaw",
+    "note": "Pale green shoots through violet mulch under a cream sky.",
+    "colorIds": [14, 19, 22]
+  },
+  {
+    "id": 14,
+    "name": "Harbor Light",
+    "note": "Deep quay water warmed by a single apricot lantern.",
+    "colorIds": [16, 8, 24]
   }
 ]

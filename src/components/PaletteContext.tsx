@@ -1,6 +1,7 @@
 import {
   createContext,
   useContext,
+  useEffect,
   useMemo,
   useState,
   type ReactNode,
@@ -45,10 +46,15 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
     )
   }, [sizeFilter, colorFilterId])
 
-  // Resolve the themed combination, keeping it inside the filtered set. We keep
-  // `activeId` as the user's intent and only *display* a fallback when a filter
-  // hides it — never overwriting the stored id. That way, re-applying a filter
-  // that includes the original selection restores it instead of resetting.
+  // When a filter hides the active palette, commit the selection to the first
+  // matching palette — so the chosen palette becomes the first of the filtered
+  // list, and stays selected even after the filter is cleared.
+  useEffect(() => {
+    if (filtered.length === 0) return
+    if (filtered.some((c) => c.id === activeId)) return
+    setActiveId(filtered[0].id)
+  }, [filtered, activeId])
+
   const combination = useMemo(() => {
     const inFiltered = filtered.find((c) => c.id === activeId)
     if (inFiltered) return inFiltered
