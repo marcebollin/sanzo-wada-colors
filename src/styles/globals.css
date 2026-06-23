@@ -132,10 +132,12 @@
 
 /* Hero dot: one geometry source feeds both the visible circle and title knockout. */
 .hero-field {
-  --hero-dot-radius: 13rem;
+  --hero-dot-radius: min(17rem, 40dvw);
   --hero-dot-right: -6rem;
   --hero-dot-top: -7rem;
-  --hero-dot-center-x: calc(100% - var(--hero-dot-right) - var(--hero-dot-radius));
+  --hero-dot-center-x: calc(
+    100% - var(--hero-dot-right) - var(--hero-dot-radius)
+  );
   --hero-dot-center-y: calc(var(--hero-dot-top) + var(--hero-dot-radius));
 }
 
@@ -163,17 +165,31 @@
     0 -0.35px currentColor;
 }
 
-@media (min-width: 40rem) {
-  .hero-field {
-    --hero-dot-radius: 17rem;
-  }
+.copy-palette-popover {
+  animation: none !important;
+  opacity: 0;
+  pointer-events: none;
+  transform: scale(0.95) translateY(-2px);
+  transition: transform 160ms cubic-bezier(0.16, 1, 0.3, 1);
 }
 
-/* Grid hover: dim all tiles except the one under the cursor and any active selection. */
+.copy-palette-popover[data-state='open'] {
+  opacity: 1;
+  pointer-events: auto;
+  transform: scale(1) translateY(0);
+}
+
+.copy-palette-popover[data-state='closed'] {
+  opacity: 0;
+  transform: scale(0.95) translateY(-2px);
+  transition: transform 110ms ease-in;
+}
+
+/* Grid hover: dim tiles except the hovered one and any active selection. */
 .color-grid > * {
   transition: filter 0.25s ease;
 }
-.color-grid:hover:has(> [data-active]:not(:hover))
+.color-grid:has(> :hover):not(:has(> [data-active]:hover))
   > *:not(:hover):not([data-active]) {
   filter: contrast(0.6);
 }

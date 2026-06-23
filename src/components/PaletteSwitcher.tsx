@@ -117,8 +117,7 @@ export function PaletteSwitcher() {
           {/* active palette readout */}
           <div className="flex shrink-0 items-center gap-3">
             <div
-              className="flex h-12 overflow-hidden rounded-md border"
-              style={{ borderColor: subtle }}
+              className="flex h-12 overflow-hidden rounded-md"
               aria-hidden="true"
             >
               {theme.swatches.map((s, i) => (
@@ -130,12 +129,9 @@ export function PaletteSwitcher() {
               ))}
             </div>
             <div className="hidden min-w-0 leading-none sm:block">
-              <p className="font-mono text-[0.55rem] uppercase tracking-[0.3em] opacity-60">
-                配色 · Palette
-              </p>
               <p className="font-display text-3xl">
                 {String(combination.id).padStart(2, "0")}
-                <span className="ml-1 align-top font-mono text-[0.6rem] opacity-60">
+                <span className="ml-1 align-top font-mono text-[0.85rem] opacity-70">
                   / {combinations.length}
                 </span>
               </p>

@@ -1,10 +1,11 @@
-import { Fragment, useState } from "react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import { formatHex, formatHsl, formatRgb } from "culori"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { CopyButton } from "./CopyButton"
 import type { SanzoColor, SanzoCombination } from "../data"
 import { syntaxRoles } from "../lib/palette-theme"
 import type { PaletteTheme } from "../lib/palette-theme"
+import { useTouchDevice } from "../lib/use-touch-device"
 
 type Props = {
   combination: SanzoCombination
@@ -81,56 +82,100 @@ export function CopyPalettePopover({
   triggerColor,
 }: Props) {
   const [format, setFormat] = useState<ColorFormat>("oklch")
+  const [open, setOpen] = useState(false)
+  const closeTimer = useRef<number | null>(null)
+  const isTouchDevice = useTouchDevice()
   const block = paletteBlock(combination, colors, format)
   const css = toCss(block)
   const syntax = syntaxRoles(theme)
+
+  function openNow() {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current)
+    setOpen(true)
+  }
+
+  function closeSoon() {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current)
+    closeTimer.current = window.setTimeout(() => setOpen(false), 120)
+  }
 
   function cycleFormat() {
     setFormat((f) => FORMAT_CYCLE[(FORMAT_CYCLE.indexOf(f) + 1) % FORMAT_CYCLE.length])
   }
 
+  useEffect(() => () => {
+    if (closeTimer.current) window.clearTimeout(closeTimer.current)
+  }, [])
+
   // Muted color for braces/colons/semicolons — tied to the popover foreground.
   const punct = { color: `color-mix(in oklch, ${theme.paper} 55%, transparent)` }
 
-  // The trigger sits over an arbitrary palette field. `triggerColor` is the
-  // readable neutral for that field (theme.onHero, always ink or paper), so a
-  // frosted backdrop in the *opposite* neutral keeps the pill legible on any
-  // color it lands on.
-  const chipBackdrop = triggerColor === theme.paper ? theme.ink : theme.paper
+  const hoverProps = isTouchDevice
+    ? {}
+    : {
+      onPointerEnter: openNow,
+      onPointerLeave: closeSoon,
+      onMouseEnter: openNow,
+      onMouseLeave: closeSoon,
+      onFocus: openNow,
+      onBlur: closeSoon,
+    }
 
   return (
-    <Popover>
+    <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
         <button
           type="button"
+          onClick={(event) => {
+            if (!isTouchDevice) event.preventDefault()
+          }}
+          {...hoverProps}
           className={
-            "inline-flex items-center gap-2 rounded-full border-2 px-3 py-1.5 font-mono text-[0.65rem] uppercase tracking-widest backdrop-blur-sm transition-colors focus:outline-none " +
+            "inline-flex items-center rounded-md border px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] shadow-lg backdrop-blur-md transition-[border-color,background-color,color,box-shadow] focus:outline-none " +
             (className ?? "")
           }
           style={{
-            borderColor: triggerColor,
-            color: triggerColor,
-            backgroundColor: `color-mix(in oklch, ${chipBackdrop} 70%, transparent)`,
+            borderColor: `color-mix(in oklch, ${theme.paper} 42%, ${theme.accent})`,
+            color: theme.paper,
+            backgroundColor: `color-mix(in oklch, ${theme.ink} 76%, transparent)`,
+            boxShadow: `0 14px 34px -24px ${triggerColor ?? theme.ink}, inset 0 1px 0 color-mix(in oklch, ${theme.paper} 20%, transparent)`,
           }}
         >
-          <SwatchIcon />
           Copy palette
         </button>
       </PopoverTrigger>
       <PopoverContent
+        forceMount
+        aria-hidden={!open}
         align="end"
-        className="w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-xl border-2 shadow-2xl"
-        style={{ backgroundColor: theme.ink, color: theme.paper, borderColor: theme.accent }}
+        sideOffset={12}
+        {...hoverProps}
+        onOpenAutoFocus={(event) => event.preventDefault()}
+        onCloseAutoFocus={(event) => event.preventDefault()}
+        className="copy-palette-popover w-[22rem] max-w-[calc(100vw-2rem)] overflow-hidden rounded-md border p-0 shadow-lg backdrop-blur-md"
+        style={{
+          backgroundColor: `color-mix(in oklch, ${theme.ink} 76%, transparent)`,
+          color: theme.paper,
+          borderColor: `color-mix(in oklch, ${theme.paper} 26%, ${theme.accent})`,
+          boxShadow: `0 16px 36px -28px ${triggerColor ?? theme.ink}, inset 0 1px 0 color-mix(in oklch, ${theme.paper} 14%, transparent)`,
+        }}
       >
         <div
-          className="flex items-center justify-between gap-3 px-4 py-3"
-          style={{ borderBottom: `1px solid color-mix(in oklch, ${theme.paper} 18%, transparent)` }}
+          className="flex items-center justify-between gap-2 px-2.5 py-2"
+          style={{
+            backgroundColor: `color-mix(in oklch, ${theme.paper} 5%, transparent)`,
+            borderBottom: `1px solid color-mix(in oklch, ${theme.paper} 13%, transparent)`,
+          }}
         >
           <button
             type="button"
             onClick={cycleFormat}
             title="Click to switch color format"
-            className="inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-[0.25em] opacity-70 transition-opacity hover:opacity-100 focus:outline-none focus-visible:opacity-100"
+            className="inline-flex items-center gap-1.5 rounded-md border px-2 py-1 font-mono text-[0.56rem] uppercase tracking-[0.24em] opacity-80 transition-opacity hover:opacity-100 focus:outline-none focus-visible:opacity-100"
+            style={{
+              backgroundColor: `color-mix(in oklch, ${theme.ink} 62%, transparent)`,
+              borderColor: `color-mix(in oklch, ${theme.paper} 16%, transparent)`,
+            }}
           >
             <CycleIcon />
             {format}
@@ -144,8 +189,12 @@ export function CopyPalettePopover({
           </CopyButton>
         </div>
         <pre
-          className="max-h-60 overflow-auto px-4 py-3 font-mono text-[0.7rem] leading-relaxed"
-          style={{ color: theme.paper }}
+          className="m-1.5 max-h-48 overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-all rounded-md border px-2.5 py-2.5 font-mono text-[0.62rem] leading-relaxed"
+          style={{
+            color: theme.paper,
+            backgroundColor: `color-mix(in oklch, ${theme.ink} 72%, transparent)`,
+            borderColor: `color-mix(in oklch, ${theme.paper} 11%, transparent)`,
+          }}
         >
           <code>
             <span style={{ color: syntax.selector }}>:root</span>{" "}
@@ -167,17 +216,6 @@ export function CopyPalettePopover({
         </pre>
       </PopoverContent>
     </Popover>
-  )
-}
-
-function SwatchIcon() {
-  return (
-    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-      <rect x="3" y="3" width="7" height="7" rx="1" />
-      <rect x="14" y="3" width="7" height="7" rx="1" />
-      <rect x="3" y="14" width="7" height="7" rx="1" />
-      <rect x="14" y="14" width="7" height="7" rx="1" />
-    </svg>
   )
 }
 

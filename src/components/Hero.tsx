@@ -1,4 +1,4 @@
-import { motion, useMotionTemplate } from "motion/react"
+import { motion } from "motion/react"
 import { usePalette } from "./PaletteContext"
 import { DropCapTitle } from "./DropCapTitle"
 import { ColorSwatch } from "./ColorSwatch"
@@ -47,10 +47,8 @@ export function Hero() {
   // the motion runtime at 60fps — no React re-render per frame.
   const heroBg = useAnimatedOklch(theme.hero)
   const onHero = useAnimatedOklch(theme.onHero)
-  const accent2 = useAnimatedOklch(theme.accent2)
   const heroCap = useAnimatedOklch(theme.heroCap)
   const paletteMvs = useAnimatedOklchArray(palette.map((c) => c.oklch))
-  const swatchBorder = useMotionTemplate`1px solid color-mix(in oklch, ${onHero} 28%, transparent)`
 
   return (
     <motion.header
@@ -60,7 +58,7 @@ export function Hero() {
       {/* strong background shapes built from the palette */}
       <motion.div
         className="hero-dot pointer-events-none absolute rounded-full"
-        style={{ backgroundColor: accent2 }}
+        style={{ backgroundColor: heroCap }}
         aria-hidden="true"
       />
 
@@ -81,13 +79,7 @@ export function Hero() {
 
         {/* the active palette, shown big — same tile as the grid, so clicking
             a block filters the carousel too */}
-        <div className="mt-10 flex items-center justify-between gap-4">
-          <motion.p
-            className="font-mono text-[0.65rem] uppercase tracking-[0.3em]"
-            style={{ color: onHero, opacity: 0.7 }}
-          >
-            The active palette
-          </motion.p>
+        <div className="mt-10 flex justify-end">
           <CopyPalettePopover
             combination={combination}
             colors={palette}
@@ -100,7 +92,6 @@ export function Hero() {
             <motion.div
               key={i}
               className="h-40 sm:h-64"
-              style={{ border: swatchBorder }}
               whileHover={{ x: -4, y: -4 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >

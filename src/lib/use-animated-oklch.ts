@@ -120,29 +120,37 @@ export function useAnimatedOklchArray(
 
   // Allocate MAX_PALETTE persistent channels up front so the hooks run a
   // stable number of times per render, regardless of how long `targets` is.
+  // Seed slots that exist on first render with their real target color; effects
+  // run after paint, so starting from neutral grey causes a visible first-load
+  // flash in the hero palette.
+  const initial = Array.from({ length: MAX_PALETTE }, (_, i) =>
+    targets[i] ? parse(targets[i]) : { l: 0.5, c: 0, h: 0 },
+  )
   const l = [
-    useMotionValue(0.5),
-    useMotionValue(0.5),
-    useMotionValue(0.5),
-    useMotionValue(0.5),
+    useMotionValue(initial[0].l),
+    useMotionValue(initial[1].l),
+    useMotionValue(initial[2].l),
+    useMotionValue(initial[3].l),
   ]
   const c = [
-    useMotionValue(0),
-    useMotionValue(0),
-    useMotionValue(0),
-    useMotionValue(0),
+    useMotionValue(initial[0].c),
+    useMotionValue(initial[1].c),
+    useMotionValue(initial[2].c),
+    useMotionValue(initial[3].c),
   ]
   const h = [
-    useMotionValue(0),
-    useMotionValue(0),
-    useMotionValue(0),
-    useMotionValue(0),
+    useMotionValue(initial[0].h),
+    useMotionValue(initial[1].h),
+    useMotionValue(initial[2].h),
+    useMotionValue(initial[3].h),
   ]
   const css = l.map((lv, i) => useOklchString(lv, c[i], h[i]))
 
   // Per-slot "have we seen this slot before" flag. A slot that was empty last
   // palette (palette grew) snaps to its value once, then animates thereafter.
-  const initialized = useRef<boolean[]>(Array(MAX_PALETTE).fill(false))
+  const initialized = useRef<boolean[]>(
+    Array.from({ length: MAX_PALETTE }, (_, i) => targets[i] != null),
+  )
 
   const key = targets.join("|")
   useEffect(() => {

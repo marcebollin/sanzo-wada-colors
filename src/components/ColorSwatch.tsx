@@ -1,6 +1,5 @@
-import { useState } from "react"
-import { AnimatePresence, motion, type MotionValue } from "motion/react"
-import { type SanzoColor, formatCmyk } from "../data"
+import { motion, type MotionValue } from "motion/react"
+import { type SanzoColor } from "../data"
 import { usePalette } from "./PaletteContext"
 import { readablePair } from "../lib/palette-theme"
 import { CopyButton } from "./CopyButton"
@@ -28,18 +27,13 @@ type Props = {
  * OKLCH. Text uses a fixed light or dark color chosen for contrast, falling
  * back to a difference blend only for ambiguous mid-tones.
  *
- * By default the index and both names are shown, with the English name pinned to
- * the bottom. On hover/focus the color code and copy control rise in from the
- * bottom, pushing the English name upward via a Motion layout animation.
+ * By default the index and both names are shown, with the English name, OKLCH
+ * value, and copy control pinned near the bottom.
  */
 export function ColorSwatch({ color, index = 0, variant = "grid", className, bgColor }: Props) {
   const { colorFilterId, setColorFilter } = usePalette()
   const active = colorFilterId === color.id
   const feature = variant === "feature"
-  const [revealed, setRevealed] = useState(false)
-
-  // Fast, smooth, near-critically-damped spring shared by the reveal motions.
-  const spring = { type: "spring", stiffness: 600, damping: 38, mass: 0.6 } as const
 
   const { text, light, dark } = readablePair(color.oklch)
 
@@ -55,12 +49,6 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className, bgC
         animationDelay: `${index * 24}ms`,
       }}
       data-active={active || undefined}
-      onHoverStart={() => setRevealed(true)}
-      onHoverEnd={() => setRevealed(false)}
-      onFocusCapture={() => setRevealed(true)}
-      onBlurCapture={(e) => {
-        if (!e.currentTarget.contains(e.relatedTarget as Node)) setRevealed(false)
-      }}
     >
       {/* full-area filter trigger sits behind the content */}
       <button
@@ -87,68 +75,32 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className, bgC
           </div>
         )}
 
-        <div className={cn("flex flex-col", !feature && "mt-auto", feature && "pr-8")}>
+        <div className="flex flex-col mt-auto">
           {feature ? (
-            <motion.h3
-              layout
-              transition={spring}
-              className="font-serif text-xl font-semibold leading-tight text-balance sm:text-2xl"
-            >
+            <h3 className="font-serif text-xl font-semibold leading-tight text-balance sm:text-2xl">
               {color.name}
-            </motion.h3>
+            </h3>
           ) : (
             <span className="font-serif text-lg leading-none" lang="ja">
               {color.nameJa}
             </span>
           )}
           {feature && (
-            <AnimatePresence initial={false}>
-              {revealed && (
-                <motion.dl
-                  key="code"
-                  initial={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
-                  animate={{ opacity: 1, height: "auto", marginTop: 4, y: 0 }}
-                  exit={{ opacity: 0, height: 0, marginTop: 0, y: 8 }}
-                  transition={spring}
-                  className="overflow-hidden font-mono uppercase leading-relaxed tracking-wide text-xs"
-                >
-                  <div className="flex gap-1">
-                    <dt className="sr-only">CMYK</dt>
-                    <dd>{formatCmyk(color.cmyk)}</dd>
-                  </div>
-                  <div className="flex gap-1">
-                    <dt className="sr-only">OKLCH</dt>
-                    <dd className="break-all normal-case">{color.oklch}</dd>
-                  </div>
-                </motion.dl>
-              )}
-            </AnimatePresence>
+            <dl className="mt-1 font-mono uppercase leading-relaxed tracking-wide text-xs">
+              <div className="flex items-start gap-2">
+                <dt className="sr-only">OKLCH</dt>
+                <dd className="min-w-0 flex-1 break-all normal-case">{color.oklch}</dd>
+                <CopyButton
+                  value={color.oklch}
+                  label={`Copy ${color.name} as OKLCH`}
+                  color={text.color}
+                  className="pointer-events-auto -mr-1 shrink-0 rounded-md p-1 opacity-75 hover:opacity-100 focus-visible:opacity-100"
+                />
+              </div>
+            </dl>
           )}
         </div>
       </div>
-
-      {/* copy control — rises in from the bottom, above the filter trigger */}
-      {feature && (
-        <AnimatePresence>
-          {revealed && (
-            <motion.div
-              key="copy"
-              initial={{ opacity: 0, y: 8 }}
-              animate={{ opacity: 1, y: 0 }}
-              exit={{ opacity: 0, y: 8 }}
-              transition={spring}
-              className="absolute bottom-2 right-2 z-20"
-            >
-              <CopyButton
-                value={color.oklch}
-                label={`Copy ${color.name} as OKLCH`}
-                color={text.color}
-                className="rounded-md p-1.5"
-              />
-            </motion.div>
-          )}
-        </AnimatePresence>
-      )}
 
       {/* fixed two-tone ring (single inset element = no corner gap) */}
       {active && (
