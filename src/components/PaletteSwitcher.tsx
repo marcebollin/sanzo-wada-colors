@@ -1,8 +1,8 @@
-import { useEffect, useMemo, useState } from "react"
+import { useCallback, useEffect, useMemo, useState } from "react"
 import { motion } from "motion/react"
 import { usePalette } from "./PaletteContext"
 import { getCombinationColors, getColor } from "../data"
-import { pickBackdropExcluding } from "../lib/palette-theme"
+import { pickBackdropExcluding, readablePair } from "../lib/palette-theme"
 import {
   useAnimatedOklch,
   useAnimatedOklchArray,
@@ -67,10 +67,13 @@ export function PaletteSwitcher() {
   const canPrev = activeIndex > 0
   const canNext = activeIndex >= 0 && activeIndex < filtered.length - 1
 
-  const step = (dir: -1 | 1) => {
-    const next = filtered[activeIndex + dir]
-    if (next) select(next.id)
-  }
+  const step = useCallback(
+    (dir: -1 | 1) => {
+      const next = filtered[activeIndex + dir]
+      if (next) select(next.id)
+    },
+    [activeIndex, filtered, select],
+  )
 
   // Scroll the carousel to the selected slide whenever the selection changes
   // (via click or arrow). We never listen to embla's "select" event — dragging
@@ -81,6 +84,36 @@ export function PaletteSwitcher() {
     if (!api || activeIndex < 0) return
     api.scrollTo(activeIndex, true)
   }, [api, activeIndex])
+
+  useEffect(() => {
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.altKey || event.ctrlKey || event.metaKey || event.shiftKey) {
+        return
+      }
+
+      const target = event.target
+      if (
+        target instanceof HTMLElement &&
+        (target.isContentEditable ||
+          ["INPUT", "SELECT", "TEXTAREA"].includes(target.tagName))
+      ) {
+        return
+      }
+
+      if (event.key === "ArrowLeft" && canPrev) {
+        event.preventDefault()
+        step(-1)
+      }
+
+      if (event.key === "ArrowRight" && canNext) {
+        event.preventDefault()
+        step(1)
+      }
+    }
+
+    window.addEventListener("keydown", onKeyDown)
+    return () => window.removeEventListener("keydown", onKeyDown)
+  }, [canNext, canPrev, step])
 
   return (
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-50 flex justify-center px-3 pb-3 sm:px-4 sm:pb-4">
@@ -131,7 +164,7 @@ export function PaletteSwitcher() {
             <div className="hidden min-w-0 leading-none sm:block">
               <p className="font-display text-3xl">
                 {String(combination.id).padStart(2, "0")}
-                <span className="ml-2 inline-flex align-top font-mono text-[0.85rem] opacity-70">
+                <span className="ml-0.5 inline-flex align-top font-mono text-[0.85rem] opacity-70">
                   <span className="mx-1.5">/</span>
                   <span>{combinations.length}</span>
                 </span>
@@ -152,7 +185,11 @@ export function PaletteSwitcher() {
                   theme={theme}
                   subtle={subtle}
                 />
-                <Carousel opts={opts} setApi={setApi} className="min-w-0 flex-1">
+                <Carousel
+                  opts={opts}
+                  setApi={setApi}
+                  className="min-w-0 flex-1 cursor-pointer active:cursor-grabbing"
+                >
                   <CarouselContent className="-ml-2">
                     {filtered.map((c, idx) => {
                       const active = c.id === combination.id
@@ -168,7 +205,7 @@ export function PaletteSwitcher() {
                               "group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
                               (active ? "opacity-100" : "opacity-70")
                             }
-                            style={{ borderColor: active ? theme.accent : "transparent" }}
+                            style={{ borderColor: active ? readablePair(theme.accent).light : "transparent" }}
                           >
                             {chip.map((sc) => (
                               <span

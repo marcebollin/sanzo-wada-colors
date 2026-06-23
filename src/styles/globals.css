@@ -146,6 +146,8 @@
   right: var(--hero-dot-right);
   width: calc(var(--hero-dot-radius) + var(--hero-dot-radius));
   height: calc(var(--hero-dot-radius) + var(--hero-dot-radius));
+  filter: blur(8px);
+  will-change: filter;
 }
 
 .hero-dot-overlay {

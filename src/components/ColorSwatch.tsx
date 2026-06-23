@@ -94,7 +94,7 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className, bgC
                   value={color.oklch}
                   label={`Copy ${color.name} as OKLCH`}
                   color={text.color}
-                  className="pointer-events-auto -mr-1 shrink-0 rounded-md p-1 opacity-75 hover:opacity-100 focus-visible:opacity-100"
+                  className="pointer-events-auto -mr-0.5 mt-px shrink-0 rounded-md p-0.5 opacity-75 hover:opacity-100 focus-visible:opacity-100"
                 />
               </div>
             </dl>

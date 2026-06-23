@@ -1,4 +1,5 @@
-import { motion } from "motion/react"
+import { motion, useTransform } from "motion/react"
+import { oklch as toOklch } from "culori"
 import { usePalette } from "./PaletteContext"
 import { DropCapTitle } from "./DropCapTitle"
 import { ColorSwatch } from "./ColorSwatch"
@@ -15,6 +16,42 @@ import {
 
 const HERO_DISPLAY_TITLE = "A Dictionary"
 const HERO_MAIN_TITLE = "of Color Combinations"
+const DOT_GRADIENT_SEGMENT_DECAY = 0.8
+
+function gradientStopPositions(count: number) {
+  if (count <= 1) return [0]
+
+  const segmentCount = count - 1
+  const weights = Array.from({ length: segmentCount }, (_, i) =>
+    DOT_GRADIENT_SEGMENT_DECAY ** i,
+  )
+  const total = weights.reduce((sum, weight) => sum + weight, 0)
+  let position = 0
+
+  return Array.from({ length: count }, (_, i) => {
+    if (i === 0) return 0
+    if (i === count - 1) return 100
+
+    position += (weights[i - 1] / total) * 100
+    return Number(position.toFixed(2))
+  })
+}
+
+function paletteLinearGradient(colors: string[]) {
+  const gradientColors = colors.length > 1 ? colors : [colors[0], colors[0]]
+  const positions = gradientStopPositions(gradientColors.length)
+  const stops = gradientColors
+    .map((color, i) => {
+      return `${color} ${positions[i]}%`
+    })
+    .join(", ")
+
+  return `linear-gradient(-20deg in oklch, ${stops})`
+}
+
+function oklchLightness(color: string) {
+  return toOklch(color)?.l ?? 0.5
+}
 
 type HeroTitleProps = {
   color: string | ReturnType<typeof useAnimatedOklch>
@@ -52,7 +89,18 @@ export function Hero() {
   const heroBg = useAnimatedOklch(theme.hero)
   const onHero = useAnimatedOklch(theme.onHero)
   const heroCap = useAnimatedOklch(theme.heroCap)
+  const dotColors = palette
+    .filter((color) => color.oklch !== theme.hero)
+    .slice()
+    .sort((a, b) => oklchLightness(a.oklch) - oklchLightness(b.oklch))
+    .map((c) => c.oklch)
+  const dotColorMvs = useAnimatedOklchArray(
+    dotColors.length ? dotColors : [theme.heroCap],
+  )
   const paletteMvs = useAnimatedOklchArray(palette.map((c) => c.oklch))
+  const heroDotGradient = useTransform(dotColorMvs, (colors) =>
+    paletteLinearGradient(colors as string[]),
+  )
 
   return (
     <motion.header
@@ -62,7 +110,7 @@ export function Hero() {
       {/* strong background shapes built from the palette */}
       <motion.div
         className="hero-dot pointer-events-none absolute rounded-full"
-        style={{ backgroundColor: heroCap }}
+        style={{ backgroundColor: heroCap, backgroundImage: heroDotGradient }}
         aria-hidden="true"
       />
 
