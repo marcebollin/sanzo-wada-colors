@@ -1,11 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from "react"
 import { formatHex, formatHsl, formatRgb } from "culori"
+import { motion, type MotionValue } from "motion/react"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import { CopyButton } from "./CopyButton"
 import type { SanzoColor, SanzoCombination } from "../data"
 import { syntaxRoles } from "../lib/palette-theme"
 import type { PaletteTheme } from "../lib/palette-theme"
 import { useTouchDevice } from "../lib/use-touch-device"
+import { twMerge } from "tailwind-merge"
 
 type Props = {
   combination: SanzoCombination
@@ -14,8 +16,12 @@ type Props = {
   /** Optional class for the trigger button. */
   className?: string
   /** Foreground for the trigger when shown over a colored field. */
-  triggerColor?: string
+  triggerColor?: string | MotionValue<string>
 }
+
+export const COPY_PALETTE_TRIGGER_TEXT = "COPY COMBINATION"
+export const COPY_PALETTE_TRIGGER_CLASS =
+  "copy-palette-trigger inline-flex items-baseline font-display text-[clamp(0.95rem,2.1vw,1.55rem)] uppercase leading-none tracking-[0.08em] transition-[opacity,text-shadow] hover:opacity-80 focus:outline-none focus-visible:opacity-80"
 
 /**
  * The color formats the popover can emit. The source of truth in the JSON is
@@ -124,25 +130,24 @@ export function CopyPalettePopover({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <button
+        <motion.button
           type="button"
           onClick={(event) => {
             if (!isTouchDevice) event.preventDefault()
           }}
           {...hoverProps}
           className={
-            "inline-flex items-center rounded-md border px-3 py-2 font-mono text-[0.6rem] uppercase tracking-[0.22em] shadow-lg backdrop-blur-md transition-[border-color,background-color,color,box-shadow] focus:outline-none " +
-            (className ?? "")
+            twMerge(
+              COPY_PALETTE_TRIGGER_CLASS,
+              className ?? ""
+            )
           }
           style={{
-            borderColor: `color-mix(in oklch, ${theme.paper} 42%, ${theme.accent})`,
-            color: theme.paper,
-            backgroundColor: `color-mix(in oklch, ${theme.ink} 76%, transparent)`,
-            boxShadow: `0 14px 34px -24px ${triggerColor ?? theme.ink}, inset 0 1px 0 color-mix(in oklch, ${theme.paper} 20%, transparent)`,
+            color: triggerColor ?? theme.paper,
           }}
         >
-          Copy palette
-        </button>
+          {COPY_PALETTE_TRIGGER_TEXT}
+        </motion.button>
       </PopoverTrigger>
       <PopoverContent
         forceMount
@@ -182,7 +187,7 @@ export function CopyPalettePopover({
           </button>
           <CopyButton
             value={css}
-            label={`Copy palette ${combination.name} as ${format.toUpperCase()}`}
+            label={`Copy combination ${combination.name} as ${format.toUpperCase()}`}
             color={theme.paper}
           >
             Copy CSS

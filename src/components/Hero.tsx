@@ -2,7 +2,11 @@ import { motion } from "motion/react"
 import { usePalette } from "./PaletteContext"
 import { DropCapTitle } from "./DropCapTitle"
 import { ColorSwatch } from "./ColorSwatch"
-import { CopyPalettePopover } from "./CopyPalettePopover"
+import {
+  COPY_PALETTE_TRIGGER_CLASS,
+  COPY_PALETTE_TRIGGER_TEXT,
+  CopyPalettePopover,
+} from "./CopyPalettePopover"
 import { getCombinationColors } from "../data"
 import {
   useAnimatedOklch,
@@ -70,6 +74,14 @@ export function Hero() {
       >
         <div className="mx-auto max-w-6xl px-5 pb-12 pt-16 sm:pt-20">
           <HeroTitle color={heroBg} capColor={heroBg} />
+          <div className="mt-10 flex justify-end">
+            <motion.span
+              className={COPY_PALETTE_TRIGGER_CLASS}
+              style={{ color: heroBg }}
+            >
+              {COPY_PALETTE_TRIGGER_TEXT}
+            </motion.span>
+          </div>
         </div>
       </div>
 
@@ -84,7 +96,7 @@ export function Hero() {
             combination={combination}
             colors={palette}
             theme={theme}
-            triggerColor={theme.onHero}
+            triggerColor={onHero}
           />
         </div>
         <div className="mt-3 grid auto-cols-fr grid-flow-row gap-1 sm:grid-flow-col sm:gap-1.5">

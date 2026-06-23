@@ -131,8 +131,9 @@ export function PaletteSwitcher() {
             <div className="hidden min-w-0 leading-none sm:block">
               <p className="font-display text-3xl">
                 {String(combination.id).padStart(2, "0")}
-                <span className="ml-1 align-top font-mono text-[0.85rem] opacity-70">
-                  / {combinations.length}
+                <span className="ml-2 inline-flex align-top font-mono text-[0.85rem] opacity-70">
+                  <span className="mx-1.5">/</span>
+                  <span>{combinations.length}</span>
                 </span>
               </p>
             </div>

@@ -16,7 +16,7 @@ export function ColorGrid() {
     <motion.section style={{ backgroundColor: ink, color: paper }}>
       {/* decorative marquee band of every hue */}
       <motion.div
-        className="relative overflow-hidden border-y"
+        className="relative overflow-hidden pt-1"
         style={{ borderColor: accent }}
       >
         <div className="marquee-track flex w-max">
