@@ -85,30 +85,46 @@ export type ReadablePair = {
  * tonal near-white, light colors a tonal near-black — whichever reads with more
  * contrast against the swatch wins.
  */
+export type BackgroundRoles = {
+  bg: string
+  on: string
+  highlight: string
+}
+
 /**
- * Pick a backdrop (and its readable text color) for the color-filter banner
- * that is guaranteed to differ from `exclude` (the active filter swatch).
- *
- * The banner normally uses `theme.accent` — the most chromatic palette color —
- * but every combination in the filtered set contains the filter color, so
- * `accent` can collide with `exclude`, hiding the preview swatch and the inline
- * label text. We fall back through the other vivid stage colors, ending at the
- * derived neutrals (`ink`/`paper`), which are always distinct from any source
- * swatch.
+ * Use a requested color as the stage background while choosing a different
+ * palette color for the highlight. If no source swatch can read over the
+ * background, derive a same-hue light/dark highlight so the role never
+ * collapses back into the background.
  */
-export function pickBackdropExcluding(
+export function rolesForBackground(
   theme: PaletteTheme,
-  exclude: string,
-): { bg: string; on: string } {
-  for (const c of [theme.accent, theme.accent2, theme.hero]) {
-    if (c && c !== exclude) {
-      return { bg: c, on: pickOn(c, theme.ink, theme.paper) }
-    }
+  bg: string,
+): BackgroundRoles {
+  const highlight =
+    [
+      theme.heroCap,
+      theme.accent,
+      theme.accent2,
+      ...theme.swatches.map((s) => s.css),
+    ].find((c) => c !== bg && wcagContrast(c, bg) >= 1.4) ??
+    derivedHighlight(bg)
+
+  return {
+    bg,
+    on: pickOn(bg, theme.ink, theme.paper),
+    highlight,
   }
-  // Last resort: ink and paper are derived from the swatches' lightness, never
-  // equal to a source color, so text stays legible even for single-color
-  // palettes where every swatch equals `exclude`.
-  return { bg: theme.ink, on: theme.paper }
+}
+
+function derivedHighlight(bg: string): string {
+  const o = parse(bg)
+  return fmt({
+    mode: "oklch",
+    l: o.l > 0.5 ? 0.2 : 0.96,
+    c: Math.max(0.12, o.c ?? 0),
+    h: o.h ?? 0,
+  })
 }
 
 export type SyntaxRoles = {
@@ -192,23 +208,23 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   // chroma so black still belongs to this palette.
   const ink = fmt({
     mode: "oklch",
-    l: Math.min(0.21, (darkest.o?.l ?? 0.25) * 0.55 + 0.07),
-    c: Math.min(0.045, (darkest.o?.c ?? 0) * 0.35 + 0.008),
-    h: darkest.o?.h ?? 60,
+    l: Math.min(0.21, darkest.l * 0.55 + 0.07),
+    c: Math.min(0.045, darkest.c * 0.35 + 0.008),
+    h: darkest.h ?? 60,
   })
 
   // Paper + bg: lift the lightest hue near white, keeping a faint tint.
   const paper = fmt({
     mode: "oklch",
     l: 0.97,
-    c: Math.min(0.03, (lightest.o?.c ?? 0) * 0.18 + 0.004),
-    h: lightest.o?.h ?? 90,
+    c: Math.min(0.03, lightest.c * 0.18 + 0.004),
+    h: lightest.h ?? 90,
   })
   const bg = fmt({
     mode: "oklch",
     l: 0.945,
-    c: Math.min(0.05, (lightest.o?.c ?? 0) * 0.35 + 0.01),
-    h: lightest.o?.h ?? 90,
+    c: Math.min(0.05, lightest.c * 0.35 + 0.01),
+    h: lightest.h ?? 90,
   })
 
   const swatches: Swatch[] = parsed.map(({ color, o }) => {
@@ -255,12 +271,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
     byChroma.find(
       (p) => p.color.oklch !== hero && wcagContrast(p.color.oklch, hero) >= 1.4,
     )?.color.oklch ??
-    fmt({
-      mode: "oklch",
-      l: (heroO?.l ?? 0.5) > 0.5 ? 0.2 : 0.96,
-      c: Math.max(0.12, heroO?.c ?? 0),
-      h: heroO?.h ?? 0,
-    })
+    derivedHighlight(hero)
 
   const vars: Record<string, string> = {
     "--p-ink": ink,

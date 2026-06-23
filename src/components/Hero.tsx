@@ -8,7 +8,8 @@ import {
   COPY_PALETTE_TRIGGER_TEXT,
   CopyPalettePopover,
 } from "./CopyPalettePopover"
-import { getCombinationColors } from "../data"
+import { getColor, getCombinationColors } from "../data"
+import { rolesForBackground } from "../lib/palette-theme"
 import {
   useAnimatedOklch,
   useAnimatedOklchArray,
@@ -81,21 +82,25 @@ function HeroTitle({ color, capColor, heading = false }: HeroTitleProps) {
 }
 
 export function Hero() {
-  const { theme, combination } = usePalette()
+  const { theme, combination, colorFilterId } = usePalette()
   const palette = getCombinationColors(combination)
+  const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
+  const heroRoles = filterColor
+    ? rolesForBackground(theme, filterColor.oklch)
+    : { bg: theme.hero, on: theme.onHero, highlight: theme.heroCap }
 
   // Spring-animated OKLCH values. Each bound motion element is kept in sync by
   // the motion runtime at 60fps — no React re-render per frame.
-  const heroBg = useAnimatedOklch(theme.hero)
-  const onHero = useAnimatedOklch(theme.onHero)
-  const heroCap = useAnimatedOklch(theme.heroCap)
+  const heroBg = useAnimatedOklch(heroRoles.bg)
+  const onHero = useAnimatedOklch(heroRoles.on)
+  const heroCap = useAnimatedOklch(heroRoles.highlight)
   const dotColors = palette
-    .filter((color) => color.oklch !== theme.hero)
+    .filter((color) => color.oklch !== heroRoles.bg)
     .slice()
     .sort((a, b) => oklchLightness(a.oklch) - oklchLightness(b.oklch))
     .map((c) => c.oklch)
   const dotColorMvs = useAnimatedOklchArray(
-    dotColors.length ? dotColors : [theme.heroCap],
+    dotColors.length ? dotColors : [heroRoles.highlight],
   )
   const paletteMvs = useAnimatedOklchArray(palette.map((c) => c.oklch))
   const heroDotGradient = useTransform(dotColorMvs, (colors) =>

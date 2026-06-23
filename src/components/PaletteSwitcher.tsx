@@ -2,7 +2,7 @@ import { useCallback, useEffect, useMemo, useState } from "react"
 import { motion } from "motion/react"
 import { usePalette } from "./PaletteContext"
 import { getCombinationColors, getColor } from "../data"
-import { pickBackdropExcluding, readablePair } from "../lib/palette-theme"
+import { readablePair, rolesForBackground } from "../lib/palette-theme"
 import {
   useAnimatedOklch,
   useAnimatedOklchArray,
@@ -46,15 +46,13 @@ export function PaletteSwitcher() {
 
   const subtle = `color-mix(in oklch, ${theme.paper} 22%, transparent)`
   const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
-  // The filter banner normally borrows `theme.accent` (the most chromatic
-  // palette color) as its backdrop. But every combination in the filtered set
-  // contains the filter color, so `accent` can equal `filterColor` — making the
-  // preview swatch and the inline label text invisible. Pick a backdrop that
-  // is guaranteed to differ from the active filter swatch.
   const banner =
-    filterColor != null
-      ? pickBackdropExcluding(theme, filterColor.oklch)
-      : null
+    filterColor != null ? rolesForBackground(theme, filterColor.oklch) : null
+  const bannerBgMv = useAnimatedOklch(banner?.bg ?? theme.accent)
+  const bannerOnMv = useAnimatedOklch(banner?.on ?? theme.onAccent)
+  const bannerHighlightMv = useAnimatedOklch(
+    banner?.highlight ?? theme.heroCap,
+  )
 
   // Spring-animated roles so the switcher cross-fades in lockstep with the
   // Hero when the active palette changes.
@@ -123,18 +121,26 @@ export function PaletteSwitcher() {
       >
         {/* color-filter banner (only one color at a time) */}
         {filterColor && banner && (
-          <div
+          <motion.div
             className="flex items-center gap-3 px-3 py-2 sm:px-4"
-            style={{ backgroundColor: banner.bg, color: banner.on }}
+            style={{ backgroundColor: bannerBgMv, color: bannerOnMv }}
           >
-            <span
+            <motion.span
               className="h-5 w-5 shrink-0 rounded-sm border border-black/20"
-              style={{ backgroundColor: filterColor.oklch }}
+              style={{
+                backgroundColor: bannerBgMv,
+                borderColor: bannerHighlightMv,
+              }}
               aria-hidden="true"
             />
             <p className="min-w-0 flex-1 truncate font-mono text-[0.7rem] uppercase tracking-[0.18em]">
               {`${filtered.length} palettes with `}
-              <span className="font-black" style={{ color: filterColor.oklch }}>{filterColor.name}</span>
+              <motion.span
+                className="font-black"
+                style={{ color: bannerHighlightMv }}
+              >
+                {filterColor.name}
+              </motion.span>
             </p>
             <button
               type="button"
@@ -143,7 +149,7 @@ export function PaletteSwitcher() {
             >
               <CloseIcon /> Clear
             </button>
-          </div>
+          </motion.div>
         )}
 
         <motion.div className="flex items-center gap-3 p-3 sm:gap-4" style={{ backgroundColor: inkMv }}>
