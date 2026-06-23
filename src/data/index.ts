@@ -1,3 +1,4 @@
+import { oklch as toOklch } from "culori"
 import colorsJson from "./colors.json"
 import combinationsJson from "./combinations.json"
 
@@ -36,14 +37,43 @@ export type SanzoCombination = {
   colorIds: number[]
 }
 
+type PaletteColorLightnessOrder = "asc" | "desc"
+
+const PALETTE_COLOR_LIGHTNESS_ORDER: PaletteColorLightnessOrder = "desc"
+
 export const colors: SanzoColor[] = colorsJson as SanzoColor[]
+const colorById = new Map(colors.map((c) => [c.id, c]))
+
+function oklchLightness(color: SanzoColor | undefined): number {
+  return color ? (toOklch(color.oklch)?.l ?? 0.5) : 0.5
+}
+
+function orderPaletteColorIds(colorIds: number[]): number[] {
+  return colorIds
+    .map((id, index) => ({
+      id,
+      index,
+      lightness: oklchLightness(colorById.get(id)),
+    }))
+    .sort((a, b) => {
+      const lightnessDiff = a.lightness - b.lightness
+      const orderedDiff =
+        PALETTE_COLOR_LIGHTNESS_ORDER === "asc" ? lightnessDiff : -lightnessDiff
+
+      return orderedDiff || a.index - b.index
+    })
+    .map(({ id }) => id)
+}
+
 export const combinations: SanzoCombination[] = (
   combinationsJson as SanzoCombination[]
 )
   .slice()
+  .map((combination) => ({
+    ...combination,
+    colorIds: orderPaletteColorIds(combination.colorIds),
+  }))
   .sort((a, b) => a.colorIds.length - b.colorIds.length)
-
-const colorById = new Map(colors.map((c) => [c.id, c]))
 
 export function getColor(id: number): SanzoColor | undefined {
   return colorById.get(id)

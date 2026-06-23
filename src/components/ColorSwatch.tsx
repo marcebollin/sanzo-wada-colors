@@ -19,6 +19,11 @@ type Props = {
    * active palette tile-by-tile while the rest of the swatch metadata stays.
    */
   bgColor?: MotionValue<string>
+  /**
+   * Render the id / names / OKLCH text. The compact nav header reuses the swatch
+   * purely as an interactive color block, so it opts out of the text content.
+   */
+  showText?: boolean
 }
 
 /**
@@ -36,6 +41,7 @@ export function ColorSwatch({
   variant = "grid",
   className,
   bgColor,
+  showText = true,
 }: Props) {
   const { colorFilterId, setColorFilter } = usePalette()
   const active = colorFilterId === color.id
@@ -66,49 +72,51 @@ export function ColorSwatch({
       />
 
       {/* content layer — non-interactive so clicks reach the filter button */}
-      <div
-        className="pointer-events-none relative z-10 flex h-full flex-col justify-between"
-        style={text}
-      >
-        {feature && (
-          <div className="flex items-start justify-between gap-2">
-            <span className="font-mono text-sm tabular-nums tracking-widest">
-              {String(color.id).padStart(3, "0")}
-            </span>
-            <span className="font-serif text-lg leading-none" lang="ja">
-              {color.nameJa}
-            </span>
-          </div>
-        )}
-
-        <div className="flex flex-col mt-auto">
-          {feature ? (
-            <h3 className="font-serif text-xl font-semibold leading-tight text-balance sm:text-2xl">
-              {color.name}
-            </h3>
-          ) : (
-            <span className="font-serif text-lg leading-none" lang="ja">
-              {color.nameJa}
-            </span>
-          )}
+      {showText && (
+        <div
+          className="pointer-events-none relative z-10 flex h-full flex-col justify-between"
+          style={text}
+        >
           {feature && (
-            <dl className="mt-1 font-mono uppercase leading-relaxed tracking-wide text-xs">
-              <div className="flex items-start gap-2">
-                <dt className="sr-only">OKLCH</dt>
-                <dd className="min-w-0 flex-1 break-all normal-case">
-                  {color.oklch}
-                </dd>
-                <CopyButton
-                  value={color.oklch}
-                  label={`Copy ${color.name} as OKLCH`}
-                  color={text.color}
-                  className="pointer-events-auto -mr-0.5 mt-px shrink-0 rounded-md p-0.5 opacity-75 hover:opacity-100 focus-visible:opacity-100"
-                />
-              </div>
-            </dl>
+            <div className="flex items-start justify-between gap-2">
+              <span className="font-mono text-sm tabular-nums tracking-widest">
+                {String(color.id).padStart(3, "0")}
+              </span>
+              <span className="font-serif text-lg leading-none" lang="ja">
+                {color.nameJa}
+              </span>
+            </div>
           )}
+
+          <div className="flex flex-col mt-auto">
+            {feature ? (
+              <h3 className="font-serif text-xl font-semibold leading-tight text-balance sm:text-2xl">
+                {color.name}
+              </h3>
+            ) : (
+              <span className="font-serif text-lg leading-none" lang="ja">
+                {color.nameJa}
+              </span>
+            )}
+            {feature && (
+              <dl className="mt-1 font-mono uppercase leading-relaxed tracking-wide text-xs">
+                <div className="flex items-start gap-2">
+                  <dt className="sr-only">OKLCH</dt>
+                  <dd className="min-w-0 flex-1 break-all normal-case">
+                    {color.oklch}
+                  </dd>
+                  <CopyButton
+                    value={color.oklch}
+                    label={`Copy ${color.name} as OKLCH`}
+                    color={text.color}
+                    className="pointer-events-auto -mr-0.5 mt-px shrink-0 rounded-md p-0.5 opacity-75 hover:opacity-100 focus-visible:opacity-100"
+                  />
+                </div>
+              </dl>
+            )}
+          </div>
         </div>
-      </div>
+      )}
 
       {/* fixed two-tone ring (single inset element = no corner gap) */}
       {active && (

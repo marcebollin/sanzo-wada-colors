@@ -179,6 +179,57 @@
     0 -0.25px currentColor;
 }
 
+/* Palette swatches morph between the Hero and the compact About header; the
+   nav row (About + COPY COMBINATION) glides along with them. */
+::view-transition-group(*) {
+  animation-duration: 320ms;
+  animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* The hero knockout mask exists only on the home route. Pinned in place (no
+   geometry morph) it would otherwise ghost against the morphing nav items, so
+   it is held hidden through the morph and fades in once the swatches/nav have
+   settled. When leaving home it fades out quickly so it never lags the morph. */
+::view-transition-group(hero-knockout) {
+  animation: none;
+}
+
+::view-transition-new(hero-knockout) {
+  animation: hero-knockout-in 160ms ease-out 230ms both;
+}
+
+::view-transition-old(hero-knockout) {
+  animation: hero-knockout-out 110ms ease-in both;
+}
+
+@keyframes hero-knockout-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes hero-knockout-out {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  ::view-transition-group(*),
+  ::view-transition-old(*),
+  ::view-transition-new(*) {
+    /* biome-ignore lint/complexity/noImportantStyles: required to override the
+       user-agent's default view-transition animations under reduced motion */
+    animation: none !important;
+  }
+}
+
 .copy-palette-popover {
   animation: none;
   opacity: 0;

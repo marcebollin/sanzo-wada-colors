@@ -36,11 +36,15 @@ export function PaletteSwitcher() {
   // never changes the selection. The selected slide is scrolled into view
   // whenever the selection changes.
   const [api, setApi] = useState<CarouselApi>()
-  // snap (no dragFree) so each settle lands on a palette; containScroll:false
-  // keeps every snap, including the last palettes, reachable at the left edge
-  // (the trailing spacer provides the room to do so).
+  // Drag-free keeps touch and mouse swipes fluid; selection still only changes
+  // by clicking a chip or pressing an arrow.
   const opts = useMemo(
-    () => ({ align: "start" as const, containScroll: false as const }),
+    () => ({
+      align: "start" as const,
+      containScroll: "trimSnaps" as const,
+      dragFree: true,
+      skipSnaps: true,
+    }),
     [],
   )
 
@@ -230,11 +234,6 @@ export function PaletteSwitcher() {
                         </CarouselItem>
                       )
                     })}
-                    {/* spacer lets the final palettes scroll all the way left */}
-                    <CarouselItem
-                      aria-hidden="true"
-                      className="pointer-events-none basis-[80%] pl-2 sm:basis-[60%]"
-                    />
                   </CarouselContent>
                 </Carousel>
                 <ArrowButton

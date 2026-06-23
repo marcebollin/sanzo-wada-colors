@@ -6,7 +6,7 @@ import type { SanzoColor, SanzoCombination } from "../data"
 import type { PaletteTheme } from "../lib/palette-theme"
 import { syntaxRoles } from "../lib/palette-theme"
 import { useTouchDevice } from "../lib/use-touch-device"
-import { CopyButton } from "./CopyButton"
+import { CopyButton, type CopyButtonHandle } from "./CopyButton"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 type Props = {
@@ -17,11 +17,14 @@ type Props = {
   className?: string
   /** Foreground for the trigger when shown over a colored field. */
   triggerColor?: string | MotionValue<string>
+  /** Optional `view-transition-name` for the trigger, so it morphs across routes. */
+  triggerViewTransitionName?: string
 }
 
 export const COPY_PALETTE_TRIGGER_TEXT = "COPY COMBINATION"
+export const COPY_PALETTE_TRIGGER_VT_NAME = "nav-copy"
 export const COPY_PALETTE_TRIGGER_CLASS =
-  "copy-palette-trigger inline-flex items-baseline font-display text-[clamp(0.95rem,2.1vw,1.55rem)] uppercase leading-none tracking-[0.08em] transition-[opacity,text-shadow] hover:opacity-80 focus:outline-none focus-visible:opacity-80"
+  "copy-palette-trigger inline-flex cursor-pointer items-baseline font-display text-[clamp(0.95rem,2.1vw,1.55rem)] uppercase leading-none tracking-[0.08em] focus:outline-none"
 
 /**
  * The color formats the popover can emit. The source of truth in the JSON is
@@ -86,10 +89,12 @@ export function CopyPalettePopover({
   theme,
   className,
   triggerColor,
+  triggerViewTransitionName,
 }: Props) {
   const [format, setFormat] = useState<ColorFormat>("oklch")
   const [open, setOpen] = useState(false)
   const closeTimer = useRef<number | null>(null)
+  const copyRef = useRef<CopyButtonHandle>(null)
   const isTouchDevice = useTouchDevice()
   const block = paletteBlock(combination, colors, format)
   const css = toCss(block)
@@ -141,11 +146,13 @@ export function CopyPalettePopover({
           type="button"
           onClick={(event) => {
             if (!isTouchDevice) event.preventDefault()
+            copyRef.current?.copy()
           }}
           {...hoverProps}
           className={twMerge(COPY_PALETTE_TRIGGER_CLASS, className ?? "")}
           style={{
             color: triggerColor ?? theme.paper,
+            viewTransitionName: triggerViewTransitionName,
           }}
         >
           {COPY_PALETTE_TRIGGER_TEXT}
@@ -188,6 +195,7 @@ export function CopyPalettePopover({
             {format}
           </button>
           <CopyButton
+            ref={copyRef}
             value={css}
             label={`Copy combination ${combination.name} as ${format.toUpperCase()}`}
             color={theme.paper}

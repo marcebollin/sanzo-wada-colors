@@ -1,4 +1,11 @@
-import { useEffect, useRef, useState } from "react"
+import {
+  forwardRef,
+  useCallback,
+  useEffect,
+  useImperativeHandle,
+  useRef,
+  useState,
+} from "react"
 import { cn } from "@/lib/utils"
 
 type Props = {
@@ -12,60 +19,68 @@ type Props = {
   children?: React.ReactNode
 }
 
-/** A compact copy-to-clipboard control with a transient "copied" state. */
-export function CopyButton({
-  value,
-  label,
-  className,
-  color,
-  children,
-}: Props) {
-  const [copied, setCopied] = useState(false)
-  const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
-
-  useEffect(
-    () => () => {
-      if (timer.current) clearTimeout(timer.current)
-    },
-    [],
-  )
-
-  async function copy() {
-    try {
-      await navigator.clipboard.writeText(value)
-    } catch {
-      // Fallback for environments without the async clipboard API.
-      const ta = document.createElement("textarea")
-      ta.value = value
-      ta.style.position = "fixed"
-      ta.style.opacity = "0"
-      document.body.appendChild(ta)
-      ta.select()
-      document.execCommand("copy")
-      document.body.removeChild(ta)
-    }
-    setCopied(true)
-    if (timer.current) clearTimeout(timer.current)
-    timer.current = setTimeout(() => setCopied(false), 1300)
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={copy}
-      aria-label={label}
-      title={label}
-      className={cn(
-        "inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-widest transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70",
-        className,
-      )}
-      style={{ color }}
-    >
-      {copied ? <CheckIcon /> : <ClipboardIcon />}
-      {children != null && <span>{copied ? "Copied" : children}</span>}
-    </button>
-  )
+/** Imperative handle exposed by {@link CopyButton} via a ref. */
+export type CopyButtonHandle = {
+  /** Writes `value` to the clipboard and flashes the "copied" state. */
+  copy: () => void
 }
+
+/** A compact copy-to-clipboard control with a transient "copied" state. */
+export const CopyButton = forwardRef<CopyButtonHandle, Props>(
+  function CopyButton({ value, label, className, color, children }, ref) {
+    const [copied, setCopied] = useState(false)
+    const timer = useRef<ReturnType<typeof setTimeout> | null>(null)
+
+    useEffect(
+      () => () => {
+        if (timer.current) clearTimeout(timer.current)
+      },
+      [],
+    )
+
+    const copy = useCallback(async () => {
+      try {
+        await navigator.clipboard.writeText(value)
+      } catch {
+        // Fallback for environments without the async clipboard API.
+        const ta = document.createElement("textarea")
+        ta.value = value
+        ta.style.position = "fixed"
+        ta.style.opacity = "0"
+        document.body.appendChild(ta)
+        ta.select()
+        document.execCommand("copy")
+        document.body.removeChild(ta)
+      }
+      setCopied(true)
+      if (timer.current) clearTimeout(timer.current)
+      timer.current = setTimeout(() => setCopied(false), 1300)
+    }, [value])
+
+    useImperativeHandle(
+      ref,
+      (): CopyButtonHandle => ({ copy: () => void copy() }),
+      [copy],
+    )
+
+    return (
+      <button
+        type="button"
+        onClick={copy}
+        aria-label={label}
+        title={label}
+        className={cn(
+          "inline-flex items-center gap-1.5 font-mono text-[0.6rem] uppercase tracking-widest transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70",
+          className,
+        )}
+        style={{ color }}
+      >
+        {copied ? <CheckIcon /> : <ClipboardIcon />}
+        {children != null && <span>{copied ? "Copied" : children}</span>}
+      </button>
+    )
+  },
+)
 
 function ClipboardIcon() {
   return (
