@@ -1,7 +1,7 @@
-import * as React from "react"
 import useEmblaCarousel, {
   type UseEmblaCarouselType,
 } from "embla-carousel-react"
+import * as React from "react"
 import { cn } from "@/lib/utils"
 
 export type CarouselApi = UseEmblaCarouselType[1]
@@ -36,11 +36,19 @@ export function useCarousel() {
 }
 
 export const Carousel = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> & CarouselProps
+  HTMLElement,
+  React.HTMLAttributes<HTMLElement> & CarouselProps
 >(
   (
-    { orientation = "horizontal", opts, setApi, plugins, className, children, ...props },
+    {
+      orientation = "horizontal",
+      opts,
+      setApi,
+      plugins,
+      className,
+      children,
+      ...props
+    },
     ref,
   ) => {
     const [carouselRef, api] = useEmblaCarousel(
@@ -86,7 +94,7 @@ export const Carousel = React.forwardRef<
           canScrollNext,
         }}
       >
-        <div
+        <section
           ref={ref}
           className={cn("relative", className)}
           role="region"
@@ -94,7 +102,7 @@ export const Carousel = React.forwardRef<
           {...props}
         >
           {children}
-        </div>
+        </section>
       </CarouselContext.Provider>
     )
   },
@@ -128,6 +136,7 @@ export const CarouselItem = React.forwardRef<
 >(({ className, ...props }, ref) => {
   const { orientation } = useCarousel()
   return (
+    // biome-ignore lint/a11y/useSemanticElements: Carousel slides follow the WAI-ARIA carousel pattern; fieldset would add incorrect form semantics.
     <div
       ref={ref}
       role="group"

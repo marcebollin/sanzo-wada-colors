@@ -1,4 +1,4 @@
-import { motion, type MotionStyle, type MotionValue } from "motion/react"
+import { type MotionStyle, type MotionValue, motion } from "motion/react"
 
 type Props = {
   children: string

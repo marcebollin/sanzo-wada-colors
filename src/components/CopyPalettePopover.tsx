@@ -1,13 +1,13 @@
-import { Fragment, useEffect, useRef, useState } from "react"
 import { formatHex, formatHsl, formatRgb } from "culori"
-import { motion, type MotionValue } from "motion/react"
-import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
-import { CopyButton } from "./CopyButton"
-import type { SanzoColor, SanzoCombination } from "../data"
-import { syntaxRoles } from "../lib/palette-theme"
-import type { PaletteTheme } from "../lib/palette-theme"
-import { useTouchDevice } from "../lib/use-touch-device"
+import { type MotionValue, motion } from "motion/react"
+import { Fragment, useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
+import type { SanzoColor, SanzoCombination } from "../data"
+import type { PaletteTheme } from "../lib/palette-theme"
+import { syntaxRoles } from "../lib/palette-theme"
+import { useTouchDevice } from "../lib/use-touch-device"
+import { CopyButton } from "./CopyButton"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 type Props = {
   combination: SanzoCombination
@@ -106,26 +106,33 @@ export function CopyPalettePopover({
   }
 
   function cycleFormat() {
-    setFormat((f) => FORMAT_CYCLE[(FORMAT_CYCLE.indexOf(f) + 1) % FORMAT_CYCLE.length])
+    setFormat(
+      (f) => FORMAT_CYCLE[(FORMAT_CYCLE.indexOf(f) + 1) % FORMAT_CYCLE.length],
+    )
   }
 
-  useEffect(() => () => {
-    if (closeTimer.current) window.clearTimeout(closeTimer.current)
-  }, [])
+  useEffect(
+    () => () => {
+      if (closeTimer.current) window.clearTimeout(closeTimer.current)
+    },
+    [],
+  )
 
   // Muted color for braces/colons/semicolons — tied to the popover foreground.
-  const punct = { color: `color-mix(in oklch, ${theme.paper} 55%, transparent)` }
+  const punct = {
+    color: `color-mix(in oklch, ${theme.paper} 55%, transparent)`,
+  }
 
   const hoverProps = isTouchDevice
     ? {}
     : {
-      onPointerEnter: openNow,
-      onPointerLeave: closeSoon,
-      onMouseEnter: openNow,
-      onMouseLeave: closeSoon,
-      onFocus: openNow,
-      onBlur: closeSoon,
-    }
+        onPointerEnter: openNow,
+        onPointerLeave: closeSoon,
+        onMouseEnter: openNow,
+        onMouseLeave: closeSoon,
+        onFocus: openNow,
+        onBlur: closeSoon,
+      }
 
   return (
     <Popover open={open} onOpenChange={setOpen}>
@@ -136,12 +143,7 @@ export function CopyPalettePopover({
             if (!isTouchDevice) event.preventDefault()
           }}
           {...hoverProps}
-          className={
-            twMerge(
-              COPY_PALETTE_TRIGGER_CLASS,
-              className ?? ""
-            )
-          }
+          className={twMerge(COPY_PALETTE_TRIGGER_CLASS, className ?? "")}
           style={{
             color: triggerColor ?? theme.paper,
           }}
@@ -205,9 +207,11 @@ export function CopyPalettePopover({
             <span style={{ color: syntax.selector }}>:root</span>{" "}
             <span style={punct}>{"{"}</span>
             {"\n  "}
-            <span style={{ color: syntax.comment }}>{`/* ${block.comment} */`}</span>
-            {block.decls.map((d, i) => (
-              <Fragment key={i}>
+            <span
+              style={{ color: syntax.comment }}
+            >{`/* ${block.comment} */`}</span>
+            {block.decls.map((d) => (
+              <Fragment key={`${d.prop}:${d.value}`}>
                 {"\n  "}
                 <span style={{ color: syntax.prop }}>{d.prop}</span>
                 <span style={punct}>:</span>{" "}
@@ -226,7 +230,17 @@ export function CopyPalettePopover({
 
 function CycleIcon() {
   return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
       <path d="M21 12a9 9 0 0 1-9 9 9 9 0 0 1-6.7-3" />
       <path d="M3 12a9 9 0 0 1 9-9 9 9 0 0 1 6.7 3" />
       <path d="M21 3v5h-5" />

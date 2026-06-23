@@ -39,7 +39,9 @@ export type SanzoCombination = {
 export const colors: SanzoColor[] = colorsJson as SanzoColor[]
 export const combinations: SanzoCombination[] = (
   combinationsJson as SanzoCombination[]
-).slice().sort((a, b) => a.colorIds.length - b.colorIds.length)
+)
+  .slice()
+  .sort((a, b) => a.colorIds.length - b.colorIds.length)
 
 const colorById = new Map(colors.map((c) => [c.id, c]))
 
@@ -47,7 +49,9 @@ export function getColor(id: number): SanzoColor | undefined {
   return colorById.get(id)
 }
 
-export function getCombinationColors(combination: SanzoCombination): SanzoColor[] {
+export function getCombinationColors(
+  combination: SanzoCombination,
+): SanzoColor[] {
   return combination.colorIds
     .map((id) => colorById.get(id))
     .filter((c): c is SanzoColor => Boolean(c))

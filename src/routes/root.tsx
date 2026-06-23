@@ -1,14 +1,13 @@
-import { lazy, Suspense } from "react"
 import { createRootRoute, Outlet } from "@tanstack/react-router"
+import { lazy, Suspense } from "react"
 
-const Agentation =
-  import.meta.env.DEV
-    ? lazy(() =>
-        import("agentation").then((module) => ({
-          default: module.Agentation,
-        })),
-      )
-    : null
+const Agentation = import.meta.env.DEV
+  ? lazy(() =>
+      import("agentation").then((module) => ({
+        default: module.Agentation,
+      })),
+    )
+  : null
 
 export const rootRoute = createRootRoute({
   component: RootComponent,

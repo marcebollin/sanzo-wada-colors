@@ -1,11 +1,11 @@
-import { useEffect, useRef } from "react"
+import { formatCss, oklch as toOklch } from "culori"
 import {
   animate,
+  type MotionValue,
   useMotionValue,
   useTransform,
-  type MotionValue,
 } from "motion/react"
-import { oklch as toOklch, formatCss } from "culori"
+import { useEffect, useRef } from "react"
 
 /**
  * Spring a color from one palette to the next, directly in OKLCH space.
@@ -20,7 +20,11 @@ import { oklch as toOklch, formatCss } from "culori"
  */
 
 /** Tunable spring for palette swaps. Slow-ish so the blend is readable. */
-export type OklchSpring = { stiffness?: number; damping?: number; mass?: number }
+export type OklchSpring = {
+  stiffness?: number
+  damping?: number
+  mass?: number
+}
 
 export const PALETTE_SPRING: Required<OklchSpring> = {
   stiffness: 70,
@@ -76,6 +80,7 @@ export function useAnimatedOklch(
   const css = useOklchString(l, c, h)
 
   const mounted = useRef(false)
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Motion values are stable; palette springs should only restart when the target color changes.
   useEffect(() => {
     const t = parse(target)
     if (!mounted.current) {
@@ -90,9 +95,11 @@ export function useAnimatedOklch(
       animate(c, t.c, spring),
       animate(h, shortestHue(t.h, h.get()), spring),
     ]
-    return () => controls.forEach((ct) => ct.stop())
-    // We only re-run when the target color string changes.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      controls.forEach((ct) => {
+        ct.stop()
+      })
+    }
   }, [target])
 
   return css
@@ -144,7 +151,12 @@ export function useAnimatedOklchArray(
     useMotionValue(initial[2].h),
     useMotionValue(initial[3].h),
   ]
-  const css = l.map((lv, i) => useOklchString(lv, c[i], h[i]))
+  const css = [
+    useOklchString(l[0], c[0], h[0]),
+    useOklchString(l[1], c[1], h[1]),
+    useOklchString(l[2], c[2], h[2]),
+    useOklchString(l[3], c[3], h[3]),
+  ]
 
   // Per-slot "have we seen this slot before" flag. A slot that was empty last
   // palette (palette grew) snaps to its value once, then animates thereafter.
@@ -153,6 +165,7 @@ export function useAnimatedOklchArray(
   )
 
   const key = targets.join("|")
+  // biome-ignore lint/correctness/useExhaustiveDependencies: Motion values are stable; the joined palette key controls spring restarts.
   useEffect(() => {
     const controls: ReturnType<typeof animate>[] = []
     targets.forEach((tgt, i) => {
@@ -168,8 +181,11 @@ export function useAnimatedOklchArray(
       controls.push(animate(c[i], t.c, spring))
       controls.push(animate(h[i], shortestHue(t.h, h[i].get()), spring))
     })
-    return () => controls.forEach((ct) => ct.stop())
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    return () => {
+      controls.forEach((ct) => {
+        ct.stop()
+      })
+    }
   }, [key])
 
   return css.slice(0, targets.length)

@@ -1,4 +1,4 @@
-import { oklch as toOklch, formatCss, wcagContrast } from "culori"
+import { formatCss, oklch as toOklch, wcagContrast } from "culori"
 import type { SanzoColor } from "../data"
 
 /**
@@ -200,8 +200,12 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
 
   const byLight = [...parsed].sort((a, b) => a.o.l - b.o.l)
   const darkest = byLight[0]?.o ?? { mode: "oklch", l: 0.25, c: 0.03, h: 60 }
-  const lightest =
-    byLight[byLight.length - 1]?.o ?? { mode: "oklch", l: 0.92, c: 0.02, h: 90 }
+  const lightest = byLight[byLight.length - 1]?.o ?? {
+    mode: "oklch",
+    l: 0.92,
+    c: 0.02,
+    h: 90,
+  }
   const byChroma = [...parsed].sort((a, b) => (b.o.c ?? 0) - (a.o.c ?? 0))
 
   // Ink: take the darkest hue, drive lightness down and keep a whisper of its
@@ -241,8 +245,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
 
   // Hero stage: prefer the most chromatic color that is not too pale, so the
   // headline block always reads as a bold field of color.
-  const heroPick =
-    byChroma.find((p) => p.o.l < 0.82) ?? byChroma[0] ?? darkest
+  const heroPick = byChroma.find((p) => p.o.l < 0.82) ?? byChroma[0] ?? darkest
   const hero = heroPick?.color.oklch ?? bg
   const onHero = pickOn(hero, ink, paper)
 
@@ -270,8 +273,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   const heroCap =
     byChroma.find(
       (p) => p.color.oklch !== hero && wcagContrast(p.color.oklch, hero) >= 1.4,
-    )?.color.oklch ??
-    derivedHighlight(hero)
+    )?.color.oklch ?? derivedHighlight(hero)
 
   const vars: Record<string, string> = {
     "--p-ink": ink,

@@ -1,17 +1,17 @@
-import { useCallback, useEffect, useMemo, useState } from "react"
 import { motion } from "motion/react"
-import { usePalette } from "./PaletteContext"
-import { getCombinationColors, getColor } from "../data"
+import { useCallback, useEffect, useMemo, useState } from "react"
+import { getColor, getCombinationColors } from "../data"
 import { readablePair, rolesForBackground } from "../lib/palette-theme"
 import {
   useAnimatedOklch,
   useAnimatedOklchArray,
 } from "../lib/use-animated-oklch"
+import { usePalette } from "./PaletteContext"
 import {
   Carousel,
+  type CarouselApi,
   CarouselContent,
   CarouselItem,
-  type CarouselApi,
 } from "./ui/carousel"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
@@ -45,14 +45,13 @@ export function PaletteSwitcher() {
   )
 
   const subtle = `color-mix(in oklch, ${theme.paper} 22%, transparent)`
-  const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
+  const filterColor =
+    colorFilterId != null ? getColor(colorFilterId) : undefined
   const banner =
     filterColor != null ? rolesForBackground(theme, filterColor.oklch) : null
   const bannerBgMv = useAnimatedOklch(banner?.bg ?? theme.accent)
   const bannerOnMv = useAnimatedOklch(banner?.on ?? theme.onAccent)
-  const bannerHighlightMv = useAnimatedOklch(
-    banner?.highlight ?? theme.heroCap,
-  )
+  const bannerHighlightMv = useAnimatedOklch(banner?.highlight ?? theme.heroCap)
 
   // Spring-animated roles so the switcher cross-fades in lockstep with the
   // Hero when the active palette changes.
@@ -152,7 +151,10 @@ export function PaletteSwitcher() {
           </motion.div>
         )}
 
-        <motion.div className="flex items-center gap-3 p-3 sm:gap-4" style={{ backgroundColor: inkMv }}>
+        <motion.div
+          className="flex items-center gap-3 p-3 sm:gap-4"
+          style={{ backgroundColor: inkMv }}
+        >
           {/* active palette readout */}
           <div className="flex shrink-0 items-center gap-3">
             <div
@@ -197,7 +199,7 @@ export function PaletteSwitcher() {
                   className="min-w-0 flex-1 cursor-pointer active:cursor-grabbing"
                 >
                   <CarouselContent className="-ml-2">
-                    {filtered.map((c, idx) => {
+                    {filtered.map((c) => {
                       const active = c.id === combination.id
                       const chip = getCombinationColors(c)
                       return (
@@ -211,7 +213,11 @@ export function PaletteSwitcher() {
                               "group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
                               (active ? "opacity-100" : "opacity-70")
                             }
-                            style={{ borderColor: active ? readablePair(theme.accent).light : "transparent" }}
+                            style={{
+                              borderColor: active
+                                ? readablePair(theme.accent).light
+                                : "transparent",
+                            }}
                           >
                             {chip.map((sc) => (
                               <span
@@ -267,7 +273,11 @@ export function PaletteSwitcher() {
             <PopoverContent
               align="end"
               className="w-56 rounded-xl border-2 p-3"
-              style={{ backgroundColor: theme.ink, color: theme.paper, borderColor: theme.accent }}
+              style={{
+                backgroundColor: theme.ink,
+                color: theme.paper,
+                borderColor: theme.accent,
+              }}
             >
               <p className="mb-2 font-mono text-[0.6rem] uppercase tracking-[0.25em] opacity-70">
                 Colors per palette
@@ -319,7 +329,9 @@ function FilterPill({
       style={{
         backgroundColor: active ? theme.accent : "transparent",
         color: active ? theme.onAccent : theme.paper,
-        borderColor: active ? theme.accent : `color-mix(in oklch, ${theme.paper} 22%, transparent)`,
+        borderColor: active
+          ? theme.accent
+          : `color-mix(in oklch, ${theme.paper} 22%, transparent)`,
       }}
     >
       {children}
@@ -346,8 +358,12 @@ function ArrowButton({
       onClick={onClick}
       disabled={disabled}
       aria-label={dir === "prev" ? "Previous palette" : "Next palette"}
-      className="flex h-12 w-7 shrink-0 items-center justify-center rounded-md border-2 transition-opacity hover:opacity-100 focus:outline-none focus-visible:opacity-100 disabled:cursor-default disabled:opacity-25 sm:w-8"
-      style={{ borderColor: subtle, color: theme.paper, opacity: disabled ? undefined : 0.7 }}
+      className="flex h-12 w-7 shrink-0 cursor-pointer items-center justify-center rounded-md border-2 transition-opacity hover:opacity-100 focus:outline-none focus-visible:opacity-100 disabled:cursor-default disabled:opacity-25 sm:w-8"
+      style={{
+        borderColor: subtle,
+        color: theme.paper,
+        opacity: disabled ? undefined : 0.7,
+      }}
     >
       <svg
         width="14"
@@ -369,7 +385,15 @@ function ArrowButton({
 
 function CloseIcon() {
   return (
-    <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true">
+    <svg
+      width="11"
+      height="11"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="3"
+      aria-hidden="true"
+    >
       <path d="M5 5l14 14M19 5L5 19" />
     </svg>
   )
@@ -377,7 +401,16 @@ function CloseIcon() {
 
 function SlidersIcon() {
   return (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" aria-hidden="true">
+    <svg
+      width="14"
+      height="14"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2.2"
+      strokeLinecap="round"
+      aria-hidden="true"
+    >
       <path d="M4 6h10M18 6h2M4 12h2M10 12h10M4 18h7M15 18h5" />
       <circle cx="16" cy="6" r="2" fill="currentColor" stroke="none" />
       <circle cx="8" cy="12" r="2" fill="currentColor" stroke="none" />

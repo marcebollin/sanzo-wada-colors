@@ -1,9 +1,9 @@
 import { createRoute } from "@tanstack/react-router"
-import { rootRoute } from "./root"
-import { PaletteProvider } from "../components/PaletteContext"
-import { Hero } from "../components/Hero"
 import { ColorGrid } from "../components/ColorGrid"
+import { Hero } from "../components/Hero"
+import { PaletteProvider } from "../components/PaletteContext"
 import { PaletteSwitcher } from "../components/PaletteSwitcher"
+import { rootRoute } from "./root"
 
 export const indexRoute = createRoute({
   getParentRoute: () => rootRoute,

@@ -1,9 +1,9 @@
-import { motion, type MotionValue } from "motion/react"
-import { type SanzoColor } from "../data"
-import { usePalette } from "./PaletteContext"
+import { type MotionValue, motion } from "motion/react"
+import { cn } from "@/lib/utils"
+import type { SanzoColor } from "../data"
 import { readablePair } from "../lib/palette-theme"
 import { CopyButton } from "./CopyButton"
-import { cn } from "@/lib/utils"
+import { usePalette } from "./PaletteContext"
 
 type Props = {
   color: SanzoColor
@@ -30,7 +30,13 @@ type Props = {
  * By default the index and both names are shown, with the English name, OKLCH
  * value, and copy control pinned near the bottom.
  */
-export function ColorSwatch({ color, index = 0, variant = "grid", className, bgColor }: Props) {
+export function ColorSwatch({
+  color,
+  index = 0,
+  variant = "grid",
+  className,
+  bgColor,
+}: Props) {
   const { colorFilterId, setColorFilter } = usePalette()
   const active = colorFilterId === color.id
   const feature = variant === "feature"
@@ -89,7 +95,9 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className, bgC
             <dl className="mt-1 font-mono uppercase leading-relaxed tracking-wide text-xs">
               <div className="flex items-start gap-2">
                 <dt className="sr-only">OKLCH</dt>
-                <dd className="min-w-0 flex-1 break-all normal-case">{color.oklch}</dd>
+                <dd className="min-w-0 flex-1 break-all normal-case">
+                  {color.oklch}
+                </dd>
                 <CopyButton
                   value={color.oklch}
                   label={`Copy ${color.name} as OKLCH`}
@@ -107,7 +115,9 @@ export function ColorSwatch({ color, index = 0, variant = "grid", className, bgC
         <span
           aria-hidden="true"
           className="pointer-events-none absolute inset-0 z-30"
-          style={{ boxShadow: `inset 0 0 0 3px ${light}, inset 0 0 0 5px ${dark}` }}
+          style={{
+            boxShadow: `inset 0 0 0 3px ${light}, inset 0 0 0 5px ${dark}`,
+          }}
         />
       )}
     </motion.article>

@@ -21,9 +21,15 @@
  */
 
 import { readFile, writeFile } from "node:fs/promises"
-import { fileURLToPath } from "node:url"
 import { dirname, resolve } from "node:path"
-import { converter, clampChroma, differenceCiede2000, formatCss, formatHex } from "culori"
+import { fileURLToPath } from "node:url"
+import {
+  clampChroma,
+  converter,
+  differenceCiede2000,
+  formatCss,
+  formatHex,
+} from "culori"
 
 const __dirname = dirname(fileURLToPath(import.meta.url))
 const COLORS_PATH = resolve(__dirname, "../src/data/colors.json")
@@ -47,7 +53,9 @@ const deltaE = differenceCiede2000()
 function parseArgs(argv) {
   const flags = new Set(argv.filter((arg) => arg !== "--"))
   const known = new Set(["--force", "--dry", "--audit", "--help"])
-  const unknown = [...flags].filter((arg) => arg.startsWith("--") && !known.has(arg))
+  const unknown = [...flags].filter(
+    (arg) => arg.startsWith("--") && !known.has(arg),
+  )
 
   if (unknown.length > 0) {
     throw new Error(`Unknown option(s): ${unknown.join(", ")}`)
@@ -74,13 +82,17 @@ Options:
 
 function assertCmyk(cmyk, label = "CMYK") {
   if (!cmyk || typeof cmyk !== "object") {
-    throw new TypeError(`${label} must be an object with c, m, y, and k channels`)
+    throw new TypeError(
+      `${label} must be an object with c, m, y, and k channels`,
+    )
   }
 
   for (const channel of CHANNELS) {
     const value = cmyk[channel]
     if (!Number.isFinite(value) || value < 0 || value > 100) {
-      throw new RangeError(`${label}.${channel} must be a finite number from 0 to 100`)
+      throw new RangeError(
+        `${label}.${channel} must be a finite number from 0 to 100`,
+      )
     }
   }
 }
@@ -153,9 +165,12 @@ function auditColor(color, derived) {
   const warnings = []
 
   if (!current) warnings.push("missing oklch")
-  if (inkTotal > PRINT_PROFILE.maxTotalInk) warnings.push(`total ink ${inkTotal}%`)
-  if (chromaClamp > 0.001) warnings.push(`clamped C by ${chromaClamp.toFixed(3)}`)
-  if (drift !== undefined && drift > 0.1) warnings.push(`stored drift dE ${drift.toFixed(2)}`)
+  if (inkTotal > PRINT_PROFILE.maxTotalInk)
+    warnings.push(`total ink ${inkTotal}%`)
+  if (chromaClamp > 0.001)
+    warnings.push(`clamped C by ${chromaClamp.toFixed(3)}`)
+  if (drift !== undefined && drift > 0.1)
+    warnings.push(`stored drift dE ${drift.toFixed(2)}`)
 
   return {
     id: color.id,
@@ -170,12 +185,17 @@ function auditColor(color, derived) {
 }
 
 function printAudit(rows) {
-  console.log(`\n[audit] Profile: ${PRINT_PROFILE.name} (ink gain ${PRINT_PROFILE.inkGain})`)
-  console.log("[audit] CMYK source has no ICC profile; treat these OKLCH values as deterministic screen fallbacks.")
+  console.log(
+    `\n[audit] Profile: ${PRINT_PROFILE.name} (ink gain ${PRINT_PROFILE.inkGain})`,
+  )
+  console.log(
+    "[audit] CMYK source has no ICC profile; treat these OKLCH values as deterministic screen fallbacks.",
+  )
 
   for (const row of rows) {
     const drift = row.drift === undefined ? "n/a" : row.drift.toFixed(2)
-    const warnings = row.warnings.length > 0 ? ` | ${row.warnings.join("; ")}` : ""
+    const warnings =
+      row.warnings.length > 0 ? ` | ${row.warnings.join("; ")}` : ""
     console.log(
       `[audit] #${String(row.id).padStart(2, "0")} ${row.name}: ` +
         `ink ${row.inkTotal}% | ${row.rgb} | dE ${drift}${warnings}`,
@@ -184,7 +204,9 @@ function printAudit(rows) {
 
   const warnings = rows.reduce((count, row) => count + row.warnings.length, 0)
   const maxDrift = rows.reduce((max, row) => Math.max(max, row.drift ?? 0), 0)
-  console.log(`[audit] ${rows.length} color(s), ${warnings} warning(s), max stored drift dE ${maxDrift.toFixed(2)}.`)
+  console.log(
+    `[audit] ${rows.length} color(s), ${warnings} warning(s), max stored drift dE ${maxDrift.toFixed(2)}.`,
+  )
 }
 
 async function main() {
@@ -231,16 +253,21 @@ async function main() {
   if (audit) printAudit(auditRows)
 
   if (dry) {
-    console.log(`\n[dry run] ${changed} value(s) would change. No file written.`)
+    console.log(
+      `\n[dry run] ${changed} value(s) would change. No file written.`,
+    )
     return
   }
 
-  await writeFile(COLORS_PATH, JSON.stringify(colors, null, 2) + "\n", "utf8")
+  await writeFile(COLORS_PATH, `${JSON.stringify(colors, null, 2)}\n`, "utf8")
   console.log(`\n[done] Updated ${changed} oklch value(s) in colors.json`)
 }
 
 // Only run when invoked directly (so the converter can also be imported).
-if (process.argv[1] && resolve(process.argv[1]) === fileURLToPath(import.meta.url)) {
+if (
+  process.argv[1] &&
+  resolve(process.argv[1]) === fileURLToPath(import.meta.url)
+) {
   main().catch((err) => {
     console.error(err)
     process.exit(1)

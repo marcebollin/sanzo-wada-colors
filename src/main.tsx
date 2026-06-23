@@ -1,6 +1,6 @@
+import { createRouter, RouterProvider } from "@tanstack/react-router"
 import { StrictMode } from "react"
 import { createRoot } from "react-dom/client"
-import { RouterProvider, createRouter } from "@tanstack/react-router"
 import { routeTree } from "./routeTree"
 import "./styles/globals.css"
 
@@ -12,7 +12,11 @@ declare module "@tanstack/react-router" {
   }
 }
 
-const rootElement = document.getElementById("root")!
+const rootElement = document.getElementById("root")
+if (!rootElement) {
+  throw new Error("Root element not found")
+}
+
 if (!rootElement.innerHTML) {
   createRoot(rootElement).render(
     <StrictMode>

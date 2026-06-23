@@ -1,19 +1,19 @@
-import { motion, useTransform } from "motion/react"
 import { oklch as toOklch } from "culori"
-import { usePalette } from "./PaletteContext"
-import { DropCapTitle } from "./DropCapTitle"
-import { ColorSwatch } from "./ColorSwatch"
-import {
-  COPY_PALETTE_TRIGGER_CLASS,
-  COPY_PALETTE_TRIGGER_TEXT,
-  CopyPalettePopover,
-} from "./CopyPalettePopover"
+import { motion, useTransform } from "motion/react"
 import { getColor, getCombinationColors } from "../data"
 import { rolesForBackground } from "../lib/palette-theme"
 import {
   useAnimatedOklch,
   useAnimatedOklchArray,
 } from "../lib/use-animated-oklch"
+import { ColorSwatch } from "./ColorSwatch"
+import {
+  COPY_PALETTE_TRIGGER_CLASS,
+  COPY_PALETTE_TRIGGER_TEXT,
+  CopyPalettePopover,
+} from "./CopyPalettePopover"
+import { DropCapTitle } from "./DropCapTitle"
+import { usePalette } from "./PaletteContext"
 
 const HERO_DISPLAY_TITLE = "A Dictionary"
 const HERO_MAIN_TITLE = "of Color Combinations"
@@ -23,8 +23,9 @@ function gradientStopPositions(count: number) {
   if (count <= 1) return [0]
 
   const segmentCount = count - 1
-  const weights = Array.from({ length: segmentCount }, (_, i) =>
-    DOT_GRADIENT_SEGMENT_DECAY ** i,
+  const weights = Array.from(
+    { length: segmentCount },
+    (_, i) => DOT_GRADIENT_SEGMENT_DECAY ** i,
   )
   const total = weights.reduce((sum, weight) => sum + weight, 0)
   let position = 0
@@ -84,7 +85,8 @@ function HeroTitle({ color, capColor, heading = false }: HeroTitleProps) {
 export function Hero() {
   const { theme, combination, colorFilterId } = usePalette()
   const palette = getCombinationColors(combination)
-  const filterColor = colorFilterId != null ? getColor(colorFilterId) : undefined
+  const filterColor =
+    colorFilterId != null ? getColor(colorFilterId) : undefined
   const heroRoles = filterColor
     ? rolesForBackground(theme, filterColor.oklch)
     : { bg: theme.hero, on: theme.onHero, highlight: theme.heroCap }
@@ -155,12 +157,17 @@ export function Hero() {
         <div className="mt-3 grid auto-cols-fr grid-flow-row gap-1 sm:grid-flow-col sm:gap-1.5">
           {palette.map((c, i) => (
             <motion.div
-              key={i}
+              key={c.id}
               className="h-40 sm:h-64"
               whileHover={{ x: -4, y: -4 }}
               transition={{ type: "spring", stiffness: 400, damping: 30 }}
             >
-              <ColorSwatch color={c} index={i} variant="feature" bgColor={paletteMvs[i]} />
+              <ColorSwatch
+                color={c}
+                index={i}
+                variant="feature"
+                bgColor={paletteMvs[i]}
+              />
             </motion.div>
           ))}
         </div>
