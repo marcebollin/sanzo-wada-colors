@@ -7,6 +7,7 @@ import {
   useAnimatedOklchArray,
 } from "../lib/use-animated-oklch"
 import { usePalette } from "./PaletteContext"
+import { PaletteIdCombobox } from "./PaletteIdCombobox"
 import {
   Carousel,
   type CarouselApi,
@@ -20,7 +21,6 @@ const SIZES = [2, 3, 4] as const
 export function PaletteSwitcher() {
   const {
     combination,
-    combinations,
     filtered,
     theme,
     select,
@@ -173,15 +173,14 @@ export function PaletteSwitcher() {
                 />
               ))}
             </div>
-            <div className="hidden min-w-0 leading-none sm:block">
-              <p className="font-display text-3xl">
-                {String(combination.id).padStart(2, "0")}
-                <span className="ml-0.5 inline-flex align-top font-mono text-[0.85rem] opacity-70">
-                  <span className="mx-1.5">/</span>
-                  <span>{combinations.length}</span>
-                </span>
-              </p>
-            </div>
+            {/* active palette readout — click the ID to open a searchable
+              combobox that jumps the carousel to any palette. */}
+            <PaletteIdCombobox
+              combination={combination}
+              palettes={filtered}
+              theme={theme}
+              onSelect={select}
+            />
           </div>
 
           {/* palette carousel — freely draggable (mouse/touch) via Embla, but selection

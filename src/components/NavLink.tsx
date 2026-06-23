@@ -1,7 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router"
 import { type MotionValue, motion } from "motion/react"
 import { useState } from "react"
-import { AnimatedUnderline, useAnimatedUnderline } from "./AnimatedUnderline"
 
 export const HOME_NAV_LABEL = "HOME"
 export const ABOUT_NAV_LABEL = "ABOUT"
@@ -24,11 +23,6 @@ type Props = {
   activeColor: string | MotionValue<string>
   /** `view-transition-name` so the link morphs across routes. */
   viewTransitionName?: string
-  /**
-   * Two-color palettes draw the animated underline on hover/active; palettes
-   * with more colors rely on the color swap alone.
-   */
-  animatedUnderline?: boolean
 }
 
 /**
@@ -36,9 +30,6 @@ type Props = {
  * is a single full-opacity span whose color swaps from the hero foreground to the
  * drop-cap color on hover, and stays there while the route is active — no opacity
  * cross-fade, so nothing brightens through the colored field behind it.
- *
- * For two-color palettes an animated underline draws in left → right on top of
- * the color swap; richer palettes use the color swap on its own.
  */
 export function NavLink({
   to,
@@ -46,22 +37,11 @@ export function NavLink({
   color,
   activeColor,
   viewTransitionName,
-  animatedUnderline = false,
 }: Props) {
   const pathname = useRouterState({ select: (s) => s.location.pathname })
   const isActive = pathname === to
-  const underline = useAnimatedUnderline(isActive)
   const [interacting, setInteracting] = useState(false)
   const showActive = interacting || isActive
-
-  const enter = () => {
-    setInteracting(true)
-    if (animatedUnderline) underline.handlers.onMouseEnter()
-  }
-  const leave = () => {
-    setInteracting(false)
-    if (animatedUnderline) underline.handlers.onMouseLeave()
-  }
 
   return (
     <Link
@@ -70,10 +50,10 @@ export function NavLink({
       activeOptions={{ exact: true }}
       className="relative inline-flex cursor-pointer items-baseline focus:outline-none"
       style={{ viewTransitionName }}
-      onMouseEnter={enter}
-      onMouseLeave={leave}
-      onFocus={enter}
-      onBlur={leave}
+      onMouseEnter={() => setInteracting(true)}
+      onMouseLeave={() => setInteracting(false)}
+      onFocus={() => setInteracting(true)}
+      onBlur={() => setInteracting(false)}
     >
       <motion.span
         className={NAV_LINK_TYPO}
@@ -81,13 +61,6 @@ export function NavLink({
       >
         {label}
       </motion.span>
-      {animatedUnderline && (
-        <AnimatedUnderline
-          controls={underline.controls}
-          initial={underline.initial}
-          color={activeColor}
-        />
-      )}
     </Link>
   )
 }

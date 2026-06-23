@@ -49,7 +49,6 @@ function AboutPage() {
               color={onHero}
               activeColor={heroCap}
               viewTransitionName={NAV_HOME_VT_NAME}
-              animatedUnderline={palette.length === 2}
             />
             <NavLink
               to="/about"
@@ -57,7 +56,6 @@ function AboutPage() {
               color={onHero}
               activeColor={heroCap}
               viewTransitionName={NAV_ABOUT_VT_NAME}
-              animatedUnderline={palette.length === 2}
             />
           </div>
           <CopyPalettePopover

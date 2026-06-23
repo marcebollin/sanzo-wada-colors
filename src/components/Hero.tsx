@@ -110,7 +110,6 @@ export function Hero() {
             color={onHero}
             activeColor={heroCap}
             viewTransitionName={NAV_ABOUT_VT_NAME}
-            animatedUnderline={palette.length === 2}
           />
           <CopyPalettePopover
             combination={combination}
