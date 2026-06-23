@@ -159,6 +159,31 @@
   );
 }
 
+@supports (
+    (mask-image: radial-gradient(circle, #000, transparent)) or
+    (-webkit-mask-image: radial-gradient(circle, #000, transparent))
+  ) {
+  .hero-dot-overlay {
+    clip-path: none;
+    -webkit-mask-image: radial-gradient(
+      circle at var(--hero-dot-center-x) var(--hero-dot-center-y),
+      #000 var(--hero-dot-radius),
+      transparent calc(var(--hero-dot-radius) + 1px)
+    );
+    mask-image: radial-gradient(
+      circle at var(--hero-dot-center-x) var(--hero-dot-center-y),
+      #000 var(--hero-dot-radius),
+      transparent calc(var(--hero-dot-radius) + 1px)
+    );
+    -webkit-mask-mode: alpha;
+    mask-mode: alpha;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+  }
+}
+
 .hero-title-knockout {
   -webkit-text-stroke: 0.65px currentColor;
   paint-order: stroke fill;

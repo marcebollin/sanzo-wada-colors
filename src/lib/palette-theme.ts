@@ -41,7 +41,7 @@ export type PaletteTheme = {
   /** The most chromatic color — used for drop caps, shapes, accents. */
   accent: string
   onAccent: string
-  /** A palette color guaranteed to read against `hero` — the hero drop cap. */
+  /** A source combination color for the hero drop cap, distinct when possible. */
   heroCap: string
   /** A second accent (next most chromatic, distinct hue). */
   accent2: string
@@ -101,14 +101,8 @@ export function rolesForBackground(
   theme: PaletteTheme,
   bg: string,
 ): BackgroundRoles {
-  const highlight =
-    [
-      theme.heroCap,
-      theme.accent,
-      theme.accent2,
-      ...theme.swatches.map((s) => s.css),
-    ].find((c) => c !== bg && wcagContrast(c, bg) >= 1.4) ??
-    derivedHighlight(bg)
+  const paletteColors = theme.swatches.map((s) => s.css)
+  const highlight = pickPaletteHighlight(paletteColors, bg)
 
   return {
     bg,
@@ -125,6 +119,16 @@ function derivedHighlight(bg: string): string {
     c: Math.max(0.12, o.c ?? 0),
     h: o.h ?? 0,
   })
+}
+
+function pickPaletteHighlight(paletteColors: string[], bg: string): string {
+  const distinct = paletteColors.filter((css) => css !== bg)
+  return (
+    distinct.find((css) => wcagContrast(css, bg) >= 1.4) ??
+    distinct[0] ??
+    paletteColors[0] ??
+    derivedHighlight(bg)
+  )
 }
 
 export type SyntaxRoles = {
@@ -266,14 +270,14 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
           h: heroO?.h ?? 0,
         })
 
-  // Hero drop cap: must always be a *different*, readable color from the hero
-  // field behind it. Prefer the most chromatic other swatch that reads against
-  // the hero; if the palette has nothing distinct (e.g. a single color), derive
-  // a vivid tone by flipping the hero's lightness while keeping its chroma.
-  const heroCap =
-    byChroma.find(
-      (p) => p.color.oklch !== hero && wcagContrast(p.color.oklch, hero) >= 1.4,
-    )?.color.oklch ?? derivedHighlight(hero)
+  // Hero drop cap: always use a source color from the active combination.
+  // Prefer a readable, distinct swatch; if every palette color is low-contrast
+  // against the hero field, still pick the best distinct palette color instead
+  // of inventing a synthetic tint.
+  const heroCap = pickPaletteHighlight(
+    byChroma.map((p) => p.color.oklch),
+    hero,
+  )
 
   const vars: Record<string, string> = {
     "--p-ink": ink,

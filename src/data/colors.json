@@ -2,289 +2,2108 @@
   {
     "id": 1,
     "name": "Hermosa Pink",
-    "nameJa": "ハーモサピンク",
+    "nameJa": "鴇色",
     "cmyk": {
       "c": 0,
       "m": 30,
       "y": 6,
       "k": 0
     },
-    "oklch": "oklch(0.839 0.132 334.502)"
+    "combinationIds": [176, 227, 273],
+    "oklch": "oklch(0.864 0.066 3.103)"
   },
   {
     "id": 2,
     "name": "Corinthian Pink",
-    "nameJa": "コリンシアンピンク",
+    "nameJa": "肉色",
     "cmyk": {
       "c": 0,
-      "m": 42,
-      "y": 23,
-      "k": 5
+      "m": 35,
+      "y": 15,
+      "k": 0
     },
-    "oklch": "oklch(0.739 0.146 353.773)"
+    "combinationIds": [27, 43, 87, 97, 128, 169, 174, 206, 246, 254, 264, 342],
+    "oklch": "oklch(0.838 0.077 14.813)"
   },
   {
     "id": 3,
-    "name": "Coral Red",
-    "nameJa": "珊瑚色",
+    "name": "Cameo Pink",
+    "nameJa": "一斤染",
     "cmyk": {
-      "c": 0,
-      "m": 70,
-      "y": 60,
-      "k": 5
+      "c": 10,
+      "m": 32,
+      "y": 19,
+      "k": 0
     },
-    "oklch": "oklch(0.637 0.212 18.903)"
+    "combinationIds": [101, 105, 116, 120, 165, 231],
+    "oklch": "oklch(0.808 0.052 13.808)"
   },
   {
     "id": 4,
-    "name": "Ocher Red",
-    "nameJa": "黄土赤",
+    "name": "Fawn",
+    "nameJa": "桜鼠",
     "cmyk": {
-      "c": 0,
-      "m": 58,
-      "y": 70,
-      "k": 22
+      "c": 18,
+      "m": 31,
+      "y": 30,
+      "k": 0
     },
-    "oklch": "oklch(0.56 0.158 32.462)"
+    "combinationIds": [18, 125, 308],
+    "oklch": "oklch(0.784 0.041 35.717)"
   },
   {
     "id": 5,
-    "name": "Carmine",
-    "nameJa": "洋紅色",
+    "name": "Light Brown Drab",
+    "nameJa": "梅鼠",
     "cmyk": {
-      "c": 0,
-      "m": 90,
-      "y": 65,
-      "k": 12
+      "c": 8,
+      "m": 30,
+      "y": 20,
+      "k": 25
     },
-    "oklch": "oklch(0.571 0.222 17.569)"
+    "combinationIds": [35, 68, 185, 191, 223, 239, 244, 268, 285, 321],
+    "oklch": "oklch(0.694 0.041 20.165)"
   },
   {
     "id": 6,
-    "name": "Vermilion",
-    "nameJa": "朱色",
-    "cmyk": {
-      "c": 0,
-      "m": 75,
-      "y": 85,
-      "k": 0
-    },
-    "oklch": "oklch(0.65 0.236 30.572)"
-  },
-  {
-    "id": 7,
-    "name": "Orange Rufous",
-    "nameJa": "黄丹色",
+    "name": "Coral Red",
+    "nameJa": "珊瑚珠色",
     "cmyk": {
       "c": 0,
       "m": 55,
-      "y": 95,
-      "k": 8
+      "y": 40,
+      "k": 0
     },
-    "oklch": "oklch(0.649 0.187 43.567)"
+    "combinationIds": [92, 123, 320, 332],
+    "oklch": "oklch(0.754 0.127 26.358)"
+  },
+  {
+    "id": 7,
+    "name": "Fresh Color",
+    "nameJa": "柿色",
+    "cmyk": {
+      "c": 0,
+      "m": 53,
+      "y": 45,
+      "k": 0
+    },
+    "combinationIds": [240],
+    "oklch": "oklch(0.759 0.126 31.541)"
   },
   {
     "id": 8,
-    "name": "Apricot Yellow",
-    "nameJa": "杏色",
+    "name": "Grenadine Pink",
+    "nameJa": "洗朱",
     "cmyk": {
       "c": 0,
-      "m": 22,
-      "y": 80,
+      "m": 62,
+      "y": 58,
       "k": 0
     },
-    "oklch": "oklch(0.841 0.163 82.348)"
+    "combinationIds": [6, 21, 112, 166, 193, 201, 230, 300, 315, 341],
+    "oklch": "oklch(0.725 0.148 33.366)"
   },
   {
     "id": 9,
-    "name": "Naples Yellow",
-    "nameJa": "ナポリ黄",
+    "name": "Eosine Pink",
+    "nameJa": "浅紅",
     "cmyk": {
-      "c": 3,
-      "m": 10,
-      "y": 62,
+      "c": 0,
+      "m": 63,
+      "y": 23,
       "k": 0
     },
-    "oklch": "oklch(0.903 0.157 100.818)"
+    "combinationIds": [
+      34, 59, 90, 108, 134, 153, 197, 242, 248, 276, 287, 314, 327, 336
+    ],
+    "oklch": "oklch(0.732 0.143 9.784)"
   },
   {
     "id": 10,
-    "name": "Citron Yellow",
-    "nameJa": "黄檗色",
+    "name": "Spinel Red",
+    "nameJa": "紅梅色",
     "cmyk": {
-      "c": 18,
-      "m": 0,
-      "y": 78,
+      "c": 0,
+      "m": 70,
+      "y": 21,
       "k": 0
     },
-    "oklch": "oklch(0.931 0.219 123.949)"
+    "combinationIds": [14, 147, 165, 184, 195, 224, 277],
+    "oklch": "oklch(0.711 0.159 6.811)"
   },
   {
     "id": 11,
-    "name": "Olive Green",
-    "nameJa": "オリーブ緑",
+    "name": "Old Rose",
+    "nameJa": "長春色",
     "cmyk": {
-      "c": 28,
-      "m": 18,
-      "y": 80,
-      "k": 35
+      "c": 15,
+      "m": 70,
+      "y": 40,
+      "k": 0
     },
-    "oklch": "oklch(0.551 0.119 119.428)"
+    "combinationIds": [55, 162, 260, 265],
+    "oklch": "oklch(0.657 0.13 13.361)"
   },
   {
     "id": 12,
-    "name": "Cossack Green",
-    "nameJa": "コサックグリーン",
+    "name": "Eugenia Red",
+    "nameJa": "緋褪色",
     "cmyk": {
-      "c": 62,
-      "m": 18,
-      "y": 75,
-      "k": 10
-    },
-    "oklch": "oklch(0.68 0.191 139.905)"
-  },
-  {
-    "id": 13,
-    "name": "Emerald Green",
-    "nameJa": "翠色",
-    "cmyk": {
-      "c": 80,
-      "m": 5,
+      "c": 7,
+      "m": 76,
       "y": 60,
       "k": 0
     },
-    "oklch": "oklch(0.835 0.242 146.208)"
+    "combinationIds": [284],
+    "oklch": "oklch(0.655 0.161 24.329)"
+  },
+  {
+    "id": 13,
+    "name": "Eugenia Red",
+    "nameJa": "浅緋",
+    "cmyk": {
+      "c": 0,
+      "m": 80,
+      "y": 50,
+      "k": 10
+    },
+    "combinationIds": [17, 77, 252, 262, 270, 280, 282, 325],
+    "oklch": "oklch(0.622 0.17 18.828)"
   },
   {
     "id": 14,
-    "name": "Beryl Green",
-    "nameJa": "緑柱石色",
+    "name": "Raw Sienna",
+    "nameJa": "檜皮色",
     "cmyk": {
-      "c": 48,
-      "m": 0,
-      "y": 32,
-      "k": 0
+      "c": 18,
+      "m": 58,
+      "y": 100,
+      "k": 12
     },
-    "oklch": "oklch(0.902 0.173 151.736)"
+    "combinationIds": [
+      3, 13, 33, 70, 86, 130, 131, 182, 243, 247, 252, 255, 268, 269, 279, 293,
+      298, 319, 327
+    ],
+    "oklch": "oklch(0.617 0.127 61.37)"
   },
   {
     "id": 15,
-    "name": "Nile Blue",
-    "nameJa": "ナイルブルー",
+    "name": "Vinaceous Tawny",
+    "nameJa": "柿渋色",
     "cmyk": {
-      "c": 55,
-      "m": 5,
-      "y": 22,
-      "k": 0
+      "c": 17,
+      "m": 72,
+      "y": 100,
+      "k": 6
     },
-    "oklch": "oklch(0.866 0.139 166.581)"
+    "combinationIds": [40, 85, 244],
+    "oklch": "oklch(0.604 0.145 47.163)"
   },
   {
     "id": 16,
-    "name": "Venice Blue",
-    "nameJa": "ベニスブルー",
+    "name": "Jasper Red",
+    "nameJa": "紅柿色",
     "cmyk": {
-      "c": 90,
-      "m": 45,
-      "y": 18,
-      "k": 5
+      "c": 2,
+      "m": 83,
+      "y": 100,
+      "k": 0
     },
-    "oklch": "oklch(0.559 0.136 245.888)"
+    "combinationIds": [155, 194, 216, 219],
+    "oklch": "oklch(0.643 0.196 36.64)"
   },
   {
     "id": 17,
-    "name": "Hortense Blue",
-    "nameJa": "オルタンシアブルー",
+    "name": "Spectrum Red",
+    "nameJa": "赤色",
     "cmyk": {
-      "c": 92,
-      "m": 62,
-      "y": 10,
-      "k": 2
+      "c": 5,
+      "m": 100,
+      "y": 100,
+      "k": 0
     },
-    "oklch": "oklch(0.501 0.217 262.305)"
+    "combinationIds": [257, 266, 301, 322],
+    "oklch": "oklch(0.586 0.225 26.679)"
   },
   {
     "id": 18,
-    "name": "Hyssop Violet",
-    "nameJa": "ヒソップ菫色",
+    "name": "Red Orange",
+    "nameJa": "朱色",
     "cmyk": {
-      "c": 60,
-      "m": 70,
-      "y": 8,
-      "k": 5
+      "c": 9,
+      "m": 90,
+      "y": 100,
+      "k": 0
     },
-    "oklch": "oklch(0.495 0.223 281.199)"
+    "combinationIds": [31, 164, 179, 241, 264],
+    "oklch": "oklch(0.6 0.198 31.82)"
   },
   {
     "id": 19,
-    "name": "Pansy Purple",
-    "nameJa": "菫紫色",
+    "name": "Etruscan Red",
+    "nameJa": "雀茶",
     "cmyk": {
-      "c": 45,
-      "m": 85,
-      "y": 25,
-      "k": 18
+      "c": 16,
+      "m": 80,
+      "y": 74,
+      "k": 6
     },
-    "oklch": "oklch(0.406 0.182 309.357)"
+    "combinationIds": [25, 47, 97, 137, 152, 185, 275],
+    "oklch": "oklch(0.587 0.149 28.45)"
   },
   {
     "id": 20,
-    "name": "Maroon",
-    "nameJa": "栗色",
+    "name": "Burnt Sienna",
+    "nameJa": "栗梅",
     "cmyk": {
-      "c": 25,
-      "m": 88,
-      "y": 62,
-      "k": 45
+      "c": 22,
+      "m": 76,
+      "y": 100,
+      "k": 15
     },
-    "oklch": "oklch(0.317 0.113 3.853)"
+    "combinationIds": [198, 242, 263, 285, 286, 297, 312, 333, 343],
+    "oklch": "oklch(0.546 0.134 44.54)"
   },
   {
     "id": 21,
-    "name": "Seal Brown",
-    "nameJa": "海豹茶色",
+    "name": "Ocher Red",
+    "nameJa": "小豆茶",
     "cmyk": {
-      "c": 40,
-      "m": 62,
-      "y": 70,
-      "k": 65
+      "c": 18,
+      "m": 73,
+      "y": 63,
+      "k": 20
     },
-    "oklch": "oklch(0.241 0.03 39.76)"
+    "combinationIds": [199, 283],
+    "oklch": "oklch(0.551 0.115 26.215)"
   },
   {
     "id": 22,
-    "name": "Cream Color",
-    "nameJa": "クリーム色",
+    "name": "Scarlet",
+    "nameJa": "紅",
     "cmyk": {
-      "c": 2,
-      "m": 6,
-      "y": 28,
-      "k": 0
+      "c": 10,
+      "m": 95,
+      "y": 72,
+      "k": 7
     },
-    "oklch": "oklch(0.941 0.081 98.673)"
+    "combinationIds": [136, 308, 332],
+    "oklch": "oklch(0.557 0.191 19.552)"
   },
   {
     "id": 23,
-    "name": "Drab",
-    "nameJa": "灰茶色",
+    "name": "Carmine",
+    "nameJa": "臙脂色",
     "cmyk": {
-      "c": 20,
-      "m": 28,
-      "y": 48,
-      "k": 15
+      "c": 0,
+      "m": 100,
+      "y": 75,
+      "k": 16
     },
-    "oklch": "oklch(0.66 0.064 87.784)"
+    "combinationIds": [39, 117, 122, 154, 225, 232, 307, 313],
+    "oklch": "oklch(0.54 0.21 20.401)"
   },
   {
     "id": 24,
-    "name": "Neutral Gray",
-    "nameJa": "中立灰色",
+    "name": "Indian Lake",
+    "nameJa": "浅蘇芳",
+    "cmyk": {
+      "c": 12,
+      "m": 89,
+      "y": 35,
+      "k": 9
+    },
+    "combinationIds": [299, 331],
+    "oklch": "oklch(0.567 0.176 4.765)"
+  },
+  {
+    "id": 25,
+    "name": "Rosolane Purple",
+    "nameJa": "牡丹色",
+    "cmyk": {
+      "c": 30,
+      "m": 90,
+      "y": 33,
+      "k": 0
+    },
+    "combinationIds": [48, 144, 170, 204, 277, 346],
+    "oklch": "oklch(0.551 0.162 356.542)"
+  },
+  {
+    "id": 26,
+    "name": "Pomegranate Purple",
+    "nameJa": "苺色",
+    "cmyk": {
+      "c": 23,
+      "m": 100,
+      "y": 50,
+      "k": 6
+    },
+    "combinationIds": [220, 271],
+    "oklch": "oklch(0.514 0.187 5.806)"
+  },
+  {
+    "id": 27,
+    "name": "Hydrangea Red",
+    "nameJa": "小豆色",
+    "cmyk": {
+      "c": 38,
+      "m": 90,
+      "y": 70,
+      "k": 0
+    },
+    "combinationIds": [142],
+    "oklch": "oklch(0.521 0.137 13.915)"
+  },
+  {
+    "id": 28,
+    "name": "Brick Red",
+    "nameJa": "柿色",
+    "cmyk": {
+      "c": 22,
+      "m": 84,
+      "y": 100,
+      "k": 18
+    },
+    "combinationIds": [37, 108, 246, 322, 328],
+    "oklch": "oklch(0.513 0.142 37.463)"
+  },
+  {
+    "id": 29,
+    "name": "Carmine Red",
+    "nameJa": "紅色",
+    "cmyk": {
+      "c": 25,
+      "m": 95,
+      "y": 80,
+      "k": 16
+    },
+    "combinationIds": [
+      35, 51, 104, 130, 181, 200, 221, 228, 233, 237, 245, 338
+    ],
+    "oklch": "oklch(0.486 0.158 20.563)"
+  },
+  {
+    "id": 30,
+    "name": "Pompeian Red",
+    "nameJa": "紅樺色",
+    "cmyk": {
+      "c": 18,
+      "m": 97,
+      "y": 74,
+      "k": 19
+    },
+    "combinationIds": [30, 71, 120, 212, 311, 324],
+    "oklch": "oklch(0.489 0.17 18.279)"
+  },
+  {
+    "id": 31,
+    "name": "Red",
+    "nameJa": "茜色",
+    "cmyk": {
+      "c": 30,
+      "m": 100,
+      "y": 90,
+      "k": 10
+    },
+    "combinationIds": [251, 261],
+    "oklch": "oklch(0.481 0.169 11.978)"
+  },
+  {
+    "id": 32,
+    "name": "Brown",
+    "nameJa": "鳶茶色",
+    "cmyk": {
+      "c": 35,
+      "m": 74,
+      "y": 90,
+      "k": 35
+    },
+    "combinationIds": [110, 121, 145, 161],
+    "oklch": "oklch(0.445 0.09 45.353)"
+  },
+  {
+    "id": 33,
+    "name": "Hay's Russet",
+    "nameJa": "鳶色",
+    "cmyk": {
+      "c": 37,
+      "m": 85,
+      "y": 87,
+      "k": 35
+    },
+    "combinationIds": [58, 82, 95, 152, 186, 231, 249, 304, 314, 336, 345],
+    "oklch": "oklch(0.415 0.101 31.574)"
+  },
+  {
+    "id": 34,
+    "name": "Vandyke Red",
+    "nameJa": "紅海老茶",
+    "cmyk": {
+      "c": 32,
+      "m": 95,
+      "y": 95,
+      "k": 33
+    },
+    "combinationIds": [16, 133, 147, 316, 335],
+    "oklch": "oklch(0.409 0.129 27.457)"
+  },
+  {
+    "id": 35,
+    "name": "Pansy Purple",
+    "nameJa": "蘇芳色",
+    "cmyk": {
+      "c": 34,
+      "m": 100,
+      "y": 60,
+      "k": 34
+    },
+    "combinationIds": [157, 273],
+    "oklch": "oklch(0.39 0.141 5.536)"
+  },
+  {
+    "id": 36,
+    "name": "Pale Burnt Lake",
+    "nameJa": "海老茶色",
+    "cmyk": {
+      "c": 25,
+      "m": 90,
+      "y": 80,
+      "k": 40
+    },
+    "combinationIds": [124, 171, 177, 205, 217, 258, 269, 283],
+    "oklch": "oklch(0.409 0.124 24.467)"
+  },
+  {
+    "id": 37,
+    "name": "Violet Red",
+    "nameJa": "京紫",
+    "cmyk": {
+      "c": 75,
+      "m": 100,
+      "y": 50,
+      "k": 5
+    },
+    "combinationIds": [9],
+    "oklch": "oklch(0.391 0.104 331.634)"
+  },
+  {
+    "id": 38,
+    "name": "Vistoris Lake",
+    "nameJa": "栗皮色",
+    "cmyk": {
+      "c": 40,
+      "m": 71,
+      "y": 55,
+      "k": 40
+    },
+    "combinationIds": [63, 91, 165, 226, 290, 337],
+    "oklch": "oklch(0.429 0.061 14.088)"
+  },
+  {
+    "id": 39,
+    "name": "Sulphur Yellow",
+    "nameJa": "蒸栗色",
+    "cmyk": {
+      "c": 4,
+      "m": 4,
+      "y": 28,
+      "k": 0
+    },
+    "combinationIds": [
+      52, 72, 80, 104, 132, 135, 151, 208, 246, 254, 270, 294, 296, 310, 315,
+      320, 321, 326
+    ],
+    "oklch": "oklch(0.94 0.055 97.275)"
+  },
+  {
+    "id": 40,
+    "name": "Pale Lemon Yellow",
+    "nameJa": "淡卵色",
+    "cmyk": {
+      "c": 0,
+      "m": 4,
+      "y": 38,
+      "k": 0
+    },
+    "combinationIds": [
+      3, 31, 60, 76, 99, 109, 111, 169, 185, 195, 203, 228, 241, 261, 272, 281,
+      290, 292, 336
+    ],
+    "oklch": "oklch(0.95 0.084 95.947)"
+  },
+  {
+    "id": 41,
+    "name": "Naples Yellow",
+    "nameJa": "淡黄蘗",
+    "cmyk": {
+      "c": 2,
+      "m": 7,
+      "y": 44,
+      "k": 0
+    },
+    "combinationIds": [14, 115, 166, 193, 303, 325],
+    "oklch": "oklch(0.926 0.091 93.367)"
+  },
+  {
+    "id": 42,
+    "name": "Ivory Buff",
+    "nameJa": "白茶",
     "cmyk": {
       "c": 8,
-      "m": 6,
-      "y": 8,
-      "k": 48
+      "m": 15,
+      "y": 40,
+      "k": 0
     },
-    "oklch": "oklch(0.544 0.005 145.5)"
+    "combinationIds": [
+      11, 50, 94, 102, 126, 178, 184, 190, 209, 214, 235, 243, 262, 266, 301,
+      343
+    ],
+    "oklch": "oklch(0.875 0.069 84.834)"
+  },
+  {
+    "id": 43,
+    "name": "Seashell Pink",
+    "nameJa": "肌色",
+    "cmyk": {
+      "c": 0,
+      "m": 19,
+      "y": 23,
+      "k": 0
+    },
+    "combinationIds": [45, 84, 88, 113, 150, 176, 194, 276, 334],
+    "oklch": "oklch(0.899 0.056 50.974)"
+  },
+  {
+    "id": 44,
+    "name": "Light Pinkish Cinnamon",
+    "nameJa": "淡香色",
+    "cmyk": {
+      "c": 0,
+      "m": 25,
+      "y": 40,
+      "k": 0
+    },
+    "combinationIds": [317],
+    "oklch": "oklch(0.866 0.084 61.076)"
+  },
+  {
+    "id": 45,
+    "name": "Pinkish Cinnamon",
+    "nameJa": "砥粉色",
+    "cmyk": {
+      "c": 0,
+      "m": 32,
+      "y": 53,
+      "k": 0
+    },
+    "combinationIds": [78, 161, 175, 232, 258, 263, 292, 305, 310],
+    "oklch": "oklch(0.812 0.096 62.719)"
+  },
+  {
+    "id": 46,
+    "name": "Cinnamon Buff",
+    "nameJa": "玉蜀黍色",
+    "cmyk": {
+      "c": 0,
+      "m": 23,
+      "y": 57,
+      "k": 0
+    },
+    "combinationIds": [23, 127, 137, 180, 210, 234, 246, 323, 344],
+    "oklch": "oklch(0.859 0.109 72.114)"
+  },
+  {
+    "id": 47,
+    "name": "Cream Yellow",
+    "nameJa": "卵色",
+    "cmyk": {
+      "c": 0,
+      "m": 28,
+      "y": 68,
+      "k": 0
+    },
+    "combinationIds": [
+      122, 192, 215, 226, 267, 278, 294, 295, 300, 302, 304, 311, 329, 342
+    ],
+    "oklch": "oklch(0.844 0.126 73.933)"
+  },
+  {
+    "id": 48,
+    "name": "Golden Yellow",
+    "nameJa": "金茶",
+    "cmyk": {
+      "c": 2,
+      "m": 42,
+      "y": 74,
+      "k": 0
+    },
+    "combinationIds": [26, 81, 132, 138, 140, 179, 206, 229, 309, 315],
+    "oklch": "oklch(0.778 0.132 61.571)"
+  },
+  {
+    "id": 49,
+    "name": "Vinaceous Cinnamon",
+    "nameJa": "香色",
+    "cmyk": {
+      "c": 4,
+      "m": 40,
+      "y": 42,
+      "k": 0
+    },
+    "combinationIds": [203, 205, 213, 256, 260, 279, 299],
+    "oklch": "oklch(0.79 0.092 41.665)"
+  },
+  {
+    "id": 50,
+    "name": "Ochraceous Salmon",
+    "nameJa": "欸冬色",
+    "cmyk": {
+      "c": 15,
+      "m": 38,
+      "y": 55,
+      "k": 0
+    },
+    "combinationIds": [32, 71, 121, 186, 217, 220, 223, 238, 296, 339],
+    "oklch": "oklch(0.756 0.083 58.133)"
+  },
+  {
+    "id": 51,
+    "name": "Isabella Color",
+    "nameJa": "落葉色",
+    "cmyk": {
+      "c": 15,
+      "m": 28,
+      "y": 60,
+      "k": 10
+    },
+    "combinationIds": [4, 12, 241, 292],
+    "oklch": "oklch(0.738 0.081 80.491)"
+  },
+  {
+    "id": 52,
+    "name": "Maple",
+    "nameJa": "幹色",
+    "cmyk": {
+      "c": 5,
+      "m": 26,
+      "y": 56,
+      "k": 20
+    },
+    "combinationIds": [282],
+    "oklch": "oklch(0.725 0.082 74.609)"
+  },
+  {
+    "id": 53,
+    "name": "Olive Buff",
+    "nameJa": "桑色白茶",
+    "cmyk": {
+      "c": 16,
+      "m": 6,
+      "y": 42,
+      "k": 12
+    },
+    "combinationIds": [83, 175, 200, 330, 348],
+    "oklch": "oklch(0.806 0.064 110.731)"
+  },
+  {
+    "id": 54,
+    "name": "Lye",
+    "nameJa": "灰汁色",
+    "cmyk": {
+      "c": 20,
+      "m": 25,
+      "y": 40,
+      "k": 6
+    },
+    "combinationIds": [167, 249, 275, 279, 292, 302, 317, 327],
+    "oklch": "oklch(0.761 0.044 75.289)"
+  },
+  {
+    "id": 55,
+    "name": "Yellow",
+    "nameJa": "黄色",
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [22, 62, 68, 154, 240, 251, 295, 313],
+    "oklch": "oklch(0.941 0.2 105.689)"
+  },
+  {
+    "id": 56,
+    "name": "Lemon Yellow",
+    "nameJa": "金絲雀色",
+    "cmyk": {
+      "c": 5,
+      "m": 0,
+      "y": 85,
+      "k": 0
+    },
+    "combinationIds": [
+      45, 123, 138, 158, 168, 173, 189, 210, 253, 259, 289, 298, 306, 317, 333
+    ],
+    "oklch": "oklch(0.927 0.178 105.602)"
+  },
+  {
+    "id": 57,
+    "name": "Apricot Yellow",
+    "nameJa": "鬱金色",
+    "cmyk": {
+      "c": 0,
+      "m": 10,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [107, 129, 163, 198, 213, 247, 265, 284, 305, 319],
+    "oklch": "oklch(0.899 0.186 97.857)"
+  },
+  {
+    "id": 58,
+    "name": "Pyrite Yellow",
+    "nameJa": "淡青朽葉",
+    "cmyk": {
+      "c": 23,
+      "m": 25,
+      "y": 80,
+      "k": 0
+    },
+    "combinationIds": [239, 250, 255, 287],
+    "oklch": "oklch(0.768 0.116 95.616)"
+  },
+  {
+    "id": 59,
+    "name": "Olive Ocher",
+    "nameJa": "油色",
+    "cmyk": {
+      "c": 18,
+      "m": 26,
+      "y": 90,
+      "k": 0
+    },
+    "combinationIds": [66, 148, 149, 156, 157, 249, 278],
+    "oklch": "oklch(0.779 0.138 92.515)"
+  },
+  {
+    "id": 60,
+    "name": "Yellow Ocher",
+    "nameJa": "山吹茶",
+    "cmyk": {
+      "c": 12,
+      "m": 28,
+      "y": 88,
+      "k": 0
+    },
+    "combinationIds": [42, 96, 118, 124, 126, 191, 222, 325],
+    "oklch": "oklch(0.793 0.14 87.111)"
+  },
+  {
+    "id": 61,
+    "name": "Orange Yellow",
+    "nameJa": "山吹色",
+    "cmyk": {
+      "c": 0,
+      "m": 33,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [114, 148, 153, 164, 170, 257, 286, 338],
+    "oklch": "oklch(0.815 0.166 78.424)"
+  },
+  {
+    "id": 62,
+    "name": "Yellow Orange",
+    "nameJa": "柑子色",
+    "cmyk": {
+      "c": 0,
+      "m": 45,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [
+      2, 53, 89, 151, 171, 209, 222, 235, 267, 288, 297, 312, 319, 335
+    ],
+    "oklch": "oklch(0.772 0.165 67.209)"
+  },
+  {
+    "id": 63,
+    "name": "Apricot Orange",
+    "nameJa": "深支子",
+    "cmyk": {
+      "c": 0,
+      "m": 55,
+      "y": 75,
+      "k": 0
+    },
+    "combinationIds": [211, 253, 309, 328],
+    "oklch": "oklch(0.743 0.149 48.546)"
+  },
+  {
+    "id": 64,
+    "name": "Orange",
+    "nameJa": "橙色",
+    "cmyk": {
+      "c": 0,
+      "m": 68,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [7, 46, 141, 144, 149, 256, 272],
+    "oklch": "oklch(0.698 0.179 48.009)"
+  },
+  {
+    "id": 65,
+    "name": "Peach Red",
+    "nameJa": "杏色",
+    "cmyk": {
+      "c": 0,
+      "m": 80,
+      "y": 90,
+      "k": 0
+    },
+    "combinationIds": [115, 250, 274, 285, 298, 303, 326, 340],
+    "oklch": "oklch(0.661 0.194 35.981)"
+  },
+  {
+    "id": 66,
+    "name": "English Red",
+    "nameJa": "蒲色",
+    "cmyk": {
+      "c": 13,
+      "m": 73,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [1, 131, 190, 308, 339],
+    "oklch": "oklch(0.641 0.161 45.107)"
+  },
+  {
+    "id": 67,
+    "name": "Cinnamon Rufous",
+    "nameJa": "代赭色",
+    "cmyk": {
+      "c": 20,
+      "m": 60,
+      "y": 82,
+      "k": 5
+    },
+    "combinationIds": [8, 10, 103, 158, 172, 204, 206],
+    "oklch": "oklch(0.636 0.116 51.707)"
+  },
+  {
+    "id": 68,
+    "name": "Orange Rufous",
+    "nameJa": "飴色",
+    "cmyk": {
+      "c": 18,
+      "m": 65,
+      "y": 100,
+      "k": 8
+    },
+    "combinationIds": [91, 102, 222],
+    "oklch": "oklch(0.615 0.135 54.439)"
+  },
+  {
+    "id": 69,
+    "name": "Sulphine Yellow",
+    "nameJa": "黄檗色",
+    "cmyk": {
+      "c": 24,
+      "m": 32,
+      "y": 100,
+      "k": 4
+    },
+    "combinationIds": [36, 65, 142, 160, 252],
+    "oklch": "oklch(0.714 0.132 91.475)"
+  },
+  {
+    "id": 70,
+    "name": "Khaki",
+    "nameJa": "黄茶",
+    "cmyk": {
+      "c": 24,
+      "m": 45,
+      "y": 100,
+      "k": 6
+    },
+    "combinationIds": [129, 146, 159, 236, 248],
+    "oklch": "oklch(0.664 0.123 78.348)"
+  },
+  {
+    "id": 71,
+    "name": "Citron Yellow",
+    "nameJa": "菜種油色",
+    "cmyk": {
+      "c": 35,
+      "m": 17,
+      "y": 95,
+      "k": 0
+    },
+    "combinationIds": [40, 87, 145, 150, 153, 196, 305, 323],
+    "oklch": "oklch(0.753 0.141 111.637)"
+  },
+  {
+    "id": 72,
+    "name": "Citrine",
+    "nameJa": "青朽葉",
+    "cmyk": {
+      "c": 36,
+      "m": 32,
+      "y": 100,
+      "k": 7
+    },
+    "combinationIds": [59, 93, 132, 133, 262],
+    "oklch": "oklch(0.698 0.124 99.939)"
+  },
+  {
+    "id": 73,
+    "name": "Buffy Citrine",
+    "nameJa": "黄海松茶",
+    "cmyk": {
+      "c": 42,
+      "m": 40,
+      "y": 82,
+      "k": 8
+    },
+    "combinationIds": [100, 177, 233],
+    "oklch": "oklch(0.624 0.08 95.287)"
+  },
+  {
+    "id": 74,
+    "name": "Dark Citrine",
+    "nameJa": "路考茶",
+    "cmyk": {
+      "c": 38,
+      "m": 34,
+      "y": 67,
+      "k": 20
+    },
+    "combinationIds": [10, 41, 274, 304],
+    "oklch": "oklch(0.607 0.057 98.21)"
+  },
+  {
+    "id": 75,
+    "name": "Light Grayish Olive",
+    "nameJa": "利久茶",
+    "cmyk": {
+      "c": 43,
+      "m": 36,
+      "y": 62,
+      "k": 19
+    },
+    "combinationIds": [107, 184],
+    "oklch": "oklch(0.595 0.045 101.494)"
+  },
+  {
+    "id": 76,
+    "name": "Kronbergs Green",
+    "nameJa": "鶯色",
+    "cmyk": {
+      "c": 48,
+      "m": 35,
+      "y": 70,
+      "k": 12
+    },
+    "combinationIds": [29],
+    "oklch": "oklch(0.61 0.058 111.516)"
+  },
+  {
+    "id": 77,
+    "name": "Olive",
+    "nameJa": "橄欖色",
+    "cmyk": {
+      "c": 18,
+      "m": 38,
+      "y": 100,
+      "k": 15
+    },
+    "combinationIds": [96, 201, 254, 258, 277, 310, 334],
+    "oklch": "oklch(0.582 0.099 105.573)"
+  },
+  {
+    "id": 78,
+    "name": "Orange Citrine",
+    "nameJa": "銀煤竹",
+    "cmyk": {
+      "c": 28,
+      "m": 48,
+      "y": 92,
+      "k": 24
+    },
+    "combinationIds": [212, 342],
+    "oklch": "oklch(0.571 0.097 76.266)"
+  },
+  {
+    "id": 79,
+    "name": "Sudan Brown",
+    "nameJa": "丁字茶",
+    "cmyk": {
+      "c": 25,
+      "m": 60,
+      "y": 65,
+      "k": 19
+    },
+    "combinationIds": [207, 214, 273],
+    "oklch": "oklch(0.574 0.084 40.032)"
+  },
+  {
+    "id": 80,
+    "name": "Olive Green",
+    "nameJa": "海松茶",
+    "cmyk": {
+      "c": 56,
+      "m": 40,
+      "y": 85,
+      "k": 22
+    },
+    "combinationIds": [66, 243, 270, 297],
+    "oklch": "oklch(0.531 0.07 114.543)"
+  },
+  {
+    "id": 81,
+    "name": "Light Brownish Olive",
+    "nameJa": "鶯茶",
+    "cmyk": {
+      "c": 42,
+      "m": 46,
+      "y": 73,
+      "k": 24
+    },
+    "combinationIds": [199, 318],
+    "oklch": "oklch(0.546 0.055 83.531)"
+  },
+  {
+    "id": 82,
+    "name": "Deep Grayish Olive",
+    "nameJa": "生壁色",
+    "cmyk": {
+      "c": 50,
+      "m": 48,
+      "y": 78,
+      "k": 37
+    },
+    "combinationIds": [146, 343],
+    "oklch": "oklch(0.468 0.049 94.261)"
+  },
+  {
+    "id": 83,
+    "name": "Pale Raw Umber",
+    "nameJa": "媚茶色",
+    "cmyk": {
+      "c": 46,
+      "m": 63,
+      "y": 87,
+      "k": 32
+    },
+    "combinationIds": [26, 73, 160, 234, 296],
+    "oklch": "oklch(0.459 0.065 64.972)"
+  },
+  {
+    "id": 84,
+    "name": "Sepia",
+    "nameJa": "憲法色",
+    "cmyk": {
+      "c": 48,
+      "m": 60,
+      "y": 100,
+      "k": 40
+    },
+    "combinationIds": [24, 288],
+    "oklch": "oklch(0.43 0.07 79.628)"
+  },
+  {
+    "id": 85,
+    "name": "Madder Brown",
+    "nameJa": "赤白橡",
+    "cmyk": {
+      "c": 36,
+      "m": 88,
+      "y": 100,
+      "k": 38
+    },
+    "combinationIds": [28, 79, 98, 173, 237, 275, 323],
+    "oklch": "oklch(0.397 0.109 35.427)"
+  },
+  {
+    "id": 86,
+    "name": "Mars Brown/Tobacco",
+    "nameJa": "煙草色",
+    "cmyk": {
+      "c": 39,
+      "m": 76,
+      "y": 100,
+      "k": 47
+    },
+    "combinationIds": [19],
+    "oklch": "oklch(0.384 0.082 51.926)"
+  },
+  {
+    "id": 87,
+    "name": "Vandyke Brown",
+    "nameJa": "焦茶色",
+    "cmyk": {
+      "c": 56,
+      "m": 71,
+      "y": 97,
+      "k": 52
+    },
+    "combinationIds": [110, 113, 118, 182, 192, 328],
+    "oklch": "oklch(0.343 0.054 68.446)"
+  },
+  {
+    "id": 88,
+    "name": "Turquoise Green",
+    "nameJa": "白緑",
+    "cmyk": {
+      "c": 29,
+      "m": 0,
+      "y": 24,
+      "k": 0
+    },
+    "combinationIds": [
+      36, 74, 147, 163, 173, 202, 223, 230, 263, 272, 285, 293, 300, 305, 317,
+      346
+    ],
+    "oklch": "oklch(0.866 0.05 166.714)"
+  },
+  {
+    "id": 89,
+    "name": "Glaucous Green",
+    "nameJa": "裏葉色",
+    "cmyk": {
+      "c": 30,
+      "m": 9,
+      "y": 24,
+      "k": 0
+    },
+    "combinationIds": [7, 150, 171, 207, 239, 260],
+    "oklch": "oklch(0.826 0.031 167.275)"
+  },
+  {
+    "id": 90,
+    "name": "Dark Greenish Glaucous",
+    "nameJa": "若苗色",
+    "cmyk": {
+      "c": 30,
+      "m": 15,
+      "y": 36,
+      "k": 0
+    },
+    "combinationIds": [264, 311],
+    "oklch": "oklch(0.799 0.036 126.628)"
+  },
+  {
+    "id": 91,
+    "name": "Yellow Green",
+    "nameJa": "若草色",
+    "cmyk": {
+      "c": 35,
+      "m": 0,
+      "y": 72,
+      "k": 0
+    },
+    "combinationIds": [111, 141, 276, 326, 334],
+    "oklch": "oklch(0.821 0.132 126.131)"
+  },
+  {
+    "id": 92,
+    "name": "Light Green Yellow",
+    "nameJa": "鶸色",
+    "cmyk": {
+      "c": 26,
+      "m": 5,
+      "y": 85,
+      "k": 0
+    },
+    "combinationIds": [61, 289, 291, 311, 346],
+    "oklch": "oklch(0.828 0.152 113.414)"
+  },
+  {
+    "id": 93,
+    "name": "Night Green",
+    "nameJa": "鶸萌木",
+    "cmyk": {
+      "c": 52,
+      "m": 0,
+      "y": 100,
+      "k": 0
+    },
+    "combinationIds": [19, 32, 158, 326],
+    "oklch": "oklch(0.755 0.175 131.083)"
+  },
+  {
+    "id": 94,
+    "name": "Olive Yellow",
+    "nameJa": "苔色",
+    "cmyk": {
+      "c": 40,
+      "m": 30,
+      "y": 80,
+      "k": 0
+    },
+    "combinationIds": [124, 211, 265, 347],
+    "oklch": "oklch(0.697 0.094 105.073)"
+  },
+  {
+    "id": 95,
+    "name": "Artemisia Green",
+    "nameJa": "千草鼠",
+    "cmyk": {
+      "c": 57,
+      "m": 28,
+      "y": 39,
+      "k": 8
+    },
+    "combinationIds": [293, 312],
+    "oklch": "oklch(0.636 0.039 189.69)"
+  },
+  {
+    "id": 96,
+    "name": "Andover Green",
+    "nameJa": "山鳩色",
+    "cmyk": {
+      "c": 60,
+      "m": 40,
+      "y": 50,
+      "k": 10
+    },
+    "combinationIds": [244, 346],
+    "oklch": "oklch(0.577 0.023 168.787)"
+  },
+  {
+    "id": 97,
+    "name": "Rainette Green",
+    "nameJa": "松葉色",
+    "cmyk": {
+      "c": 42,
+      "m": 20,
+      "y": 62,
+      "k": 28
+    },
+    "combinationIds": [73, 162, 188, 266, 301],
+    "oklch": "oklch(0.68 0.069 124.348)"
+  },
+  {
+    "id": 98,
+    "name": "Chromium Green",
+    "nameJa": "老緑",
+    "cmyk": {
+      "c": 50,
+      "m": 16,
+      "y": 58,
+      "k": 20
+    },
+    "combinationIds": [105, 200, 219, 283],
+    "oklch": "oklch(0.63 0.066 144.055)"
+  },
+  {
+    "id": 99,
+    "name": "Pistachio Green",
+    "nameJa": "木賊色",
+    "cmyk": {
+      "c": 64,
+      "m": 29,
+      "y": 56,
+      "k": 6
+    },
+    "combinationIds": [127, 137],
+    "oklch": "oklch(0.613 0.056 164.17)"
+  },
+  {
+    "id": 100,
+    "name": "Sea Green",
+    "nameJa": "若竹色",
+    "cmyk": {
+      "c": 80,
+      "m": 0,
+      "y": 51,
+      "k": 0
+    },
+    "combinationIds": [17, 21, 58, 86, 133, 250, 260, 284, 291, 340, 347],
+    "oklch": "oklch(0.689 0.127 178.029)"
+  },
+  {
+    "id": 101,
+    "name": "Benzol Green",
+    "nameJa": "青竹色",
+    "cmyk": {
+      "c": 100,
+      "m": 15,
+      "y": 55,
+      "k": 0
+    },
+    "combinationIds": [15, 54, 92, 122, 155, 247, 266, 267, 281, 304, 306],
+    "oklch": "oklch(0.609 0.107 186.592)"
+  },
+  {
+    "id": 102,
+    "name": "Light Porcelain Green",
+    "nameJa": "老竹色",
+    "cmyk": {
+      "c": 86,
+      "m": 22,
+      "y": 50,
+      "k": 3
+    },
+    "combinationIds": [44, 193, 328],
+    "oklch": "oklch(0.589 0.102 189.603)"
+  },
+  {
+    "id": 103,
+    "name": "Green",
+    "nameJa": "緑色",
+    "cmyk": {
+      "c": 75,
+      "m": 21,
+      "y": 73,
+      "k": 0
+    },
+    "combinationIds": [198, 216, 293],
+    "oklch": "oklch(0.625 0.107 157.48)"
+  },
+  {
+    "id": 104,
+    "name": "Dull Viridian Green",
+    "nameJa": "草色",
+    "cmyk": {
+      "c": 90,
+      "m": 20,
+      "y": 80,
+      "k": 0
+    },
+    "combinationIds": [136, 256, 306, 316],
+    "oklch": "oklch(0.589 0.129 162.1)"
+  },
+  {
+    "id": 105,
+    "name": "Oil Green",
+    "nameJa": "麴塵",
+    "cmyk": {
+      "c": 53,
+      "m": 28,
+      "y": 100,
+      "k": 8
+    },
+    "combinationIds": [245, 299, 320],
+    "oklch": "oklch(0.628 0.117 118.935)"
+  },
+  {
+    "id": 106,
+    "name": "Diamine Green",
+    "nameJa": "常磐色",
+    "cmyk": {
+      "c": 87,
+      "m": 20,
+      "y": 100,
+      "k": 10
+    },
+    "combinationIds": [38, 146, 217, 242, 251, 313],
+    "oklch": "oklch(0.495 0.112 154.626)"
+  },
+  {
+    "id": 107,
+    "name": "Cossack Green",
+    "nameJa": "萌木色",
+    "cmyk": {
+      "c": 76,
+      "m": 32,
+      "y": 91,
+      "k": 18
+    },
+    "combinationIds": [5, 135, 262, 270, 278, 294, 319, 341, 348],
+    "oklch": "oklch(0.519 0.099 143.604)"
+  },
+  {
+    "id": 108,
+    "name": "Lincoln Green",
+    "nameJa": "海松色",
+    "cmyk": {
+      "c": 60,
+      "m": 48,
+      "y": 86,
+      "k": 37
+    },
+    "combinationIds": [70, 121, 203, 210, 280, 290],
+    "oklch": "oklch(0.448 0.057 112.364)"
+  },
+  {
+    "id": 109,
+    "name": "Blackish Olive",
+    "nameJa": "藍海松茶",
+    "cmyk": {
+      "c": 56,
+      "m": 32,
+      "y": 63,
+      "k": 55
+    },
+    "combinationIds": [109, 318, 336],
+    "oklch": "oklch(0.421 0.04 139.712)"
+  },
+  {
+    "id": 110,
+    "name": "Deep Slate Olive",
+    "nameJa": "千斎茶",
+    "cmyk": {
+      "c": 76,
+      "m": 60,
+      "y": 80,
+      "k": 62
+    },
+    "combinationIds": [189, 229, 268, 303, 310, 321, 332, 341, 342, 348],
+    "oklch": "oklch(0.297 0.031 139.439)"
+  },
+  {
+    "id": 111,
+    "name": "Nile Blue",
+    "nameJa": "水色",
+    "cmyk": {
+      "c": 25,
+      "m": 0,
+      "y": 10,
+      "k": 0
+    },
+    "combinationIds": [25, 250, 268, 302, 306, 330, 345],
+    "oklch": "oklch(0.891 0.042 198.305)"
+  },
+  {
+    "id": 112,
+    "name": "Pale King's Blue",
+    "nameJa": "瓶覗",
+    "cmyk": {
+      "c": 33,
+      "m": 4,
+      "y": 7,
+      "k": 0
+    },
+    "combinationIds": [16, 49, 72, 75, 167, 196, 213, 234, 287],
+    "oklch": "oklch(0.843 0.052 221.605)"
+  },
+  {
+    "id": 113,
+    "name": "Light Glaucous Blue",
+    "nameJa": "深川鼠",
+    "cmyk": {
+      "c": 35,
+      "m": 10,
+      "y": 14,
+      "k": 0
+    },
+    "combinationIds": [54, 93, 119, 152, 178, 204, 227, 320, 339, 341],
+    "oklch": "oklch(0.81 0.039 215.068)"
+  },
+  {
+    "id": 114,
+    "name": "Salvia Blue",
+    "nameJa": "空色",
+    "cmyk": {
+      "c": 41,
+      "m": 25,
+      "y": 10,
+      "k": 0
+    },
+    "combinationIds": [
+      29, 129, 135, 139, 142, 188, 209, 212, 237, 272, 294, 321, 330
+    ],
+    "oklch": "oklch(0.738 0.047 255.671)"
+  },
+  {
+    "id": 115,
+    "name": "Cobalt Green",
+    "nameJa": "青磁色",
+    "cmyk": {
+      "c": 42,
+      "m": 0,
+      "y": 42,
+      "k": 0
+    },
+    "combinationIds": [
+      156, 188, 201, 202, 230, 271, 281, 282, 290, 291, 308, 333
+    ],
+    "oklch": "oklch(0.81 0.082 155.204)"
+  },
+  {
+    "id": 116,
+    "name": "Calamine Blue",
+    "nameJa": "淡浅葱",
+    "cmyk": {
+      "c": 50,
+      "m": 0,
+      "y": 20,
+      "k": 0
+    },
+    "combinationIds": [20, 41, 65, 159, 176, 255, 261, 287, 291, 300],
+    "oklch": "oklch(0.796 0.083 198.556)"
+  },
+  {
+    "id": 117,
+    "name": "Venice Green",
+    "nameJa": "水浅葱",
+    "cmyk": {
+      "c": 58,
+      "m": 0,
+      "y": 30,
+      "k": 0
+    },
+    "combinationIds": [78, 128, 138, 189, 283, 345],
+    "oklch": "oklch(0.765 0.095 189.312)"
+  },
+  {
+    "id": 118,
+    "name": "Cerulian Blue",
+    "nameJa": "花浅葱",
+    "cmyk": {
+      "c": 84,
+      "m": 26,
+      "y": 32,
+      "k": 0
+    },
+    "combinationIds": [1, 63, 99, 125, 148, 227, 240, 264],
+    "oklch": "oklch(0.608 0.105 209.91)"
+  },
+  {
+    "id": 119,
+    "name": "Peacock Blue",
+    "nameJa": "浅葱色",
+    "cmyk": {
+      "c": 100,
+      "m": 19,
+      "y": 43,
+      "k": 0
+    },
+    "combinationIds": [131, 286],
+    "oklch": "oklch(0.604 0.103 201.597)"
+  },
+  {
+    "id": 120,
+    "name": "Green Blue",
+    "nameJa": "納戸鼠",
+    "cmyk": {
+      "c": 82,
+      "m": 24,
+      "y": 40,
+      "k": 3
+    },
+    "combinationIds": [12, 74, 79, 178, 208, 252, 259, 271, 330],
+    "oklch": "oklch(0.597 0.1 200.051)"
+  },
+  {
+    "id": 121,
+    "name": "Olympic Blue",
+    "nameJa": "浅縹",
+    "cmyk": {
+      "c": 69,
+      "m": 44,
+      "y": 10,
+      "k": 0
+    },
+    "combinationIds": [44, 67, 157, 194, 231, 274, 324],
+    "oklch": "oklch(0.598 0.088 254.066)"
+  },
+  {
+    "id": 122,
+    "name": "Blue",
+    "nameJa": "青色",
+    "cmyk": {
+      "c": 95,
+      "m": 54,
+      "y": 0,
+      "k": 0
+    },
+    "combinationIds": [49, 51, 88, 143, 154, 186, 191, 215, 257, 267, 295, 333],
+    "oklch": "oklch(0.526 0.143 248.282)"
+  },
+  {
+    "id": 123,
+    "name": "Antwarp Blue",
+    "nameJa": "納戸色",
+    "cmyk": {
+      "c": 100,
+      "m": 40,
+      "y": 30,
+      "k": 10
+    },
+    "combinationIds": [
+      85, 106, 114, 140, 163, 172, 208, 244, 258, 281, 299, 302, 334
+    ],
+    "oklch": "oklch(0.511 0.097 225.307)"
+  },
+  {
+    "id": 124,
+    "name": "Helvetia Blue",
+    "nameJa": "活色[勝色]",
+    "cmyk": {
+      "c": 100,
+      "m": 62,
+      "y": 19,
+      "k": 10
+    },
+    "combinationIds": [39, 48, 161, 187, 218, 259, 312, 347],
+    "oklch": "oklch(0.452 0.109 242.817)"
+  },
+  {
+    "id": 125,
+    "name": "Dark Medici Blue",
+    "nameJa": "藍鼠",
+    "cmyk": {
+      "c": 70,
+      "m": 45,
+      "y": 45,
+      "k": 15
+    },
+    "combinationIds": [160, 224, 241, 249],
+    "oklch": "oklch(0.525 0.034 212.27)"
+  },
+  {
+    "id": 126,
+    "name": "Dusky Green",
+    "nameJa": "海松藍",
+    "cmyk": {
+      "c": 100,
+      "m": 30,
+      "y": 64,
+      "k": 50
+    },
+    "combinationIds": [94, 219, 225, 278, 284, 318, 332, 338],
+    "oklch": "oklch(0.384 0.069 181.945)"
+  },
+  {
+    "id": 127,
+    "name": "Deep Lyons Blue",
+    "nameJa": "群青色",
+    "cmyk": {
+      "c": 100,
+      "m": 85,
+      "y": 15,
+      "k": 6
+    },
+    "combinationIds": [22, 38, 101, 126, 179, 199, 236, 247, 314, 344],
+    "oklch": "oklch(0.393 0.122 260.968)"
+  },
+  {
+    "id": 128,
+    "name": "Violet Blue",
+    "nameJa": "花色",
+    "cmyk": {
+      "c": 85,
+      "m": 79,
+      "y": 38,
+      "k": 16
+    },
+    "combinationIds": [75, 83, 89, 98, 125, 233, 286, 289, 297, 309, 339],
+    "oklch": "oklch(0.403 0.063 277.312)"
+  },
+  {
+    "id": 129,
+    "name": "Vandar Poel's Blue",
+    "nameJa": "縹色",
+    "cmyk": {
+      "c": 100,
+      "m": 73,
+      "y": 43,
+      "k": 10
+    },
+    "combinationIds": [5, 77, 151, 167, 168, 309, 343],
+    "oklch": "oklch(0.404 0.082 234.249)"
+  },
+  {
+    "id": 130,
+    "name": "Dark Tyrian Blue",
+    "nameJa": "深縹",
+    "cmyk": {
+      "c": 90,
+      "m": 66,
+      "y": 36,
+      "k": 50
+    },
+    "combinationIds": [2, 60, 67, 119, 141, 245, 279],
+    "oklch": "oklch(0.317 0.06 243.083)"
+  },
+  {
+    "id": 131,
+    "name": "Dull Violet Black",
+    "nameJa": "褐色[勝色・搗色]",
+    "cmyk": {
+      "c": 100,
+      "m": 90,
+      "y": 38,
+      "k": 50
+    },
+    "combinationIds": [95, 106, 145, 265, 277, 289, 295, 331],
+    "oklch": "oklch(0.221 0.088 292.759)"
+  },
+  {
+    "id": 132,
+    "name": "Deep Indigo",
+    "nameJa": "紺色",
+    "cmyk": {
+      "c": 100,
+      "m": 92,
+      "y": 52,
+      "k": 60
+    },
+    "combinationIds": [6, 28, 139, 155, 182, 211, 232],
+    "oklch": "oklch(0.192 0.063 262.982)"
+  },
+  {
+    "id": 133,
+    "name": "Deep Slate Green",
+    "nameJa": "鉄色",
+    "cmyk": {
+      "c": 80,
+      "m": 50,
+      "y": 60,
+      "k": 70
+    },
+    "combinationIds": [84, 149, 166, 271, 318, 325],
+    "oklch": "oklch(0.281 0.036 186.611)"
+  },
+  {
+    "id": 134,
+    "name": "Grayish Lavender",
+    "nameJa": "藤色",
+    "cmyk": {
+      "c": 28,
+      "m": 28,
+      "y": 0,
+      "k": 0
+    },
+    "combinationIds": [8, 15, 159, 177, 218, 248, 307],
+    "oklch": "oklch(0.777 0.055 289.748)"
+  },
+  {
+    "id": 135,
+    "name": "Grayish Lavender",
+    "nameJa": "薄色",
+    "cmyk": {
+      "c": 25,
+      "m": 33,
+      "y": 20,
+      "k": 0
+    },
+    "combinationIds": [47, 56, 174, 187, 235, 327, 329, 338],
+    "oklch": "oklch(0.758 0.03 349.717)"
+  },
+  {
+    "id": 136,
+    "name": "Laelia Pink",
+    "nameJa": "紅藤",
+    "cmyk": {
+      "c": 20,
+      "m": 48,
+      "y": 18,
+      "k": 0
+    },
+    "combinationIds": [20, 254, 280, 337],
+    "oklch": "oklch(0.72 0.073 353.762)"
+  },
+  {
+    "id": 137,
+    "name": "Lilac",
+    "nameJa": "鳩羽紫",
+    "cmyk": {
+      "c": 28,
+      "m": 54,
+      "y": 8,
+      "k": 0
+    },
+    "combinationIds": [143, 162, 282, 347],
+    "oklch": "oklch(0.68 0.087 333.331)"
+  },
+  {
+    "id": 138,
+    "name": "Eupatorium Purple",
+    "nameJa": "梅紫",
+    "cmyk": {
+      "c": 25,
+      "m": 79,
+      "y": 12,
+      "k": 0
+    },
+    "combinationIds": [215, 315, 322],
+    "oklch": "oklch(0.605 0.148 347.505)"
+  },
+  {
+    "id": 139,
+    "name": "Light Mauve",
+    "nameJa": "浅紫",
+    "cmyk": {
+      "c": 43,
+      "m": 62,
+      "y": 5,
+      "k": 0
+    },
+    "combinationIds": [23, 80, 128, 134, 180, 274, 331],
+    "oklch": "oklch(0.612 0.094 316.037)"
+  },
+  {
+    "id": 140,
+    "name": "Aconite Violet",
+    "nameJa": "半色",
+    "cmyk": {
+      "c": 39,
+      "m": 68,
+      "y": 5,
+      "k": 0
+    },
+    "combinationIds": [43, 64, 90, 187, 220, 257, 269, 301, 307, 324, 344],
+    "oklch": "oklch(0.606 0.109 325.643)"
+  },
+  {
+    "id": 141,
+    "name": "Dull Blue Violet",
+    "nameJa": "藤納戸",
+    "cmyk": {
+      "c": 57,
+      "m": 60,
+      "y": 17,
+      "k": 0
+    },
+    "combinationIds": [9, 100],
+    "oklch": "oklch(0.58 0.07 299.509)"
+  },
+  {
+    "id": 142,
+    "name": "Dark Soft Violet",
+    "nameJa": "二藍",
+    "cmyk": {
+      "c": 70,
+      "m": 68,
+      "y": 13,
+      "k": 0
+    },
+    "combinationIds": [64, 127, 197],
+    "oklch": "oklch(0.525 0.09 286)"
+  },
+  {
+    "id": 143,
+    "name": "Blue Violet",
+    "nameJa": "桔梗色",
+    "cmyk": {
+      "c": 72,
+      "m": 80,
+      "y": 0,
+      "k": 0
+    },
+    "combinationIds": [116, 175, 196, 322, 345],
+    "oklch": "oklch(0.491 0.126 292.504)"
+  },
+  {
+    "id": 144,
+    "name": "Purple Drab",
+    "nameJa": "浅滅紫",
+    "cmyk": {
+      "c": 38,
+      "m": 65,
+      "y": 49,
+      "k": 26
+    },
+    "combinationIds": [236],
+    "oklch": "oklch(0.505 0.062 12.371)"
+  },
+  {
+    "id": 145,
+    "name": "Deep Violet/Plumbeous",
+    "nameJa": "藤鼠",
+    "cmyk": {
+      "c": 61,
+      "m": 52,
+      "y": 43,
+      "k": 7
+    },
+    "combinationIds": [183, 192, 218],
+    "oklch": "oklch(0.554 0.016 276.856)"
+  },
+  {
+    "id": 146,
+    "name": "Vernonia Purple",
+    "nameJa": "牡丹鼠",
+    "cmyk": {
+      "c": 42,
+      "m": 78,
+      "y": 46,
+      "k": 15
+    },
+    "combinationIds": [13, 24, 168, 183],
+    "oklch": "oklch(0.5 0.09 358.911)"
+  },
+  {
+    "id": 147,
+    "name": "Dark Slate Purple",
+    "nameJa": "蒲萄色",
+    "cmyk": {
+      "c": 64,
+      "m": 85,
+      "y": 60,
+      "k": 10
+    },
+    "combinationIds": [225, 248],
+    "oklch": "oklch(0.442 0.068 352.057)"
+  },
+  {
+    "id": 148,
+    "name": "Taupe Brown",
+    "nameJa": "濃色",
+    "cmyk": {
+      "c": 30,
+      "m": 70,
+      "y": 35,
+      "k": 40
+    },
+    "combinationIds": [57, 123, 174, 224, 275, 280, 288],
+    "oklch": "oklch(0.457 0.078 359.253)"
+  },
+  {
+    "id": 149,
+    "name": "Violet Carmine",
+    "nameJa": "桑染色",
+    "cmyk": {
+      "c": 64,
+      "m": 90,
+      "y": 70,
+      "k": 10
+    },
+    "combinationIds": [337],
+    "oklch": "oklch(0.425 0.078 0.855)"
+  },
+  {
+    "id": 150,
+    "name": "Violet",
+    "nameJa": "紫色",
+    "cmyk": {
+      "c": 85,
+      "m": 90,
+      "y": 18,
+      "k": 0
+    },
+    "combinationIds": [
+      42, 56, 130, 156, 164, 181, 205, 214, 226, 316, 331, 335
+    ],
+    "oklch": "oklch(0.423 0.113 290.633)"
+  },
+  {
+    "id": 151,
+    "name": "Red Violet",
+    "nameJa": "菖蒲色",
+    "cmyk": {
+      "c": 76,
+      "m": 100,
+      "y": 25,
+      "k": 15
+    },
+    "combinationIds": [4, 37, 134, 136, 170, 172, 183, 316],
+    "oklch": "oklch(0.371 0.124 316.937)"
+  },
+  {
+    "id": 152,
+    "name": "Cotinga Purple",
+    "nameJa": "杜若色",
+    "cmyk": {
+      "c": 66,
+      "m": 100,
+      "y": 42,
+      "k": 40
+    },
+    "combinationIds": [61, 181, 238, 253, 307, 329, 348],
+    "oklch": "oklch(0.311 0.11 336.046)"
+  },
+  {
+    "id": 153,
+    "name": "Dusky Madder Violet",
+    "nameJa": "黒紫",
+    "cmyk": {
+      "c": 75,
+      "m": 100,
+      "y": 46,
+      "k": 30
+    },
+    "combinationIds": [18, 50, 53, 82, 103, 314],
+    "oklch": "oklch(0.324 0.099 329.169)"
+  },
+  {
+    "id": 154,
+    "name": "White",
+    "nameJa": "白色",
+    "cmyk": {
+      "c": 0,
+      "m": 0,
+      "y": 0,
+      "k": 0
+    },
+    "combinationIds": [55],
+    "oklch": "oklch(1 0 0)"
+  },
+  {
+    "id": 155,
+    "name": "Neutral Gray",
+    "nameJa": "銀鼠",
+    "cmyk": {
+      "c": 29,
+      "m": 18,
+      "y": 20,
+      "k": 0
+    },
+    "combinationIds": [
+      34, 139, 180, 195, 197, 221, 228, 229, 273, 303, 324, 340
+    ],
+    "oklch": "oklch(0.798 0.01 212.527)"
+  },
+  {
+    "id": 156,
+    "name": "Mineral Gray",
+    "nameJa": "鼠色",
+    "cmyk": {
+      "c": 33,
+      "m": 18,
+      "y": 25,
+      "k": 7
+    },
+    "combinationIds": [11, 30],
+    "oklch": "oklch(0.745 0.016 181.613)"
+  },
+  {
+    "id": 157,
+    "name": "Warm Gray",
+    "nameJa": "灰色",
+    "cmyk": {
+      "c": 37,
+      "m": 28,
+      "y": 36,
+      "k": 3
+    },
+    "combinationIds": [69, 76, 81, 143, 169, 238, 259, 261],
+    "oklch": "oklch(0.711 0.013 116.912)"
+  },
+  {
+    "id": 158,
+    "name": "Slate Color",
+    "nameJa": "石板色",
+    "cmyk": {
+      "c": 85,
+      "m": 70,
+      "y": 62,
+      "k": 30
+    },
+    "combinationIds": [
+      27, 33, 57, 140, 202, 243, 245, 251, 253, 263, 296, 329, 335
+    ],
+    "oklch": "oklch(0.379 0.025 225.026)"
+  },
+  {
+    "id": 159,
+    "name": "Black",
+    "nameJa": "黒色",
+    "cmyk": {
+      "c": 20,
+      "m": 10,
+      "y": 15,
+      "k": 100
+    },
+    "combinationIds": [
+      46, 52, 62, 69, 112, 117, 144, 190, 207, 216, 221, 242, 255, 256, 269,
+      276, 288, 298, 313, 323, 337, 340, 344
+    ],
+    "oklch": "oklch(0.185 0.004 229.03)"
   }
 ]

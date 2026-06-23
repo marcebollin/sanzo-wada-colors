@@ -23,10 +23,12 @@ export type SanzoColor = {
   /** Source of truth: CMYK in the Japanese print format (0-100 per channel). */
   cmyk: CMYK
   /**
-   * OKLCH string for screen rendering. Authored when available, otherwise
-   * derived from `cmyk` by scripts/cmyk-to-oklch.mjs (never at runtime).
+   * OKLCH string for screen rendering, precomputed from the source CMYK through
+   * scripts/cmyk-to-oklch.mjs (never at runtime).
    */
   oklch: string
+  /** Ids of the combinations (palettes) this color appears in. */
+  combinationIds: number[]
 }
 
 export type SanzoCombination = {

@@ -10,7 +10,7 @@ export const NAV_ABOUT_VT_NAME = "nav-about"
 
 /** Shared typography so nav links match the COPY COMBINATION trigger. */
 const NAV_LINK_TYPO =
-  "font-display text-[clamp(0.95rem,2.1vw,1.55rem)] uppercase leading-none tracking-[0.08em]"
+  "font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em]"
 
 type Props = {
   to: "/" | "/about"

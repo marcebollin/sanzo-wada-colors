@@ -82,7 +82,7 @@ export function Hero() {
           <HeroTitle color={heroBg} capColor={heroBg} />
           <div className="mt-10 flex items-baseline justify-between gap-4">
             <motion.span
-              className="font-display text-[clamp(0.95rem,2.1vw,1.55rem)] uppercase leading-none tracking-[0.08em]"
+              className="font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em]"
               style={{ color: heroBg }}
             >
               {ABOUT_NAV_LABEL}
