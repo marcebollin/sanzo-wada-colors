@@ -87,6 +87,24 @@ const WEBSITE_BODY = [
     content:
       "To let color become the true protagonist of the page, I wanted to avoid lines, figures, or decorative graphics.",
   },
+  {
+    id: "repository",
+    content: (
+      <>
+        This website is a public repository on{" "}
+        <a
+          href="https://github.com/marcebollin/sanzo-wada-colors"
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-current/35 underline-offset-4 transition hover:decoration-current"
+        >
+          GitHub
+        </a>
+        , open for anyone who wants to inspect the code, data, and process
+        behind the dictionary.
+      </>
+    ),
+  },
 ]
 
 export const aboutRoute = createRoute({
