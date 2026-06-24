@@ -219,16 +219,6 @@
     0 -0.35px currentColor;
 }
 
-.copy-palette-trigger {
-  -webkit-text-stroke: 0.45px currentColor;
-  paint-order: stroke fill;
-  text-shadow:
-    0.25px 0 currentColor,
-    -0.25px 0 currentColor,
-    0 0.25px currentColor,
-    0 -0.25px currentColor;
-}
-
 /* Palette swatches morph between the Hero and the compact About header; the
    nav row (About + COPY COMBINATION) glides along with them. */
 ::view-transition-group(*) {

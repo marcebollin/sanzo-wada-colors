@@ -24,7 +24,7 @@ type Props = {
 export const COPY_PALETTE_TRIGGER_TEXT = "COPY COMBINATION"
 export const COPY_PALETTE_TRIGGER_VT_NAME = "nav-copy"
 export const COPY_PALETTE_TRIGGER_CLASS =
-  "copy-palette-trigger inline-flex cursor-pointer items-baseline font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em] focus:outline-none"
+  "inline-flex cursor-pointer items-baseline font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em] focus:outline-none"
 
 /**
  * The color formats the popover can emit. The source of truth in the JSON is
