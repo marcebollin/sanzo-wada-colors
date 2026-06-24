@@ -30,7 +30,21 @@ const WEBSITE_BODY = [
     id: "santander",
     content: (
       <>
-        I found this book during a trip to Santander, Spain, at the{" "}
+        I found{" "}
+        <InlinePreviewCard
+          previewLabel="Preview A Dictionary of Color Combinations book"
+          preview={
+            <img
+              src="/wada-book.jpeg"
+              alt="A Dictionary of Color Combinations book and sleeve"
+              className="aspect-[9/10] w-full object-cover"
+            />
+          }
+          cardClassName="w-56 sm:w-72"
+        >
+          this book
+        </InlinePreviewCard>{" "}
+        during a trip to Santander, Spain, at the{" "}
         <InlinePreviewCard
           previewLabel="Preview Centro Botin museum"
           preview={

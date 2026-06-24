@@ -213,7 +213,7 @@ export function PaletteSwitcher() {
                             aria-pressed={active}
                             title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
                             className={
-                              "group flex h-12 items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
+                              "group flex h-12 cursor-pointer items-stretch overflow-hidden rounded-md border-2 transition-[opacity,border-color] duration-200 hover:opacity-100 focus:outline-none focus-visible:opacity-100 " +
                               (active ? "opacity-100" : "opacity-70")
                             }
                             style={{
