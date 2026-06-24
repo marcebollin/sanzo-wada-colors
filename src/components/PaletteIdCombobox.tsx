@@ -127,7 +127,7 @@ export function PaletteIdCombobox({
                   onClick={() => handleSelect(c.id)}
                   aria-pressed={active}
                   title={`Palette ${String(c.id).padStart(2, "0")} · ${chip.length} colors`}
-                  className="mb-1 flex w-full items-center gap-2.5 rounded-md border-2 px-2 py-1.5 text-left transition-colors last:mb-0 focus:outline-none"
+                  className="mb-1 flex w-full cursor-pointer items-center gap-2.5 rounded-md border-2 px-2 py-1.5 text-left transition-colors last:mb-0 focus:outline-none"
                   style={{
                     borderColor: active ? theme.accent : "transparent",
                     backgroundColor: active
