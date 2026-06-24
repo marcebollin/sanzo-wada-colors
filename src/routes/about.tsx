@@ -18,8 +18,11 @@ import { useHeroField } from "../components/use-hero-field"
 import { rootRoute } from "./root"
 
 const ABOUT_LEAD = "About this dictionary"
-const ABOUT_BODY =
-  "Placeholder. This space will describe Sanzo Wada's “A Dictionary of Color Combinations”, the 1930s six-volume study of color harmony that this archive is built from. Until the real copy lands, the words here only exist to prove the type stays legible against whichever palette you have selected — its color is derived from the active combination exactly like the hero title, and its measure is held to a comfortable reading width."
+const ABOUT_BODY = [
+  "A Dictionary of Color Combinations is drawn from Haishoku Soukan, Sanzo Wada's six-volume study of color harmony published in 1933 and 1934. This archive follows its collection of 348 palettes: small, deliberate combinations made at a moment when treating color relationships as a design system was still unusual.",
+  "Wada (1883-1967) was a Japanese artist, teacher, costume designer, kimono and fashion designer whose work moved between fine art, theater, film, and visual research. Across those fields, he studied how color, perception, and form could shape modern design.",
+  "The palettes here preserve that practical curiosity. Each combination can be read as both a historical artifact and a working tool: a compact lesson in contrast, balance, and atmosphere.",
+]
 
 export const aboutRoute = createRoute({
   getParentRoute: () => rootRoute,
@@ -99,12 +102,13 @@ function AboutPage() {
           >
             {ABOUT_LEAD}
           </DropCapTitle>
-          <motion.p
-            className="mt-6 font-serif text-lg leading-relaxed sm:text-xl"
-            style={{ color: onHero }}
-          >
-            {ABOUT_BODY}
-          </motion.p>
+          <div className="mt-6 space-y-5 font-serif text-lg leading-relaxed sm:text-xl">
+            {ABOUT_BODY.map((paragraph) => (
+              <motion.p key={paragraph} style={{ color: onHero }}>
+                {paragraph}
+              </motion.p>
+            ))}
+          </div>
         </div>
       </section>
     </motion.main>
