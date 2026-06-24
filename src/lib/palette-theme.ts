@@ -11,6 +11,7 @@ import type { SanzoColor } from "../data"
  */
 
 type Oklch = { mode: "oklch"; l: number; c: number; h?: number }
+type ScrollbarPair = { thumb: string; track: string }
 
 export type Swatch = {
   id: number
@@ -129,6 +130,62 @@ function pickPaletteHighlight(paletteColors: string[], bg: string): string {
     paletteColors[0] ??
     derivedHighlight(bg)
   )
+}
+
+function toLabAxes(o: Oklch): { l: number; a: number; b: number } {
+  const h = ((o.h ?? 0) * Math.PI) / 180
+  const c = o.c ?? 0
+  return {
+    l: o.l,
+    a: c * Math.cos(h),
+    b: c * Math.sin(h),
+  }
+}
+
+function oklchSeparation(a: Oklch, b: Oklch): number {
+  const aa = toLabAxes(a)
+  const bb = toLabAxes(b)
+  const dl = (aa.l - bb.l) * 2.2
+  const da = aa.a - bb.a
+  const db = aa.b - bb.b
+  return Math.hypot(dl, da, db)
+}
+
+function scrollbarPair(
+  swatches: Array<{ css: string; o: Oklch }>,
+  ink: string,
+  paper: string,
+): ScrollbarPair {
+  if (swatches.length < 2) {
+    const thumb = swatches[0]?.css ?? ink
+    return { thumb, track: pickOn(thumb, ink, paper) }
+  }
+
+  let best = {
+    a: swatches[0],
+    b: swatches[1],
+    score: -Infinity,
+    contrast: -Infinity,
+  }
+
+  for (let i = 0; i < swatches.length; i++) {
+    for (let j = i + 1; j < swatches.length; j++) {
+      const a = swatches[i]
+      const b = swatches[j]
+      const score = oklchSeparation(a.o, b.o)
+      const contrast = wcagContrast(a.css, b.css)
+      if (
+        score > best.score ||
+        (score === best.score && contrast > best.contrast)
+      ) {
+        best = { a, b, score, contrast }
+      }
+    }
+  }
+
+  return best.a.o.l <= best.b.o.l
+    ? { thumb: best.a.css, track: best.b.css }
+    : { thumb: best.b.css, track: best.a.css }
 }
 
 export type SyntaxRoles = {
@@ -296,7 +353,14 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
     vars[`--p-c${i}`] = s.css
     vars[`--p-c${i}-on`] = s.on
   })
+  const scrollbar = scrollbarPair(
+    parsed.map(({ color, o }) => ({ css: color.oklch, o })),
+    ink,
+    paper,
+  )
   vars["--p-count"] = String(swatches.length)
+  vars["--p-scrollbar-thumb"] = scrollbar.thumb
+  vars["--p-scrollbar-track"] = scrollbar.track
 
   return {
     swatches,

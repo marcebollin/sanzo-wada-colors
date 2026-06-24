@@ -4,6 +4,7 @@ import {
   useContext,
   useEffect,
   useMemo,
+  useRef,
   useState,
 } from "react"
 import {
@@ -69,6 +70,27 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
     () => buildTheme(getCombinationColors(combination)),
     [combination],
   )
+  const activeThemeVars = useRef<string[]>([])
+
+  useEffect(() => {
+    const root = document.documentElement
+
+    for (const name of activeThemeVars.current) {
+      root.style.removeProperty(name)
+    }
+
+    const names = Object.keys(theme.vars)
+    for (const [name, value] of Object.entries(theme.vars)) {
+      root.style.setProperty(name, value)
+    }
+    activeThemeVars.current = names
+
+    return () => {
+      for (const name of names) {
+        root.style.removeProperty(name)
+      }
+    }
+  }, [theme.vars])
 
   const value = useMemo<PaletteContextValue>(
     () => ({

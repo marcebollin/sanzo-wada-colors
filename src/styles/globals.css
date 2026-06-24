@@ -63,6 +63,9 @@
     font-synthesis: none;
     scroll-behavior: smooth;
     background-color: var(--color-ink);
+    scrollbar-color: var(--p-scrollbar-thumb, oklch(0.62 0.21 30))
+      var(--p-scrollbar-track, oklch(0.97 0.012 92));
+    scrollbar-width: thin;
   }
 
   body {
@@ -76,6 +79,28 @@
   ::selection {
     background-color: var(--p-accent, oklch(0.62 0.21 30));
     color: var(--p-on-accent, oklch(0.97 0.02 92));
+  }
+
+  ::-webkit-scrollbar {
+    width: 12px;
+    height: 12px;
+  }
+
+  ::-webkit-scrollbar-track,
+  ::-webkit-scrollbar-corner {
+    background-color: var(--p-scrollbar-track, oklch(0.97 0.012 92));
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: var(--p-scrollbar-thumb, var(--p-accent, oklch(0.62 0.21 30)))
+      padding-box;
+    border: 3px solid var(--p-scrollbar-track, oklch(0.97 0.012 92));
+    border-radius: 9999px;
+  }
+
+  ::-webkit-scrollbar-thumb:hover {
+    background: var(--p-scrollbar-thumb, var(--p-accent, oklch(0.62 0.21 30)))
+      padding-box;
   }
 
   h1,
