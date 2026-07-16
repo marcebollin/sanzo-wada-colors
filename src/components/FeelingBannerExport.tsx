@@ -4,12 +4,19 @@ import { shuffledBalancedColors } from "../lib/feeling-grid"
 import { feelingShapePath } from "./FeelingShapePath"
 
 const BANNER_ROWS = 8
+const BANNER_EXPORT_WIDTH = 1920
 
 const BANNER_FORMATS = [
   { id: "twitter", label: "Twitter", width: 1500, height: 500 },
   { id: "linkedin", label: "LinkedIn", width: 1584, height: 396 },
   { id: "bluesky", label: "Bluesky", width: 1500, height: 500 },
 ] as const
+
+const TALLEST_BANNER_FORMAT = BANNER_FORMATS.reduce((tallest, candidate) =>
+  candidate.width / candidate.height < tallest.width / tallest.height
+    ? candidate
+    : tallest,
+)
 
 type BannerFormatId = (typeof BANNER_FORMATS)[number]["id"]
 type BannerFormat = (typeof BANNER_FORMATS)[number]
@@ -91,12 +98,14 @@ export function FeelingBannerExport({
     setExporting(true)
 
     try {
+      const exportScale = Math.max(1, BANNER_EXPORT_WIDTH / format.width)
       const canvas = document.createElement("canvas")
-      canvas.width = format.width
-      canvas.height = format.height
+      canvas.width = Math.round(format.width * exportScale)
+      canvas.height = Math.round(format.height * exportScale)
       const context = canvas.getContext("2d")
       if (!context) return
 
+      context.scale(exportScale, exportScale)
       context.fillStyle = canvasColor(backgroundColor)
       context.fillRect(0, 0, format.width, format.height)
 
@@ -111,7 +120,7 @@ export function FeelingBannerExport({
       }
 
       const blob = await new Promise<Blob | null>((resolve) => {
-        canvas.toBlob(resolve, "image/jpeg", 0.94)
+        canvas.toBlob(resolve, "image/jpeg", 1)
       })
       if (!blob) return
 
@@ -137,26 +146,33 @@ export function FeelingBannerExport({
         Banner your feeling
       </h2>
 
-      <svg
-        viewBox={`0 0 ${format.width} ${format.height}`}
-        role="img"
-        aria-label={`${feeling} banner preview for ${format.label}`}
-        className="mt-5 block w-full overflow-hidden rounded-sm"
+      <div
+        className="mt-5 grid w-full place-items-center"
+        style={{
+          aspectRatio: `${TALLEST_BANNER_FORMAT.width} / ${TALLEST_BANNER_FORMAT.height}`,
+        }}
       >
-        <rect
-          width={format.width}
-          height={format.height}
-          fill={backgroundColor}
-        />
-        {cells.map((cell) => (
-          <path
-            key={`${cell.x}-${cell.y}`}
-            d={path}
-            fill={cell.color}
-            transform={`translate(${cell.x} ${cell.y}) scale(${cell.size / 100})`}
+        <svg
+          viewBox={`0 0 ${format.width} ${format.height}`}
+          role="img"
+          aria-label={`${feeling} banner preview for ${format.label}`}
+          className="block w-full overflow-hidden rounded-sm"
+        >
+          <rect
+            width={format.width}
+            height={format.height}
+            fill={backgroundColor}
           />
-        ))}
-      </svg>
+          {cells.map((cell) => (
+            <path
+              key={`${cell.x}-${cell.y}`}
+              d={path}
+              fill={cell.color}
+              transform={`translate(${cell.x} ${cell.y}) scale(${cell.size / 100})`}
+            />
+          ))}
+        </svg>
+      </div>
 
       <div className="mt-5 flex flex-wrap items-end justify-end gap-5 lg:justify-between">
         <fieldset
