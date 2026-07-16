@@ -16,6 +16,7 @@ import {
   NavLink,
 } from "./NavLink"
 import { swatchViewTransitionName } from "./palette-view-transition"
+import { useBouncingHeroDot } from "./use-bouncing-hero-dot"
 import { useHeroField } from "./use-hero-field"
 
 const HERO_DISPLAY_TITLE = "A Dictionary"
@@ -58,16 +59,22 @@ export function Hero() {
     onHero,
     heroCap,
     dotGradient,
+    rotateDotGradient,
     paletteMvs,
   } = useHeroField()
+  const { fieldRef, dotRef } = useBouncingHeroDot(
+    palette.length > 2 ? rotateDotGradient : undefined,
+  )
 
   return (
     <motion.header
+      ref={fieldRef}
       className="hero-field relative overflow-hidden"
       style={{ backgroundColor: heroBg, color: onHero }}
     >
       {/* strong background shapes built from the palette */}
       <motion.div
+        ref={dotRef}
         className="hero-dot pointer-events-none absolute rounded-full"
         style={{ backgroundColor: heroCap, backgroundImage: dotGradient }}
         aria-hidden="true"

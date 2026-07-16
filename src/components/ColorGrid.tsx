@@ -23,7 +23,7 @@ export function ColorGrid() {
         className="relative overflow-hidden pt-1"
         style={{ borderColor: accent }}
       >
-        <div className="marquee-track flex w-max">
+        <div className="marquee-track flex w-max" data-color-marquee>
           {marqueeColors.map(({ color: c, key }) => (
             <span
               key={key}

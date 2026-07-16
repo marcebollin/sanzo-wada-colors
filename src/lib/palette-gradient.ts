@@ -47,6 +47,17 @@ export function paletteLinearGradient(colors: string[]): string {
   return `linear-gradient(${DOT_GRADIENT_ANGLE} in oklch, ${stops})`
 }
 
+/** Cycle gradient colors without changing the palette or stop distribution. */
+export function rotateGradientColors(
+  colors: string[],
+  rotation: number,
+): string[] {
+  if (colors.length < 2) return colors
+  const offset =
+    ((Math.round(rotation) % colors.length) + colors.length) % colors.length
+  return [...colors.slice(offset), ...colors.slice(0, offset)]
+}
+
 /**
  * Order the palette colors for the dot gradient: lightest first, dropping any
  * color equal to the field background so the gradient always contrasts. Returns

@@ -160,24 +160,24 @@
 
 /* Hero dot: one geometry source feeds both the visible circle and title knockout. */
 .hero-field {
-  --hero-dot-radius: min(17rem, 40dvw);
-  --hero-dot-right: -6rem;
-  --hero-dot-top: -7rem;
+  --hero-dot-radius: min(9rem, 24dvw);
+  --hero-dot-edge-gap: 0.625rem;
   --hero-dot-center-x: calc(
     100% -
-    var(--hero-dot-right) -
-    var(--hero-dot-radius)
+    var(--hero-dot-radius) -
+    var(--hero-dot-edge-gap)
   );
-  --hero-dot-center-y: calc(var(--hero-dot-top) + var(--hero-dot-radius));
+  --hero-dot-center-y: calc(var(--hero-dot-radius) + var(--hero-dot-edge-gap));
 }
 
 .hero-dot {
-  top: var(--hero-dot-top);
-  right: var(--hero-dot-right);
+  top: var(--hero-dot-center-y);
+  left: var(--hero-dot-center-x);
   width: calc(var(--hero-dot-radius) + var(--hero-dot-radius));
   height: calc(var(--hero-dot-radius) + var(--hero-dot-radius));
+  transform: translate(-50%, -50%);
   filter: blur(8px);
-  will-change: filter;
+  will-change: top, left, filter;
 }
 
 .hero-dot-overlay {

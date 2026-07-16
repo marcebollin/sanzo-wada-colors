@@ -1,8 +1,10 @@
-import { useTransform } from "motion/react"
+import { useMotionValue, useTransform } from "motion/react"
+import { useCallback, useEffect } from "react"
 import { getColor, getCombinationColors } from "../data"
 import {
   dotGradientColors,
   paletteLinearGradient,
+  rotateGradientColors,
 } from "../lib/palette-gradient"
 import { readableForeground, rolesForBackground } from "../lib/palette-theme"
 import {
@@ -39,10 +41,23 @@ export function useHeroField() {
   const dotColorMvs = useAnimatedOklchArray(
     dotColors.length ? dotColors : [heroRoles.highlight],
   )
+  const dotGradientRotation = useMotionValue("0")
   const paletteMvs = useAnimatedOklchArray(palette.map((c) => c.oklch))
-  const dotGradient = useTransform(dotColorMvs, (colors) =>
-    paletteLinearGradient(colors as string[]),
+  const dotGradient = useTransform(
+    [dotGradientRotation, ...dotColorMvs],
+    ([rotation, ...colors]) =>
+      paletteLinearGradient(
+        rotateGradientColors(colors as string[], Number(rotation)),
+      ),
   )
+
+  useEffect(() => {
+    if (combination.id > 0) dotGradientRotation.set("0")
+  }, [combination.id, dotGradientRotation])
+
+  const rotateDotGradient = useCallback(() => {
+    dotGradientRotation.set(String(Number(dotGradientRotation.get()) + 1))
+  }, [dotGradientRotation])
 
   return {
     theme,
@@ -54,6 +69,7 @@ export function useHeroField() {
     heroCap,
     onHeroCap,
     dotGradient,
+    rotateDotGradient,
     paletteMvs,
   }
 }
