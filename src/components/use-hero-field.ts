@@ -4,7 +4,7 @@ import {
   dotGradientColors,
   paletteLinearGradient,
 } from "../lib/palette-gradient"
-import { rolesForBackground } from "../lib/palette-theme"
+import { readableForeground, rolesForBackground } from "../lib/palette-theme"
 import {
   useAnimatedOklch,
   useAnimatedOklchArray,
@@ -33,6 +33,7 @@ export function useHeroField() {
   const heroBg = useAnimatedOklch(heroRoles.bg)
   const onHero = useAnimatedOklch(heroRoles.on)
   const heroCap = useAnimatedOklch(heroRoles.highlight)
+  const onHeroCap = useAnimatedOklch(readableForeground(heroRoles.highlight))
 
   const dotColors = dotGradientColors(palette, heroRoles.bg)
   const dotColorMvs = useAnimatedOklchArray(
@@ -51,6 +52,7 @@ export function useHeroField() {
     heroBg,
     onHero,
     heroCap,
+    onHeroCap,
     dotGradient,
     paletteMvs,
   }

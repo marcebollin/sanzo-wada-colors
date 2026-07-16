@@ -17,7 +17,7 @@ export const explorationsRoute = createRoute({
 })
 
 function ExplorationsPage() {
-  const { heroBg, onHero, heroCap } = useHeroField()
+  const { heroBg, onHero, heroCap, onHeroCap } = useHeroField()
   const fillControls = useAnimationControls()
   const phaseRef = useRef<FillPhase>("idle")
   const runRef = useRef(0)
@@ -34,13 +34,12 @@ function ExplorationsPage() {
     const run = ++runRef.current
 
     fillControls.stop()
-    fillControls.set({ x: "0%", scaleX: 0 })
+    fillControls.set({ clipPath: "inset(0 100% 0 0)" })
     phaseRef.current = "drawing"
 
     void fillControls
       .start({
-        x: "0%",
-        scaleX: 1,
+        clipPath: "inset(0 0% 0 0)",
         transition: { duration: 0.26, ease: drawEase },
       })
       .then(() => {
@@ -55,8 +54,7 @@ function ExplorationsPage() {
   const resetFill = () => {
     phaseRef.current = "idle"
     void fillControls.start({
-      x: "0%",
-      scaleX: 0,
+      clipPath: "inset(0 100% 0 0)",
       transition: { duration: 0.16, ease: clearEase },
     })
   }
@@ -67,8 +65,7 @@ function ExplorationsPage() {
 
     void fillControls
       .start({
-        x: "100%",
-        scaleX: 1,
+        clipPath: "inset(0 0 0 100%)",
         transition: { duration: 0.2, ease: clearEase },
       })
       .then(() => {
@@ -76,7 +73,7 @@ function ExplorationsPage() {
           return
         }
 
-        fillControls.set({ x: "0%", scaleX: 0 })
+        fillControls.set({ clipPath: "inset(0 100% 0 0)" })
       })
   }
 
@@ -112,13 +109,6 @@ function ExplorationsPage() {
               outlineColor: "var(--p-hero-cap)",
             }}
           >
-            <motion.span
-              aria-hidden="true"
-              className="absolute inset-0"
-              initial={{ x: "0%", scaleX: 0 }}
-              animate={fillControls}
-              style={{ backgroundColor: heroCap, transformOrigin: "0% 50%" }}
-            />
             <span className="relative translate-x-2 font-serif text-[clamp(2.5rem,7vw,6rem)] font-semibold leading-[1] tracking-tight">
               Feeling
             </span>
@@ -127,6 +117,21 @@ function ExplorationsPage() {
               strokeWidth={1.25}
               aria-hidden="true"
             />
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute inset-0 z-10 flex items-center justify-between gap-8"
+              initial={{ clipPath: "inset(0 100% 0 0)" }}
+              animate={fillControls}
+              style={{ backgroundColor: heroCap, color: onHeroCap }}
+            >
+              <span className="translate-x-2 font-serif text-[clamp(2.5rem,7vw,6rem)] font-semibold leading-[1] tracking-tight">
+                Feeling
+              </span>
+              <ArrowUpRight
+                className="size-8 -translate-x-2 shrink-0 sm:size-12"
+                strokeWidth={1.25}
+              />
+            </motion.span>
           </Link>
         </div>
       </div>

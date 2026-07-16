@@ -44,8 +44,9 @@ export function FeelingPopulation({
   paletteId,
 }: Props) {
   const members = useMemo(() => {
-    // The final two cells are xl-only: 336 cells make 28 × 12 at lg, while all
-    // 338 cells make 26 × 13 at xl, adding another complete responsive row.
+    // All 338 cells make a horizontal 26 × 13 grid on mobile and a vertical
+    // 26 × 13 grid at xl. At lg, the final two cells hide so 336 cells make a
+    // complete 28 × 12 grid in the narrower desktop column.
     const count = 338
     return populationColors(count, colors, paletteId).map((color, id) => ({
       id,
@@ -59,15 +60,15 @@ export function FeelingPopulation({
     <div
       role="img"
       aria-label={`Population painted evenly with ${colorCount} colors from selected palette ${paletteId}`}
-      className="hidden h-full w-fit grid-cols-[repeat(12,1.25rem)] place-items-center content-between justify-self-end gap-x-0.5 gap-y-0 lg:grid xl:grid-cols-[repeat(13,1.75rem)]"
+      className="mt-8 grid w-full grid-cols-[repeat(26,minmax(0,1fr))] place-items-center gap-x-0.5 gap-y-0 sm:mt-10 lg:mt-0 lg:h-full lg:w-fit lg:grid-cols-[repeat(12,1.25rem)] lg:content-between lg:justify-self-end xl:grid-cols-[repeat(13,1.75rem)]"
     >
       {members.map((member) => (
         <svg
           key={member.id}
           viewBox="0 0 100 100"
           aria-hidden="true"
-          className={`size-5 overflow-visible xl:size-[1.7rem] ${
-            member.id >= members.length - 2 ? "hidden xl:block" : ""
+          className={`aspect-square w-full overflow-visible lg:size-5 xl:size-[1.7rem] ${
+            member.id >= members.length - 2 ? "lg:hidden xl:block" : ""
           }`}
         >
           <FeelingShapePath hue={hue} amount={intensity} fill={member.color} />

@@ -254,6 +254,20 @@ export function readablePair(css: string): ReadablePair {
   return { text: { color: onSolid }, onSolid, offSolid, light, dark }
 }
 
+/**
+ * Pick a palette-tinted foreground when it clears normal-text contrast, falling
+ * back to true black or white for the narrow mid-tone range where neither tint
+ * is strong enough.
+ */
+export function readableForeground(css: string): string {
+  const { onSolid } = readablePair(css)
+  if (wcagContrast(css, onSolid) >= 4.5) return onSolid
+
+  const black = "oklch(0 0 0)"
+  const white = "oklch(1 0 0)"
+  return wcagContrast(css, white) >= wcagContrast(css, black) ? white : black
+}
+
 export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   // Guard against an empty palette.
   const source = palette.length ? palette : []
