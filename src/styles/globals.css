@@ -77,8 +77,11 @@
   }
 
   ::selection {
-    background-color: var(--p-accent, oklch(0.62 0.21 30));
-    color: var(--p-on-accent, oklch(0.97 0.02 92));
+    /* The primary accent is also the hero background, which made selections
+       disappear there. The secondary accent is the selected palette's
+       contrasting highlight color and updates with every palette change. */
+    background-color: var(--p-accent-2, oklch(0.608 0.105 209.91));
+    color: var(--p-on-accent-2, oklch(0.97 0.02 92));
   }
 
   ::-webkit-scrollbar {

@@ -4,6 +4,8 @@ import { ShapeRange } from "./ShapeRange"
 
 const PROFILE_IMAGE_SIZE = 1200
 const PREVIEW_SIZE = 600
+const RANGE_HISTORY_DEBOUNCE_MS = 350
+const TUNING_HISTORY_LIMIT = 50
 
 type GradientType = "mesh" | "linear" | "conic" | "halo"
 type BlendMode = "source-over" | "screen" | "soft-light"
@@ -268,6 +270,10 @@ function fileSlug(value: string) {
     .replace(/(^-|-$)/g, "")
 }
 
+function tuningsMatch(left: Tuning, right: Tuning) {
+  return JSON.stringify(left) === JSON.stringify(right)
+}
+
 export function DesignEngineerExport({
   feeling,
   hue,
@@ -280,7 +286,13 @@ export function DesignEngineerExport({
 }: Props) {
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const [tuning, setTuning] = useState<Tuning>(DEFAULT_TUNING)
+  const [history, setHistory] = useState<Tuning[]>([])
   const [exporting, setExporting] = useState(false)
+  const tuningRef = useRef<Tuning>(DEFAULT_TUNING)
+  const historyRef = useRef<Tuning[]>([])
+  const pendingRangeBaselineRef = useRef<Tuning | null>(null)
+  const pendingRangeKeyRef = useRef<keyof Tuning | null>(null)
+  const pendingRangeTimerRef = useRef<number | null>(null)
   const palette = useMemo(
     () => orderedPalette(colors, tuning),
     [colors, tuning],
@@ -298,12 +310,115 @@ export function DesignEngineerExport({
     )
   }, [colors, hue, intensity, tuning])
 
+  useEffect(
+    () => () => {
+      if (pendingRangeTimerRef.current != null) {
+        window.clearTimeout(pendingRangeTimerRef.current)
+      }
+    },
+    [],
+  )
+
+  function applyTuning(next: Tuning) {
+    tuningRef.current = next
+    setTuning(next)
+  }
+
+  function replaceHistory(next: Tuning[]) {
+    historyRef.current = next
+    setHistory(next)
+  }
+
+  function storeCheckpoint(checkpoint: Tuning) {
+    const previous = historyRef.current.at(-1)
+    if (previous && tuningsMatch(previous, checkpoint)) return
+    replaceHistory(
+      [...historyRef.current, checkpoint].slice(-TUNING_HISTORY_LIMIT),
+    )
+  }
+
+  function clearRangeTimer() {
+    if (pendingRangeTimerRef.current == null) return
+    window.clearTimeout(pendingRangeTimerRef.current)
+    pendingRangeTimerRef.current = null
+  }
+
+  function flushPendingRange() {
+    clearRangeTimer()
+    const checkpoint = pendingRangeBaselineRef.current
+    pendingRangeBaselineRef.current = null
+    pendingRangeKeyRef.current = null
+    if (checkpoint && !tuningsMatch(checkpoint, tuningRef.current)) {
+      storeCheckpoint(checkpoint)
+    }
+  }
+
   function updateTuning<Key extends keyof Tuning>(
     key: Key,
     value: Tuning[Key],
   ) {
-    setTuning((current) => ({ ...current, [key]: value }))
+    flushPendingRange()
+    const current = tuningRef.current
+    const next = { ...current, [key]: value }
+    if (tuningsMatch(current, next)) return
+    storeCheckpoint(current)
+    applyTuning(next)
   }
+
+  function replaceTuning(next: Tuning) {
+    flushPendingRange()
+    const current = tuningRef.current
+    if (tuningsMatch(current, next)) return
+    storeCheckpoint(current)
+    applyTuning(next)
+  }
+
+  function updateRangeTuning<Key extends keyof Tuning>(
+    key: Key,
+    value: Tuning[Key],
+  ) {
+    if (
+      pendingRangeKeyRef.current != null &&
+      pendingRangeKeyRef.current !== key
+    ) {
+      flushPendingRange()
+    }
+
+    const current = tuningRef.current
+    const next = { ...current, [key]: value }
+    if (tuningsMatch(current, next)) return
+
+    if (pendingRangeBaselineRef.current == null) {
+      pendingRangeBaselineRef.current = current
+      pendingRangeKeyRef.current = key
+    }
+
+    applyTuning(next)
+    clearRangeTimer()
+    pendingRangeTimerRef.current = window.setTimeout(
+      flushPendingRange,
+      RANGE_HISTORY_DEBOUNCE_MS,
+    )
+  }
+
+  function undoTuning() {
+    clearRangeTimer()
+
+    const pendingCheckpoint = pendingRangeBaselineRef.current
+    if (pendingCheckpoint) {
+      pendingRangeBaselineRef.current = null
+      pendingRangeKeyRef.current = null
+      applyTuning(pendingCheckpoint)
+      return
+    }
+
+    const previous = historyRef.current.at(-1)
+    if (!previous) return
+    replaceHistory(historyRef.current.slice(0, -1))
+    applyTuning(previous)
+  }
+
+  const canUndo = history.length > 0 || pendingRangeBaselineRef.current != null
 
   async function downloadProfileImage() {
     setExporting(true)
@@ -415,12 +530,15 @@ export function DesignEngineerExport({
               <div>
                 <TuneHeading>Other actions</TuneHeading>
                 <div className="mt-2 flex flex-wrap gap-4">
+                  <TuneAction disabled={!canUndo} onClick={undoTuning}>
+                    Undo
+                  </TuneAction>
                   <TuneAction
-                    onClick={() => setTuning(randomTuning(colors.length))}
+                    onClick={() => replaceTuning(randomTuning(colors.length))}
                   >
                     Randomize
                   </TuneAction>
-                  <TuneAction onClick={() => setTuning(DEFAULT_TUNING)}>
+                  <TuneAction onClick={() => replaceTuning(DEFAULT_TUNING)}>
                     Reset
                   </TuneAction>
                 </div>
@@ -431,7 +549,7 @@ export function DesignEngineerExport({
               <RangeTune
                 label="Position X"
                 value={tuning.positionX}
-                onChange={(value) => updateTuning("positionX", value)}
+                onChange={(value) => updateRangeTuning("positionX", value)}
                 hue={hue}
                 paper={paperColor}
                 labelColor={labelColor}
@@ -440,7 +558,7 @@ export function DesignEngineerExport({
               <RangeTune
                 label="Position Y"
                 value={tuning.positionY}
-                onChange={(value) => updateTuning("positionY", value)}
+                onChange={(value) => updateRangeTuning("positionY", value)}
                 hue={hue}
                 paper={paperColor}
                 labelColor={labelColor}
@@ -451,7 +569,7 @@ export function DesignEngineerExport({
                 value={tuning.rotation}
                 max={360}
                 suffix="°"
-                onChange={(value) => updateTuning("rotation", value)}
+                onChange={(value) => updateRangeTuning("rotation", value)}
                 hue={hue}
                 paper={paperColor}
                 labelColor={labelColor}
@@ -461,7 +579,7 @@ export function DesignEngineerExport({
                 label="Spread"
                 value={tuning.spread}
                 suffix="%"
-                onChange={(value) => updateTuning("spread", value)}
+                onChange={(value) => updateRangeTuning("spread", value)}
                 hue={hue}
                 paper={paperColor}
                 labelColor={labelColor}
@@ -472,7 +590,7 @@ export function DesignEngineerExport({
                 value={tuning.blur}
                 max={40}
                 suffix="%"
-                onChange={(value) => updateTuning("blur", value)}
+                onChange={(value) => updateRangeTuning("blur", value)}
                 hue={hue}
                 paper={paperColor}
                 labelColor={labelColor}
@@ -482,7 +600,7 @@ export function DesignEngineerExport({
           </div>
         </div>
 
-        <div className="flex flex-col items-end xl:sticky xl:top-8">
+        <div className="flex flex-col items-end">
           <canvas
             ref={canvasRef}
             width={PREVIEW_SIZE}
@@ -558,18 +676,21 @@ function TuneAction({
   onClick,
   active = false,
   color,
+  disabled = false,
 }: {
   children: string
   onClick: () => void
   active?: boolean
   color?: string
+  disabled?: boolean
 }) {
   return (
     <button
       type="button"
       aria-pressed={active || undefined}
       onClick={onClick}
-      className="cursor-pointer font-display text-base font-bold uppercase leading-none tracking-[0.1em] transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70"
+      disabled={disabled}
+      className="cursor-pointer font-display text-base font-bold uppercase leading-none tracking-[0.1em] transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70 disabled:cursor-not-allowed disabled:opacity-30 disabled:hover:opacity-30"
       style={{ color: active ? color : undefined }}
     >
       {children}

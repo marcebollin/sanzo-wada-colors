@@ -150,6 +150,21 @@ function circularHueDistance(a: number, b: number): number {
   return Math.min(raw, 360 - raw)
 }
 
+export function feelingMatchWeights(intensity: number): {
+  hue: number
+  lightness: number
+  chroma: number
+} {
+  const chroma = 0.12 + (intensity / 100) * 0.18
+  const hue = 0.45
+
+  return {
+    hue,
+    lightness: 1 - hue - chroma,
+    chroma,
+  }
+}
+
 export function rankFeelingPalettes(
   target: FeelingTarget,
   limit = 8,
@@ -159,9 +174,7 @@ export function rankFeelingPalettes(
   const candidateIds = new Set(candidates.map((combination) => combination.id))
   // Intensity makes chroma increasingly decisive without drowning out hue and
   // lightness. At zero, low chroma is still rewarded with a smaller weight.
-  const chromaWeight = 0.12 + (target.intensity / 100) * 0.18
-  const hueWeight = 0.45
-  const lightnessWeight = 1 - hueWeight - chromaWeight
+  const weights = feelingMatchWeights(target.intensity)
 
   return PALETTE_PROFILES.filter(({ combination }) =>
     candidateIds.has(combination.id),
@@ -175,9 +188,9 @@ export function rankFeelingPalettes(
         chroma: Math.abs(profile.chroma - targetColor.chroma) / 0.26,
       }
       const distance = Math.sqrt(
-        deltas.hue ** 2 * hueWeight +
-          deltas.lightness ** 2 * lightnessWeight +
-          deltas.chroma ** 2 * chromaWeight,
+        deltas.hue ** 2 * weights.hue +
+          deltas.lightness ** 2 * weights.lightness +
+          deltas.chroma ** 2 * weights.chroma,
       )
 
       return {
