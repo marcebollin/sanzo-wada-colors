@@ -47,6 +47,7 @@ export function useHeroField() {
     theme,
     combination,
     palette,
+    heroBackgroundColor: heroRoles.bg,
     heroBg,
     onHero,
     heroCap,

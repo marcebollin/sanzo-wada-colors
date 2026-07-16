@@ -1,6 +1,7 @@
 import {
   createContext,
   type ReactNode,
+  useCallback,
   useContext,
   useEffect,
   useMemo,
@@ -38,6 +39,21 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
   const [activeId, setActiveId] = useState(allCombinations[0]?.id ?? 1)
   const [sizeFilter, setSizeFilter] = useState<number | null>(null)
   const [colorFilterId, setColorFilterId] = useState<number | null>(null)
+
+  const select = useCallback(
+    (id: number) => {
+      const next = allCombinations.find((candidate) => candidate.id === id)
+      if (
+        colorFilterId != null &&
+        next != null &&
+        !next.colorIds.includes(colorFilterId)
+      ) {
+        setColorFilterId(null)
+      }
+      setActiveId(id)
+    },
+    [colorFilterId],
+  )
 
   const filtered = useMemo(() => {
     return allCombinations.filter(
@@ -98,14 +114,14 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
       combinations: allCombinations,
       filtered,
       theme,
-      select: setActiveId,
+      select,
       sizeFilter,
       setSizeFilter: (n) => setSizeFilter((prev) => (prev === n ? null : n)),
       colorFilterId,
       setColorFilter: (id) =>
         setColorFilterId((prev) => (prev === id ? null : id)),
     }),
-    [combination, filtered, theme, sizeFilter, colorFilterId],
+    [combination, filtered, theme, select, sizeFilter, colorFilterId],
   )
 
   return (

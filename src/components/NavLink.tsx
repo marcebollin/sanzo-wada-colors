@@ -4,15 +4,17 @@ import { useState } from "react"
 
 export const HOME_NAV_LABEL = "HOME"
 export const ABOUT_NAV_LABEL = "ABOUT"
+export const EXPLORATIONS_NAV_LABEL = "EXPLORATIONS"
 export const NAV_HOME_VT_NAME = "nav-home"
 export const NAV_ABOUT_VT_NAME = "nav-about"
+export const NAV_EXPLORATIONS_VT_NAME = "nav-explorations"
 
 /** Shared typography so nav links match the COPY COMBINATION trigger. */
 const NAV_LINK_TYPO =
   "font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em]"
 
 type Props = {
-  to: "/" | "/about"
+  to: "/" | "/about" | "/explorations"
   label: string
   /** Solid resting color (matches the surrounding hero foreground). */
   color: string | MotionValue<string>

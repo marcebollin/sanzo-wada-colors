@@ -8,7 +8,13 @@ import {
   CopyPalettePopover,
 } from "./CopyPalettePopover"
 import { DropCapTitle } from "./DropCapTitle"
-import { ABOUT_NAV_LABEL, NAV_ABOUT_VT_NAME, NavLink } from "./NavLink"
+import {
+  ABOUT_NAV_LABEL,
+  EXPLORATIONS_NAV_LABEL,
+  NAV_ABOUT_VT_NAME,
+  NAV_EXPLORATIONS_VT_NAME,
+  NavLink,
+} from "./NavLink"
 import { swatchViewTransitionName } from "./palette-view-transition"
 import { useHeroField } from "./use-hero-field"
 
@@ -81,12 +87,20 @@ export function Hero() {
         <div className="mx-auto max-w-6xl px-5 pb-12 pt-16 sm:pt-20">
           <HeroTitle color={heroBg} capColor={heroBg} />
           <div className="mt-10 flex items-baseline justify-between gap-4">
-            <motion.span
-              className="font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em]"
-              style={{ color: heroBg }}
-            >
-              {ABOUT_NAV_LABEL}
-            </motion.span>
+            <div className="flex items-baseline gap-4 sm:gap-6">
+              <motion.span
+                className="font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em]"
+                style={{ color: heroBg }}
+              >
+                {ABOUT_NAV_LABEL}
+              </motion.span>
+              <motion.span
+                className="font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em]"
+                style={{ color: heroBg }}
+              >
+                {EXPLORATIONS_NAV_LABEL}
+              </motion.span>
+            </div>
             <motion.span
               className={COPY_PALETTE_TRIGGER_CLASS}
               style={{ color: heroBg }}
@@ -101,16 +115,25 @@ export function Hero() {
         {/* oversized bold display line + aligned drop-cap serif title */}
         <HeroTitle color={onHero} capColor={heroCap} heading />
 
-        {/* nav row: About (left) + copy combination (right) sit above the
-            palette — the same row mirrored as a compact header on /about */}
+        {/* nav row: page links (left) + copy combination (right) sit above the
+            palette — the same row mirrored by the shared compact page header */}
         <div className="mt-10 flex items-baseline justify-between gap-4">
-          <NavLink
-            to="/about"
-            label={ABOUT_NAV_LABEL}
-            color={onHero}
-            activeColor={heroCap}
-            viewTransitionName={NAV_ABOUT_VT_NAME}
-          />
+          <div className="flex items-baseline gap-4 sm:gap-6">
+            <NavLink
+              to="/about"
+              label={ABOUT_NAV_LABEL}
+              color={onHero}
+              activeColor={heroCap}
+              viewTransitionName={NAV_ABOUT_VT_NAME}
+            />
+            <NavLink
+              to="/explorations"
+              label={EXPLORATIONS_NAV_LABEL}
+              color={onHero}
+              activeColor={heroCap}
+              viewTransitionName={NAV_EXPLORATIONS_VT_NAME}
+            />
+          </div>
           <CopyPalettePopover
             combination={combination}
             colors={palette}

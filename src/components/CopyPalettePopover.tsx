@@ -1,6 +1,6 @@
 import { formatHex, formatHsl, formatRgb } from "culori"
 import { type MotionValue, motion } from "motion/react"
-import { Fragment, useEffect, useRef, useState } from "react"
+import { Fragment, type ReactNode, useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
 import type { SanzoColor, SanzoCombination } from "../data"
 import type { PaletteTheme } from "../lib/palette-theme"
@@ -19,6 +19,10 @@ type Props = {
   triggerColor?: string | MotionValue<string>
   /** Optional `view-transition-name` for the trigger, so it morphs across routes. */
   triggerViewTransitionName?: string
+  /** Optional compact or icon-only trigger content. */
+  triggerContent?: ReactNode
+  /** Accessible label required when the trigger content has no visible text. */
+  triggerLabel?: string
 }
 
 export const COPY_PALETTE_TRIGGER_TEXT = "COPY COMBINATION"
@@ -90,6 +94,8 @@ export function CopyPalettePopover({
   className,
   triggerColor,
   triggerViewTransitionName,
+  triggerContent,
+  triggerLabel,
 }: Props) {
   const [format, setFormat] = useState<ColorFormat>("oklch")
   const [open, setOpen] = useState(false)
@@ -144,6 +150,7 @@ export function CopyPalettePopover({
       <PopoverTrigger asChild>
         <motion.button
           type="button"
+          aria-label={triggerLabel}
           onClick={(event) => {
             if (!isTouchDevice) event.preventDefault()
             copyRef.current?.copy()
@@ -155,7 +162,7 @@ export function CopyPalettePopover({
             viewTransitionName: triggerViewTransitionName,
           }}
         >
-          {COPY_PALETTE_TRIGGER_TEXT}
+          {triggerContent ?? COPY_PALETTE_TRIGGER_TEXT}
         </motion.button>
       </PopoverTrigger>
       <PopoverContent

@@ -62,7 +62,7 @@ export function PaletteIdCombobox({
         >
           <p className="font-display text-3xl">
             {String(combination.id).padStart(2, "0")}
-            <span className="ml-0.5 inline-flex align-top font-mono text-[0.85rem] opacity-70">
+            <span className="ml-0.5 inline-flex align-top pt-0.5 font-mono text-[0.85rem] leading-none opacity-70">
               <span className="mx-1.5">/</span>
               <span>{palettes.length}</span>
             </span>
