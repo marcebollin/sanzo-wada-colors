@@ -24,6 +24,8 @@ type Props = {
    * purely as an interactive color block, so it opts out of the text content.
    */
   showText?: boolean
+  /** Show a permanent high-contrast inner border around the swatch. */
+  showContrastBorder?: boolean
 }
 
 /**
@@ -42,6 +44,7 @@ export function ColorSwatch({
   className,
   bgColor,
   showText = true,
+  showContrastBorder = false,
 }: Props) {
   const { colorFilterId, setColorFilter } = usePalette()
   const active = colorFilterId === color.id
@@ -62,6 +65,14 @@ export function ColorSwatch({
       }}
       data-active={active || undefined}
     >
+      {showContrastBorder && (
+        <span
+          aria-hidden="true"
+          className="pointer-events-none absolute inset-0 z-20 border opacity-50"
+          style={{ borderColor: text.color }}
+        />
+      )}
+
       {/* full-area filter trigger sits behind the content */}
       <button
         type="button"

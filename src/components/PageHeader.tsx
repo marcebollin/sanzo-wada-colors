@@ -22,8 +22,16 @@ import { useHeroField } from "./use-hero-field"
  * headers keeps the swatch and navigation morphs intact.
  */
 export function PageHeader() {
-  const { theme, combination, palette, heroBg, onHero, heroCap, paletteMvs } =
-    useHeroField()
+  const {
+    theme,
+    combination,
+    palette,
+    heroBackgroundColor,
+    heroBg,
+    onHero,
+    heroCap,
+    paletteMvs,
+  } = useHeroField()
 
   return (
     <motion.header
@@ -84,6 +92,7 @@ export function PageHeader() {
                 variant="feature"
                 showText={false}
                 bgColor={paletteMvs[index]}
+                showContrastBorder={color.oklch === heroBackgroundColor}
               />
             </motion.div>
           ))}
