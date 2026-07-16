@@ -4,6 +4,7 @@ import type { SanzoColor } from "../data"
 import { readablePair } from "../lib/palette-theme"
 import { CopyButton } from "./CopyButton"
 import { usePalette } from "./PaletteContext"
+import { SwatchContrastBorder } from "./SwatchContrastBorder"
 
 type Props = {
   color: SanzoColor
@@ -65,13 +66,7 @@ export function ColorSwatch({
       }}
       data-active={active || undefined}
     >
-      {showContrastBorder && (
-        <span
-          aria-hidden="true"
-          className="pointer-events-none absolute inset-0 z-20 border opacity-50"
-          style={{ borderColor: text.color }}
-        />
-      )}
+      {showContrastBorder && <SwatchContrastBorder color={color.oklch} />}
 
       {/* full-area filter trigger sits behind the content */}
       <button

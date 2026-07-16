@@ -8,6 +8,7 @@ import { FeelingPopulation } from "../components/FeelingPopulation"
 import { FeelingShapePath } from "../components/FeelingShapePath"
 import { FeelingWheel } from "../components/FeelingWheel"
 import { usePalette } from "../components/PaletteContext"
+import { SwatchContrastBorder } from "../components/SwatchContrastBorder"
 import { useHeroField } from "../components/use-hero-field"
 import {
   emotionForHue,
@@ -196,6 +197,7 @@ function FeelingPage() {
                 select={select}
                 theme={theme}
                 highlight={heroCap}
+                backgroundColor={heroBackgroundColor}
               />
 
               <PaletteMatchSection
@@ -207,6 +209,7 @@ function FeelingPage() {
                 select={select}
                 theme={theme}
                 highlight={heroCap}
+                backgroundColor={heroBackgroundColor}
               />
 
               <FeelingBannerExport
@@ -255,6 +258,7 @@ function PaletteMatchSection({
   select,
   theme,
   highlight,
+  backgroundColor,
 }: {
   id: string
   title: string
@@ -264,6 +268,7 @@ function PaletteMatchSection({
   select: (id: number) => void
   theme: ReturnType<typeof usePalette>["theme"]
   highlight: MotionValue<string>
+  backgroundColor: string
 }) {
   return (
     <section aria-labelledby={id}>
@@ -298,9 +303,13 @@ function PaletteMatchSection({
                 {match.colors.map((color) => (
                   <span
                     key={color.id}
-                    className="h-full min-w-0 flex-1"
+                    className="relative h-full min-w-0 flex-1"
                     style={{ backgroundColor: color.oklch }}
-                  />
+                  >
+                    {color.oklch === backgroundColor && (
+                      <SwatchContrastBorder color={color.oklch} />
+                    )}
+                  </span>
                 ))}
               </button>
 
