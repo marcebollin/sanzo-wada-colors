@@ -158,10 +158,10 @@ export function FeelingBannerExport({
         ))}
       </svg>
 
-      <div className="mt-5 flex flex-wrap items-end justify-between gap-5">
+      <div className="mt-5 flex flex-wrap items-end justify-end gap-5 lg:justify-between">
         <fieldset
           aria-label="Social banner"
-          className="m-0 flex flex-wrap gap-x-5 gap-y-3 border-0 p-0"
+          className="m-0 flex flex-wrap justify-end gap-x-5 gap-y-3 border-0 p-0 lg:justify-start"
         >
           {BANNER_FORMATS.map((candidate) => {
             const selected = candidate.id === format.id
@@ -180,7 +180,7 @@ export function FeelingBannerExport({
           })}
         </fieldset>
 
-        <div className="text-right">
+        <div className="ml-auto text-right">
           <button
             type="button"
             onClick={() => void downloadBanner()}

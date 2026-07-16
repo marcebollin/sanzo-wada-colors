@@ -462,7 +462,27 @@ export function DesignEngineerExport({
       </a>
 
       <div className="mt-8 grid gap-10 xl:grid-cols-[minmax(0,1fr)_minmax(15rem,0.72fr)] xl:items-start xl:gap-12">
-        <div className="grid min-w-0 gap-8">
+        <div className="flex flex-col items-end xl:col-start-2 xl:row-start-1">
+          <canvas
+            ref={canvasRef}
+            width={PREVIEW_SIZE}
+            height={PREVIEW_SIZE}
+            aria-label={`${feeling} gradient profile image preview`}
+            className="block aspect-square w-full max-w-sm rounded-full border-2 border-white/80"
+          />
+          <button
+            type="button"
+            onClick={() => void downloadProfileImage()}
+            disabled={exporting}
+            className="mt-5 inline-flex cursor-pointer items-center gap-2 font-display text-xl uppercase leading-none tracking-[0.08em] transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70 disabled:cursor-wait disabled:opacity-50"
+            style={{ color: highlightColor }}
+          >
+            <DownloadIcon />
+            {exporting ? "Preparing" : "Download it"}
+          </button>
+        </div>
+
+        <div className="grid min-w-0 gap-8 xl:col-start-1 xl:row-start-1">
           <div>
             <TuneHeading>Color order</TuneHeading>
             <div className="mt-2 flex h-5 w-full overflow-hidden rounded-sm">
@@ -598,26 +618,6 @@ export function DesignEngineerExport({
               />
             </div>
           </div>
-        </div>
-
-        <div className="flex flex-col items-end">
-          <canvas
-            ref={canvasRef}
-            width={PREVIEW_SIZE}
-            height={PREVIEW_SIZE}
-            aria-label={`${feeling} gradient profile image preview`}
-            className="block aspect-square w-full max-w-sm rounded-full border-2 border-white/80"
-          />
-          <button
-            type="button"
-            onClick={() => void downloadProfileImage()}
-            disabled={exporting}
-            className="mt-5 inline-flex cursor-pointer items-center gap-2 font-display text-xl uppercase leading-none tracking-[0.08em] transition-opacity hover:opacity-70 focus:outline-none focus-visible:opacity-70 disabled:cursor-wait disabled:opacity-50"
-            style={{ color: highlightColor }}
-          >
-            <DownloadIcon />
-            {exporting ? "Preparing" : "Download it"}
-          </button>
         </div>
       </div>
     </section>

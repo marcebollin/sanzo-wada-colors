@@ -161,13 +161,13 @@ function FeelingPage() {
             >
               <h2
                 id="current-feeling-title"
-                className="min-w-0 whitespace-nowrap font-display font-semibold leading-[0.82] tracking-tight"
+                className="min-w-0 whitespace-nowrap text-center font-display font-semibold leading-[0.82] tracking-tight lg:text-left"
                 style={{ fontSize: feelingTitleFontSize(emotion.name) }}
               >
                 {emotion.name}
               </h2>
 
-              <dl className="mt-10 grid grid-cols-1 gap-6 sm:mt-12 sm:gap-8">
+              <dl className="mt-10 flex flex-wrap justify-between gap-x-4 gap-y-6 sm:mt-12 sm:gap-y-8 lg:grid lg:grid-cols-1">
                 <ChannelValue
                   label="Light"
                   value={formatChannel(target.lightness)}
@@ -614,7 +614,7 @@ function MatchingHighlight({
 
 function ChannelValue({ label, value }: { label: string; value: string }) {
   return (
-    <div className="min-w-0">
+    <div className="w-fit min-w-0 flex-none lg:w-auto">
       <dt className="font-mono text-[0.58rem] uppercase tracking-[0.18em] opacity-55">
         {label}
       </dt>
