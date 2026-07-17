@@ -1,5 +1,10 @@
 import { formatCss, oklch as toOklch, wcagContrast } from "culori"
 import type { SanzoColor } from "../data"
+import {
+  type ColorConversionMode,
+  type DisplayGamut,
+  displayColor,
+} from "./color-gamut"
 
 /**
  * The palette theme engine.
@@ -268,10 +273,18 @@ export function readableForeground(css: string): string {
   return wcagContrast(css, white) >= wcagContrast(css, black) ? white : black
 }
 
-export function buildTheme(palette: SanzoColor[]): PaletteTheme {
+export function buildTheme(
+  palette: SanzoColor[],
+  gamut: DisplayGamut = "srgb",
+  conversionMode: ColorConversionMode = "adapted",
+): PaletteTheme {
   // Guard against an empty palette.
   const source = palette.length ? palette : []
-  const parsed = source.map((p) => ({ color: p, o: parse(p.oklch) }))
+  const parsed = source.map((p) => ({
+    color: p,
+    css: displayColor(p, gamut, conversionMode),
+    o: parse(displayColor(p, gamut, conversionMode)),
+  }))
 
   const byLight = [...parsed].sort((a, b) => a.o.l - b.o.l)
   const darkest = byLight[0]?.o ?? { mode: "oklch", l: 0.25, c: 0.03, h: 60 }
@@ -306,8 +319,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
     h: lightest.h ?? 90,
   })
 
-  const swatches: Swatch[] = parsed.map(({ color, o }) => {
-    const css = color.oklch
+  const swatches: Swatch[] = parsed.map(({ color, css, o }) => {
     return {
       id: color.id,
       name: color.name,
@@ -321,16 +333,16 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   // Hero stage: prefer the most chromatic color that is not too pale, so the
   // headline block always reads as a bold field of color.
   const heroPick = byChroma.find((p) => p.o.l < 0.82) ?? byChroma[0] ?? darkest
-  const hero = heroPick?.color.oklch ?? bg
+  const hero = heroPick?.css ?? bg
   const onHero = pickOn(hero, ink, paper)
 
-  const accentColor = byChroma[0]?.color.oklch ?? hero
+  const accentColor = byChroma[0]?.css ?? hero
   const heroO = heroPick?.o
   // The hero dot uses accent2 over the hero field. When the palette only has
   // one distinct color (or the second swatch equals the hero), accent2 would
   // blend in — so we derive a contrasting tone by flipping lightness while
   // keeping the hue, guaranteeing the dot always reads against the hero.
-  const accent2Candidate = byChroma[1]?.color.oklch ?? accentColor
+  const accent2Candidate = byChroma[1]?.css ?? accentColor
   const accent2Color =
     accent2Candidate !== hero
       ? accent2Candidate
@@ -346,7 +358,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
   // against the hero field, still pick the best distinct palette color instead
   // of inventing a synthetic tint.
   const heroCap = pickPaletteHighlight(
-    byChroma.map((p) => p.color.oklch),
+    byChroma.map((p) => p.css),
     hero,
   )
 
@@ -368,7 +380,7 @@ export function buildTheme(palette: SanzoColor[]): PaletteTheme {
     vars[`--p-c${i}-on`] = s.on
   })
   const scrollbar = scrollbarPair(
-    parsed.map(({ color, o }) => ({ css: color.oklch, o })),
+    parsed.map(({ css, o }) => ({ css, o })),
     ink,
     paper,
   )

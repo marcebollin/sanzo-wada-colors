@@ -101,6 +101,23 @@ const WEBSITE_BODY = [
       </>
     ),
   },
+  {
+    id: "personal-website",
+    content: (
+      <>
+        You can find more of my work at{" "}
+        <a
+          href="https://marcebollin.com"
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-current/35 underline-offset-4 transition hover:decoration-current"
+        >
+          marcebollin.com
+        </a>
+        .
+      </>
+    ),
+  },
 ]
 
 export const aboutRoute = createRoute({

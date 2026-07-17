@@ -5,7 +5,7 @@ import { ColorSwatch } from "./ColorSwatch"
 import { usePalette } from "./PaletteContext"
 
 export function ColorGrid() {
-  const { theme } = usePalette()
+  const { displayColor, theme } = usePalette()
   const marqueeColors = [
     ...colors.map((color) => ({ color, key: `${color.id}-start` })),
     ...colors.map((color) => ({ color, key: `${color.id}-end` })),
@@ -28,7 +28,7 @@ export function ColorGrid() {
             <span
               key={key}
               className="h-8 w-10 shrink-0 sm:h-10 sm:w-14"
-              style={{ backgroundColor: c.oklch }}
+              style={{ backgroundColor: displayColor(c) }}
               aria-hidden="true"
             />
           ))}

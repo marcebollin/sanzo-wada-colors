@@ -10,6 +10,7 @@ import { FeelingWheel } from "../components/FeelingWheel"
 import { usePalette } from "../components/PaletteContext"
 import { SwatchContrastBorder } from "../components/SwatchContrastBorder"
 import { useHeroField } from "../components/use-hero-field"
+import { getCombinationColors } from "../data"
 import {
   emotionForHue,
   FEELING_LIGHTNESS_MAX,
@@ -20,6 +21,7 @@ import {
   rankFeelingPalettes,
   targetOklch,
 } from "../lib/feeling-match"
+import { buildTheme } from "../lib/palette-theme"
 import { rootRoute } from "./root"
 
 export const feelingRoute = createRoute({
@@ -66,10 +68,20 @@ const MATCHING_SHAPE_SAMPLES = [
 ]
 
 function FeelingPage() {
-  const { combination, combinations, theme, select, sizeFilter } = usePalette()
+  const {
+    combination,
+    combinations,
+    theme,
+    gamut,
+    conversionMode,
+    select,
+    sizeFilter,
+  } = usePalette()
   const { heroBackgroundColor, heroBg, onHero, heroCap } = useHeroField()
   const [target, setTarget] = useState(randomInitialTarget)
   const targetColor = useMemo(() => targetOklch(target), [target])
+  const renderedTargetColor =
+    gamut === "p3" ? targetColor.cssP3 : targetColor.css
   const allPaletteColors = useMemo(
     () => theme.swatches.map((swatch) => swatch.css),
     [theme.swatches],
@@ -77,6 +89,23 @@ function FeelingPage() {
   const paletteColors = useMemo(
     () => allPaletteColors.filter((color) => color !== heroBackgroundColor),
     [allPaletteColors, heroBackgroundColor],
+  )
+  const sourcePalette = useMemo(
+    () => getCombinationColors(combination),
+    [combination],
+  )
+  const portableTheme = useMemo(
+    () => buildTheme(sourcePalette, "srgb", conversionMode),
+    [conversionMode, sourcePalette],
+  )
+  const portableAllPaletteColors = useMemo(
+    () => portableTheme.swatches.map((swatch) => swatch.css),
+    [portableTheme.swatches],
+  )
+  const portablePaletteColors = useMemo(
+    () =>
+      portableAllPaletteColors.filter((color) => color !== portableTheme.hero),
+    [portableAllPaletteColors, portableTheme.hero],
   )
   const emotion = emotionForHue(target.hue)
   const feelingCandidates = useMemo(
@@ -89,14 +118,19 @@ function FeelingPage() {
   )
   const rankedMatches = useMemo(
     () =>
-      rankFeelingPalettes(target, feelingCandidates.length, feelingCandidates),
-    [feelingCandidates, target],
+      rankFeelingPalettes(
+        target,
+        feelingCandidates.length,
+        feelingCandidates,
+        conversionMode,
+      ),
+    [conversionMode, feelingCandidates, target],
   )
   const matches = rankedMatches.slice(0, 8)
   const counterMatches = rankedMatches.slice(-5).reverse()
   const selectedMatch = useMemo(
-    () => rankFeelingPalettes(target, 1, [combination])[0],
-    [combination, target],
+    () => rankFeelingPalettes(target, 1, [combination], conversionMode)[0],
+    [combination, conversionMode, target],
   )
   const bestMatch = matches[0]?.combination
   const previousTarget = useRef<FeelingTarget | null>(null)
@@ -216,28 +250,31 @@ function FeelingPage() {
                 feeling={emotion.name}
                 hue={target.hue}
                 intensity={target.intensity}
-                colors={paletteColors}
+                colors={portablePaletteColors}
                 paletteId={combination.id}
-                backgroundColor={heroBackgroundColor}
-                highlightColor={theme.heroCap}
+                backgroundColor={portableTheme.hero}
+                highlightColor={portableTheme.heroCap}
               />
 
               <DesignEngineerExport
                 feeling={emotion.name}
                 hue={target.hue}
                 intensity={target.intensity}
-                colors={allPaletteColors}
+                colors={portableAllPaletteColors}
                 paletteId={combination.id}
-                highlightColor={theme.heroCap}
-                paperColor={theme.paper}
-                labelColor={theme.onHero}
+                highlightColor={portableTheme.heroCap}
+                paperColor={portableTheme.paper}
+                labelColor={portableTheme.onHero}
               />
             </div>
           </div>
 
           <MatchingExplainer
             target={target}
-            targetColor={targetColor}
+            targetColor={{
+              css: renderedTargetColor,
+              chroma: targetColor.chroma,
+            }}
             selectedMatch={selectedMatch}
             paletteColors={paletteColors}
             ink={theme.onHero}
@@ -270,6 +307,8 @@ function PaletteMatchSection({
   highlight: MotionValue<string>
   backgroundColor: string
 }) {
+  const { displayColor } = usePalette()
+
   return (
     <section aria-labelledby={id}>
       <h2
@@ -300,17 +339,20 @@ function PaletteMatchSection({
                 className="relative z-0 flex h-full min-w-0 cursor-pointer overflow-hidden rounded-sm transition-transform duration-200 hover:z-10 hover:scale-[1.025] focus-visible:z-10 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-4"
                 style={{ outlineColor: theme.accent }}
               >
-                {match.colors.map((color) => (
-                  <span
-                    key={color.id}
-                    className="relative h-full min-w-0 flex-1"
-                    style={{ backgroundColor: color.oklch }}
-                  >
-                    {color.oklch === backgroundColor && (
-                      <SwatchContrastBorder color={color.oklch} />
-                    )}
-                  </span>
-                ))}
+                {match.colors.map((color) => {
+                  const renderedColor = displayColor(color)
+                  return (
+                    <span
+                      key={color.id}
+                      className="relative h-full min-w-0 flex-1"
+                      style={{ backgroundColor: renderedColor }}
+                    >
+                      {renderedColor === backgroundColor && (
+                        <SwatchContrastBorder color={renderedColor} />
+                      )}
+                    </span>
+                  )
+                })}
               </button>
 
               <span className="flex w-full flex-col items-end justify-between gap-2 text-right">
@@ -358,6 +400,7 @@ function MatchingExplainer({
   ink: string
   highlight: string
 }) {
+  const { displayColor } = usePalette()
   const ruleColor = `color-mix(in oklch, ${ink} 24%, transparent)`
   const softHighlight = `color-mix(in oklch, ${highlight} 28%, transparent)`
   const weights = feelingMatchWeights(target.intensity)
@@ -433,7 +476,7 @@ function MatchingExplainer({
               <span
                 key={color.id}
                 className="min-w-0 flex-1"
-                style={{ backgroundColor: color.oklch }}
+                style={{ backgroundColor: displayColor(color) }}
               />
             ))}
           </div>
@@ -444,7 +487,11 @@ function MatchingExplainer({
             Each palette is distilled into the same three traits. Vivid swatches
             lead its{" "}
             <MatchingHighlight
-              color={selectedMatch?.colors[0]?.oklch ?? highlight}
+              color={
+                selectedMatch?.colors[0]
+                  ? displayColor(selectedMatch.colors[0])
+                  : highlight
+              }
             >
               color direction
             </MatchingHighlight>

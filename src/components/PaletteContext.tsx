@@ -11,8 +11,16 @@ import {
 import {
   combinations as allCombinations,
   getCombinationColors,
+  type SanzoColor,
   type SanzoCombination,
 } from "../data"
+import {
+  type ColorConversionMode,
+  displayColor as colorForGamut,
+  type DisplayGamut,
+  portableColor as portableColorForMode,
+  useDisplayGamut,
+} from "../lib/color-gamut"
 import { buildTheme, type PaletteTheme } from "../lib/palette-theme"
 
 type PaletteContextValue = {
@@ -23,6 +31,15 @@ type PaletteContextValue = {
   /** Combinations after the active filters are applied. */
   filtered: SanzoCombination[]
   theme: PaletteTheme
+  /** Current display capability; matching and portable exports remain sRGB. */
+  gamut: DisplayGamut
+  /** The active source-to-screen conversion. */
+  conversionMode: ColorConversionMode
+  setConversionMode: (mode: ColorConversionMode) => void
+  /** Resolve a dictionary color to its current screen-rendering value. */
+  displayColor: (color: SanzoColor) => string
+  /** Resolve a dictionary color to the current conversion's portable value. */
+  portableColor: (color: SanzoColor) => string
   select: (id: number) => void
   /** Show only palettes with this many colors (2, 3, 4) — null shows all. */
   sizeFilter: number | null
@@ -36,6 +53,9 @@ type PaletteContextValue = {
 const PaletteContext = createContext<PaletteContextValue | null>(null)
 
 export function PaletteProvider({ children }: { children: ReactNode }) {
+  const gamut = useDisplayGamut()
+  const [conversionMode, setConversionMode] =
+    useState<ColorConversionMode>("adapted")
   const [activeId, setActiveId] = useState(allCombinations[0]?.id ?? 1)
   const [sizeFilter, setSizeFilter] = useState<number | null>(null)
   const [colorFilterId, setColorFilterId] = useState<number | null>(null)
@@ -82,9 +102,17 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
     )
   }, [filtered, activeId])
 
+  const displayColor = useCallback(
+    (color: SanzoColor) => colorForGamut(color, gamut, conversionMode),
+    [conversionMode, gamut],
+  )
+  const portableColor = useCallback(
+    (color: SanzoColor) => portableColorForMode(color, conversionMode),
+    [conversionMode],
+  )
   const theme = useMemo(
-    () => buildTheme(getCombinationColors(combination)),
-    [combination],
+    () => buildTheme(getCombinationColors(combination), gamut, conversionMode),
+    [combination, conversionMode, gamut],
   )
   const activeThemeVars = useRef<string[]>([])
 
@@ -114,6 +142,11 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
       combinations: allCombinations,
       filtered,
       theme,
+      gamut,
+      conversionMode,
+      setConversionMode,
+      displayColor,
+      portableColor,
       select,
       sizeFilter,
       setSizeFilter: (n) => setSizeFilter((prev) => (prev === n ? null : n)),
@@ -121,7 +154,18 @@ export function PaletteProvider({ children }: { children: ReactNode }) {
       setColorFilter: (id) =>
         setColorFilterId((prev) => (prev === id ? null : id)),
     }),
-    [combination, filtered, theme, select, sizeFilter, colorFilterId],
+    [
+      combination,
+      filtered,
+      theme,
+      gamut,
+      conversionMode,
+      displayColor,
+      portableColor,
+      select,
+      sizeFilter,
+      colorFilterId,
+    ],
   )
 
   return (

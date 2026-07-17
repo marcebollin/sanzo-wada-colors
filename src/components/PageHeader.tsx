@@ -26,6 +26,7 @@ export function PageHeader() {
     theme,
     combination,
     palette,
+    displayColor,
     heroBackgroundColor,
     heroBg,
     onHero,
@@ -92,7 +93,7 @@ export function PageHeader() {
                 variant="feature"
                 showText={false}
                 bgColor={paletteMvs[index]}
-                showContrastBorder={color.oklch === heroBackgroundColor}
+                showContrastBorder={displayColor(color) === heroBackgroundColor}
               />
             </motion.div>
           ))}

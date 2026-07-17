@@ -30,6 +30,7 @@ This is a public repository:
 - Switch between palettes with persistent route-aware state.
 - Copy palette values for use in design and development work.
 - View color data converted for modern web color workflows.
+- Switch between Profiled and Reference color-rendering modes.
 - Read contextual notes about the dictionary and the website.
 
 ## Tech Stack
@@ -71,3 +72,5 @@ pnpm build
 
 Palette and color data live in [`src/data`](src/data). The conversion script for
 CMYK to OKLCH lives in [`scripts/cmyk-to-oklch.mjs`](scripts/cmyk-to-oklch.mjs).
+The print-profile decision, historical limitations, and sRGB/Display-P3 policy
+are documented in [`docs/color-provenance.md`](docs/color-provenance.md).

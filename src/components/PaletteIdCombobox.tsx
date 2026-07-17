@@ -1,6 +1,7 @@
 import { useEffect, useMemo, useRef, useState } from "react"
 import { getCombinationColors, type SanzoCombination } from "../data"
 import type { PaletteTheme } from "../lib/palette-theme"
+import { usePalette } from "./PaletteContext"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 type Props = {
@@ -9,6 +10,8 @@ type Props = {
   palettes: SanzoCombination[]
   theme: PaletteTheme
   onSelect: (id: number) => void
+  /** Visible selected-palette preview used as the trigger on mobile. */
+  mobileTrigger: React.ReactNode
 }
 
 export function PaletteIdCombobox({
@@ -16,7 +19,9 @@ export function PaletteIdCombobox({
   palettes,
   theme,
   onSelect,
+  mobileTrigger,
 }: Props) {
+  const { displayColor } = usePalette()
   const [open, setOpen] = useState(false)
   const [query, setQuery] = useState("")
   const searchRef = useRef<HTMLInputElement>(null)
@@ -57,10 +62,14 @@ export function PaletteIdCombobox({
       <PopoverTrigger asChild>
         <button
           type="button"
+          aria-label={`Search palettes. Selected palette ${String(combination.id).padStart(2, "0")}.`}
           title="Jump to palette by ID"
-          className="group hidden min-w-0 cursor-pointer leading-none transition-opacity hover:opacity-80 focus:outline-none focus-visible:opacity-80 sm:block"
+          className="group flex h-12 min-w-0 cursor-pointer items-stretch overflow-hidden rounded-md leading-none transition-opacity hover:opacity-80 focus:outline-none focus-visible:opacity-80 sm:block sm:h-auto sm:overflow-visible sm:rounded-none"
         >
-          <p className="font-display text-3xl">
+          <span className="flex h-full sm:hidden" aria-hidden="true">
+            {mobileTrigger}
+          </span>
+          <p className="hidden font-display text-3xl sm:block">
             {String(combination.id).padStart(2, "0")}
             <span className="ml-0.5 inline-flex align-top pt-0.5 font-mono text-[0.85rem] leading-none opacity-70">
               <span className="mx-1.5">/</span>
@@ -146,7 +155,7 @@ export function PaletteIdCombobox({
                       <span
                         key={sc.id}
                         className="h-full flex-1"
-                        style={{ backgroundColor: sc.oklch }}
+                        style={{ backgroundColor: displayColor(sc) }}
                       />
                     ))}
                   </span>

@@ -1,6 +1,7 @@
 import { oklch as toOklch } from "culori"
 import colorsJson from "./colors.json"
 import combinationsJson from "./combinations.json"
+import legacyOklchJson from "./legacy-oklch.json"
 
 export type CMYK = {
   /** Cyan, 0-100 (Japanese print format) */
@@ -13,6 +14,12 @@ export type CMYK = {
   k: number
 }
 
+export type LabD50 = {
+  l: number
+  a: number
+  b: number
+}
+
 export type SanzoColor = {
   /** Sequential id used to reference the color from combinations. */
   id: number
@@ -23,10 +30,15 @@ export type SanzoColor = {
   /** Source of truth: CMYK in the Japanese print format (0-100 per channel). */
   cmyk: CMYK
   /**
-   * OKLCH string for screen rendering, precomputed from the source CMYK through
-   * scripts/cmyk-to-oklch.mjs (never at runtime).
+   * Media-relative CIELAB reference derived from Japan Color 2001 Uncoated.
+   * This is checked in so gamut variants can be regenerated without bundling
+   * Adobe's ICC profile.
    */
+  labD50: LabD50
+  /** sRGB-safe OKLCH fallback and portable copy/export value. */
   oklch: string
+  /** Display-P3-safe OKLCH enhancement for capable screens. */
+  oklchP3: string
   /** Ids of the combinations (palettes) this color appears in. */
   combinationIds: number[]
 }
@@ -45,6 +57,12 @@ const PALETTE_COLOR_LIGHTNESS_ORDER: PaletteColorLightnessOrder = "desc"
 
 export const colors: SanzoColor[] = colorsJson as SanzoColor[]
 const colorById = new Map(colors.map((c) => [c.id, c]))
+const legacyOklchById = legacyOklchJson as Record<string, string>
+
+/** The sRGB-safe OKLCH value used by the site before print characterization. */
+export function legacyOklch(color: Pick<SanzoColor, "id" | "oklch">): string {
+  return legacyOklchById[String(color.id)] ?? color.oklch
+}
 
 function oklchLightness(color: SanzoColor | undefined): number {
   return color ? (toOklch(color.oklch)?.l ?? 0.5) : 0.5

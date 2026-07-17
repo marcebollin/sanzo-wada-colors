@@ -47,11 +47,14 @@ export function ColorSwatch({
   showText = true,
   showContrastBorder = false,
 }: Props) {
-  const { colorFilterId, setColorFilter } = usePalette()
+  const { colorFilterId, displayColor, portableColor, setColorFilter } =
+    usePalette()
   const active = colorFilterId === color.id
   const feature = variant === "feature"
+  const renderedColor = displayColor(color)
+  const copyColor = portableColor(color)
 
-  const { text, light, dark } = readablePair(color.oklch)
+  const { text, light, dark } = readablePair(renderedColor)
 
   return (
     <motion.article
@@ -61,12 +64,12 @@ export function ColorSwatch({
         className,
       )}
       style={{
-        backgroundColor: bgColor ?? color.oklch,
+        backgroundColor: bgColor ?? renderedColor,
         animationDelay: `${index * 24}ms`,
       }}
       data-active={active || undefined}
     >
-      {showContrastBorder && <SwatchContrastBorder color={color.oklch} />}
+      {showContrastBorder && <SwatchContrastBorder color={renderedColor} />}
 
       {/* full-area filter trigger sits behind the content */}
       <button
@@ -109,10 +112,10 @@ export function ColorSwatch({
                 <div className="flex items-start gap-2">
                   <dt className="sr-only">OKLCH</dt>
                   <dd className="min-w-0 flex-1 break-all normal-case">
-                    {color.oklch}
+                    {copyColor}
                   </dd>
                   <CopyButton
-                    value={color.oklch}
+                    value={copyColor}
                     label={`Copy ${color.name} as OKLCH`}
                     color={text.color}
                     className="pointer-events-auto -mr-0.5 mt-px shrink-0 rounded-md p-0.5 opacity-75 hover:opacity-100 focus-visible:opacity-100"

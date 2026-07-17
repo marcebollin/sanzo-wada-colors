@@ -27,6 +27,9 @@ export function PaletteSwitcher() {
     sizeFilter,
     setSizeFilter,
     colorFilterId,
+    displayColor,
+    conversionMode,
+    setConversionMode,
     setColorFilter,
   } = usePalette()
 
@@ -36,6 +39,8 @@ export function PaletteSwitcher() {
   // never changes the selection. The selected slide is scrolled into view
   // whenever the selection changes.
   const [api, setApi] = useState<CarouselApi>()
+  const [modeOpen, setModeOpen] = useState(false)
+  const [modeChosen, setModeChosen] = useState(false)
   // Drag-free keeps touch and mouse swipes fluid; selection still only changes
   // by clicking a chip or pressing an arrow.
   const opts = useMemo(
@@ -52,7 +57,9 @@ export function PaletteSwitcher() {
   const filterColor =
     colorFilterId != null ? getColor(colorFilterId) : undefined
   const banner =
-    filterColor != null ? rolesForBackground(theme, filterColor.oklch) : null
+    filterColor != null
+      ? rolesForBackground(theme, displayColor(filterColor))
+      : null
   const bannerBgMv = useAnimatedOklch(banner?.bg ?? theme.accent)
   const bannerOnMv = useAnimatedOklch(banner?.on ?? theme.onAccent)
   const bannerHighlightMv = useAnimatedOklch(banner?.highlight ?? theme.heroCap)
@@ -67,6 +74,15 @@ export function PaletteSwitcher() {
   const activeIndex = filtered.findIndex((c) => c.id === combination.id)
   const canPrev = activeIndex > 0
   const canNext = activeIndex >= 0 && activeIndex < filtered.length - 1
+  const selectedModeLabel =
+    conversionMode === "adapted" ? "Profiled" : "Reference"
+  const modeTriggerLabel = modeChosen ? selectedModeLabel : "Mode"
+
+  const chooseMode = (mode: "adapted" | "legacy") => {
+    setConversionMode(mode)
+    setModeChosen(true)
+    setModeOpen(false)
+  }
 
   const step = useCallback(
     (dir: -1 | 1) => {
@@ -162,7 +178,7 @@ export function PaletteSwitcher() {
           {/* active palette readout */}
           <div className="flex shrink-0 items-center gap-3">
             <div
-              className="flex h-12 overflow-hidden rounded-md"
+              className="hidden h-12 overflow-hidden rounded-md sm:flex"
               aria-hidden="true"
             >
               {theme.swatches.map((s, i) => (
@@ -173,13 +189,20 @@ export function PaletteSwitcher() {
                 />
               ))}
             </div>
-            {/* active palette readout — click the ID to open a searchable
-              combobox that jumps the carousel to any palette. */}
+            {/* The visible palette preview opens search on mobile; the palette
+              ID remains the trigger on larger screens. */}
             <PaletteIdCombobox
               combination={combination}
               palettes={filtered}
               theme={theme}
               onSelect={select}
+              mobileTrigger={theme.swatches.map((s, i) => (
+                <motion.span
+                  key={s.id}
+                  className="h-full w-3.5"
+                  style={{ backgroundColor: swatchMvs[i] }}
+                />
+              ))}
             />
           </div>
 
@@ -226,7 +249,7 @@ export function PaletteSwitcher() {
                               <span
                                 key={sc.id}
                                 className="h-full w-4 sm:w-5"
-                                style={{ backgroundColor: sc.oklch }}
+                                style={{ backgroundColor: displayColor(sc) }}
                               />
                             ))}
                           </button>
@@ -250,13 +273,62 @@ export function PaletteSwitcher() {
             )}
           </div>
 
+          {/* Rendering mode selector. The trigger mirrors Filter: it begins as
+              a generic label, then shows the user's explicit selection. */}
+          <Popover open={modeOpen} onOpenChange={setModeOpen}>
+            <PopoverTrigger asChild>
+              <button
+                type="button"
+                aria-label={`Color mode. Current mode: ${selectedModeLabel}.`}
+                title="Choose color mode"
+                className="flex h-12 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border-2 px-2.5 font-mono text-[0.65rem] uppercase tracking-widest transition-colors hover:!border-[var(--p-accent)] focus:outline-none sm:px-3"
+                style={{
+                  borderColor: modeChosen ? theme.accent : subtle,
+                  color: theme.paper,
+                }}
+              >
+                <ModeIcon />
+                <span className="hidden lg:inline">{modeTriggerLabel}</span>
+              </button>
+            </PopoverTrigger>
+            <PopoverContent
+              align="end"
+              className="w-80 rounded-xl border-2 p-3"
+              style={{
+                backgroundColor: theme.ink,
+                color: theme.paper,
+                borderColor: theme.accent,
+              }}
+            >
+              <p className="font-mono text-[0.6rem] uppercase tracking-[0.25em] opacity-70">
+                Color rendering mode
+              </p>
+              <div className="mt-3 grid gap-2">
+                <ModeOption
+                  label="Profiled"
+                  description="Color-managed from the book CMYK through Japan Color 2001 Uncoated, with Display P3 where available."
+                  active={conversionMode === "adapted"}
+                  onClick={() => chooseMode("adapted")}
+                  theme={theme}
+                />
+                <ModeOption
+                  label="Reference"
+                  description="Fixed sRGB screen values aimed at visual resemblance to the printed color swatches."
+                  active={conversionMode === "legacy"}
+                  onClick={() => chooseMode("legacy")}
+                  theme={theme}
+                />
+              </div>
+            </PopoverContent>
+          </Popover>
+
           {/* size filter popover */}
           <Popover>
             <PopoverTrigger asChild>
               <button
                 type="button"
                 title="Filter palettes by color count"
-                className="flex h-12 shrink-0 items-center gap-1.5 rounded-md border-2 px-2.5 font-mono text-[0.65rem] uppercase tracking-widest transition-colors focus:outline-none sm:px-3"
+                className="flex h-12 shrink-0 cursor-pointer items-center gap-1.5 rounded-md border-2 px-2.5 font-mono text-[0.65rem] uppercase tracking-widest transition-colors hover:!border-[var(--p-accent)] focus:outline-none sm:px-3"
                 style={{
                   borderColor: sizeFilter != null ? theme.accent : subtle,
                   color: theme.paper,
@@ -337,6 +409,43 @@ function FilterPill({
   )
 }
 
+function ModeOption({
+  label,
+  description,
+  active,
+  onClick,
+  theme,
+}: {
+  label: string
+  description: string
+  active: boolean
+  onClick: () => void
+  theme: ReturnType<typeof usePalette>["theme"]
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      aria-pressed={active}
+      className="rounded-md border-2 p-3 text-left transition-transform hover:-translate-y-0.5 focus:outline-none focus-visible:-translate-y-0.5"
+      style={{
+        backgroundColor: active ? theme.accent : "transparent",
+        color: active ? theme.onAccent : theme.paper,
+        borderColor: active
+          ? theme.accent
+          : `color-mix(in oklch, ${theme.paper} 22%, transparent)`,
+      }}
+    >
+      <span className="block font-display text-lg font-bold uppercase leading-none tracking-[0.08em]">
+        {label}
+      </span>
+      <span className="mt-2 block font-serif text-sm leading-snug opacity-80">
+        {description}
+      </span>
+    </button>
+  )
+}
+
 function ArrowButton({
   dir,
   disabled,
@@ -413,6 +522,26 @@ function SlidersIcon() {
       <circle cx="16" cy="6" r="2" fill="currentColor" stroke="none" />
       <circle cx="8" cy="12" r="2" fill="currentColor" stroke="none" />
       <circle cx="13" cy="18" r="2" fill="currentColor" stroke="none" />
+    </svg>
+  )
+}
+
+function ModeIcon() {
+  return (
+    <svg
+      width="15"
+      height="15"
+      viewBox="0 0 24 24"
+      fill="none"
+      stroke="currentColor"
+      strokeWidth="2"
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      aria-hidden="true"
+    >
+      <path d="m12 3 8 4-8 4-8-4 8-4Z" />
+      <path d="m4 12 8 4 8-4" />
+      <path d="m4 17 8 4 8-4" />
     </svg>
   )
 }

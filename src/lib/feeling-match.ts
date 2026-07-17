@@ -5,6 +5,7 @@ import {
   type SanzoColor,
   type SanzoCombination,
 } from "../data"
+import { type ColorConversionMode, portableColor } from "./color-gamut"
 
 export type Emotion = {
   name: "Anger" | "Fear" | "Disgust" | "Sadness" | "Joy"
@@ -77,35 +78,49 @@ export function emotionForHue(hue: number): Emotion {
 
 export function targetOklch(target: FeelingTarget): {
   css: string
+  cssP3: string
   chroma: number
 } {
   // A quiet feeling still keeps a trace of pigment. The upper value is then
   // clamped for the target hue/lightness so the displayed color stays in sRGB.
   const requestedChroma = 0.012 + (target.intensity / 100) * 0.248
-  const clamped = clampChroma(
-    {
-      mode: "oklch",
-      l: target.lightness,
-      c: requestedChroma,
-      h: normalizeHue(target.hue),
-    },
-    "oklch",
-    "rgb",
-  )
+  const requested = {
+    mode: "oklch" as const,
+    l: target.lightness,
+    c: requestedChroma,
+    h: normalizeHue(target.hue),
+  }
+  const clamped = clampChroma(requested, "oklch", "rgb")
+  const clampedP3 = clampChroma(requested, "oklch", "p3")
   const parsed = toOklch(clamped)
+  const parsedP3 = toOklch(clampedP3)
   const color = {
     mode: "oklch" as const,
     l: parsed?.l ?? target.lightness,
     c: parsed?.c ?? requestedChroma,
     h: parsed?.h ?? normalizeHue(target.hue),
   }
+  const colorP3 = {
+    mode: "oklch" as const,
+    l: parsedP3?.l ?? target.lightness,
+    c: parsedP3?.c ?? requestedChroma,
+    h: parsedP3?.h ?? normalizeHue(target.hue),
+  }
 
-  return { css: formatCss(color), chroma: color.c }
+  return {
+    css: formatCss(color),
+    cssP3: formatCss(colorP3),
+    // Matching stays in one shared sRGB comparison space on every device.
+    chroma: color.c,
+  }
 }
 
-function profileColors(colors: SanzoColor[]): PaletteProfile {
+function profileColors(
+  colors: SanzoColor[],
+  conversionMode: ColorConversionMode,
+): PaletteProfile {
   const parsed = colors
-    .map((color) => toOklch(color.oklch))
+    .map((color) => toOklch(portableColor(color, conversionMode)))
     .filter((color): color is NonNullable<typeof color> => Boolean(color))
 
   if (parsed.length === 0) {
@@ -139,11 +154,26 @@ function profileColors(colors: SanzoColor[]): PaletteProfile {
   }
 }
 
-const PALETTE_PROFILES = combinations.map((combination) => ({
-  combination,
-  colors: getCombinationColors(combination),
-  profile: profileColors(getCombinationColors(combination)),
-}))
+const PALETTE_PROFILES = Object.fromEntries(
+  (["adapted", "legacy"] as const).map((conversionMode) => [
+    conversionMode,
+    combinations.map((combination) => {
+      const colors = getCombinationColors(combination)
+      return {
+        combination,
+        colors,
+        profile: profileColors(colors, conversionMode),
+      }
+    }),
+  ]),
+) as Record<
+  ColorConversionMode,
+  Array<{
+    combination: SanzoCombination
+    colors: SanzoColor[]
+    profile: PaletteProfile
+  }>
+>
 
 function circularHueDistance(a: number, b: number): number {
   const raw = Math.abs(normalizeHue(a) - normalizeHue(b))
@@ -169,6 +199,7 @@ export function rankFeelingPalettes(
   target: FeelingTarget,
   limit = 8,
   candidates: SanzoCombination[] = combinations,
+  conversionMode: ColorConversionMode = "adapted",
 ): FeelingMatch[] {
   const targetColor = targetOklch(target)
   const candidateIds = new Set(candidates.map((combination) => combination.id))
@@ -176,9 +207,8 @@ export function rankFeelingPalettes(
   // lightness. At zero, low chroma is still rewarded with a smaller weight.
   const weights = feelingMatchWeights(target.intensity)
 
-  return PALETTE_PROFILES.filter(({ combination }) =>
-    candidateIds.has(combination.id),
-  )
+  return PALETTE_PROFILES[conversionMode]
+    .filter(({ combination }) => candidateIds.has(combination.id))
     .map(({ combination, colors, profile }) => {
       const deltas = {
         hue: circularHueDistance(profile.hue, target.hue) / 180,

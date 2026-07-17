@@ -2,11 +2,13 @@ import { formatHex, formatHsl, formatRgb } from "culori"
 import { type MotionValue, motion } from "motion/react"
 import { Fragment, type ReactNode, useEffect, useRef, useState } from "react"
 import { twMerge } from "tailwind-merge"
-import type { SanzoColor, SanzoCombination } from "../data"
+import { formatCmyk, type SanzoColor, type SanzoCombination } from "../data"
+import type { ColorConversionMode } from "../lib/color-gamut"
 import type { PaletteTheme } from "../lib/palette-theme"
 import { syntaxRoles } from "../lib/palette-theme"
 import { useTouchDevice } from "../lib/use-touch-device"
 import { CopyButton, type CopyButtonHandle } from "./CopyButton"
+import { usePalette } from "./PaletteContext"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
 type Props = {
@@ -31,14 +33,16 @@ export const COPY_PALETTE_TRIGGER_CLASS =
   "inline-flex cursor-pointer items-baseline font-display text-[clamp(0.95rem,2.1vw,1.5rem)] uppercase leading-none tracking-[0.08em] focus:outline-none"
 
 /**
- * The color formats the popover can emit. The source of truth in the JSON is
- * always OKLCH, so every other format is converted from it on the fly.
+ * The color formats the popover can emit. Screen formats derive from the
+ * selected OKLCH conversion; CMYK pairs the book channels with that mode's
+ * source print profile.
  */
-type ColorFormat = "oklch" | "hex" | "hsl" | "rgb"
-const FORMAT_CYCLE: ColorFormat[] = ["oklch", "hex", "hsl", "rgb"]
+type ColorFormat = "oklch" | "hex" | "hsl" | "rgb" | "cmyk"
+type ScreenColorFormat = Exclude<ColorFormat, "cmyk">
+const FORMAT_CYCLE: ColorFormat[] = ["oklch", "hex", "hsl", "rgb", "cmyk"]
 
 /** Convert an authored OKLCH string into the requested CSS color format. */
-function convert(oklch: string, format: ColorFormat): string {
+function convert(oklch: string, format: ScreenColorFormat): string {
   switch (format) {
     case "hex":
       return formatHex(oklch) ?? oklch
@@ -49,6 +53,35 @@ function convert(oklch: string, format: ColorFormat): string {
     default:
       return oklch
   }
+}
+
+/** Preserve the book's four source percentages without a screen conversion. */
+type PrintProfile = {
+  modeLabel: "Profiled" | "Reference"
+  name: string
+  reference: string
+  condition: string
+  renderingIntent: string
+  blackPointCompensation: "On" | "Off"
+}
+
+const PRINT_PROFILES: Record<ColorConversionMode, PrintProfile> = {
+  adapted: {
+    modeLabel: "Profiled",
+    name: "Japan Color 2001 Uncoated",
+    reference: "JC200104",
+    condition: "Japanese sheet-fed offset; ISO 12647-2 paper type 4 (uncoated)",
+    renderingIntent: "Relative colorimetric",
+    blackPointCompensation: "Off",
+  },
+  legacy: {
+    modeLabel: "Reference",
+    name: "U.S. Web Coated (SWOP) v2",
+    reference: "Adobe ICC profile",
+    condition: "U.S. web offset; coated stock",
+    renderingIntent: "Relative colorimetric",
+    blackPointCompensation: "On",
+  },
 }
 
 /** Tokens are derived per-palette inside the component via `syntaxRoles`. */
@@ -68,7 +101,7 @@ type Decl = { prop: string; value: string }
 function paletteBlock(
   combination: SanzoCombination,
   colors: SanzoColor[],
-  format: ColorFormat,
+  format: ScreenColorFormat,
 ): { comment: string; decls: Decl[] } {
   const id = String(combination.id).padStart(2, "0")
   const used = new Set<string>()
@@ -76,15 +109,61 @@ function paletteBlock(
     let key = slug(c.name)
     while (used.has(key)) key += "-2"
     used.add(key)
-    return { prop: `--${key}`, value: convert(c.oklch, format) }
+    return {
+      prop: `--${key}`,
+      value: convert(c.oklch, format),
+    }
   })
-  return { comment: `Palette ${id} — ${combination.name}`, decls }
+  return {
+    comment: `Palette ${id} — ${combination.name}`,
+    decls,
+  }
 }
 
 /** Plain-text :root block for the clipboard. */
 function toCss({ comment, decls }: { comment: string; decls: Decl[] }): string {
   const lines = decls.map((d) => `  ${d.prop}: ${d.value};`)
   return `:root {\n  /* ${comment} */\n${lines.join("\n")}\n}`
+}
+
+/** Plain-text print handoff: source channels plus the selected interpretation. */
+function toCmykText(
+  combination: SanzoCombination,
+  colors: SanzoColor[],
+  conversionMode: ColorConversionMode,
+): string {
+  const profile = PRINT_PROFILES[conversionMode]
+  const colorLines = colors
+    .map(
+      (color) => `${color.name} (${color.nameJa})\n${formatCmyk(color.cmyk)}`,
+    )
+    .join("\n\n")
+
+  return `Palette ${String(combination.id).padStart(2, "0")} — ${combination.name}
+
+COLOR MODE
+${profile.modeLabel}
+
+SOURCE CMYK PROFILE
+${profile.name}
+
+PROFILE REFERENCE
+${profile.reference}
+
+PRINT CONDITION
+${profile.condition}
+
+RENDERING INTENT
+${profile.renderingIntent}
+
+BLACK POINT COMPENSATION
+${profile.blackPointCompensation}
+
+CMYK CHANNELS — ORIGINAL BOOK VALUES
+${colorLines}
+
+PRODUCTION NOTE
+Assign the source profile above to these CMYK values, then let the printer convert them to the actual press profile.`
 }
 
 export function CopyPalettePopover({
@@ -97,18 +176,33 @@ export function CopyPalettePopover({
   triggerContent,
   triggerLabel,
 }: Props) {
+  const { conversionMode, portableColor } = usePalette()
   const [format, setFormat] = useState<ColorFormat>("oklch")
   const [open, setOpen] = useState(false)
   const closeTimer = useRef<number | null>(null)
   const copyRef = useRef<CopyButtonHandle>(null)
   const isTouchDevice = useTouchDevice()
-  const block = paletteBlock(combination, colors, format)
-  const css = toCss(block)
+  const screenFormat: ScreenColorFormat = format === "cmyk" ? "oklch" : format
+  const block = paletteBlock(
+    combination,
+    colors.map((color) => ({ ...color, oklch: portableColor(color) })),
+    screenFormat,
+  )
+  const isCmyk = format === "cmyk"
+  const output = isCmyk
+    ? toCmykText(combination, colors, conversionMode)
+    : toCss(block)
   const syntax = syntaxRoles(theme)
 
   function openNow() {
     if (closeTimer.current) window.clearTimeout(closeTimer.current)
+    if (!open) setFormat("oklch")
     setOpen(true)
+  }
+
+  function updateOpen(nextOpen: boolean) {
+    if (nextOpen && !open) setFormat("oklch")
+    setOpen(nextOpen)
   }
 
   function closeSoon() {
@@ -146,7 +240,7 @@ export function CopyPalettePopover({
       }
 
   return (
-    <Popover open={open} onOpenChange={setOpen}>
+    <Popover open={open} onOpenChange={updateOpen}>
       <PopoverTrigger asChild>
         <motion.button
           type="button"
@@ -203,40 +297,47 @@ export function CopyPalettePopover({
           </button>
           <CopyButton
             ref={copyRef}
-            value={css}
+            value={output}
             label={`Copy combination ${combination.name} as ${format.toUpperCase()}`}
             color={theme.paper}
           >
-            Copy CSS
+            {isCmyk ? "Copy CMYK" : "Copy CSS"}
           </CopyButton>
         </div>
         <pre
-          className="m-1.5 max-h-48 overflow-y-auto overflow-x-hidden whitespace-pre-wrap break-all rounded-md border px-2.5 py-2.5 font-mono text-[0.62rem] leading-relaxed"
+          className={twMerge(
+            "m-1.5 max-h-64 overflow-y-auto overflow-x-hidden whitespace-pre-wrap rounded-md border px-2.5 py-2.5 font-mono text-[0.62rem] leading-relaxed",
+            isCmyk ? "break-words" : "break-all",
+          )}
           style={{
             color: theme.paper,
             backgroundColor: `color-mix(in oklch, ${theme.ink} 72%, transparent)`,
             borderColor: `color-mix(in oklch, ${theme.paper} 11%, transparent)`,
           }}
         >
-          <code>
-            <span style={{ color: syntax.selector }}>:root</span>{" "}
-            <span style={punct}>{"{"}</span>
-            {"\n  "}
-            <span
-              style={{ color: syntax.comment }}
-            >{`/* ${block.comment} */`}</span>
-            {block.decls.map((d) => (
-              <Fragment key={`${d.prop}:${d.value}`}>
-                {"\n  "}
-                <span style={{ color: syntax.prop }}>{d.prop}</span>
-                <span style={punct}>:</span>{" "}
-                <span style={{ color: syntax.value }}>{d.value}</span>
-                <span style={punct}>;</span>
-              </Fragment>
-            ))}
-            {"\n"}
-            <span style={punct}>{"}"}</span>
-          </code>
+          {isCmyk ? (
+            <code>{output}</code>
+          ) : (
+            <code>
+              <span style={{ color: syntax.selector }}>:root</span>{" "}
+              <span style={punct}>{"{"}</span>
+              {"\n  "}
+              <span
+                style={{ color: syntax.comment }}
+              >{`/* ${block.comment} */`}</span>
+              {block.decls.map((d) => (
+                <Fragment key={`${d.prop}:${d.value}`}>
+                  {"\n  "}
+                  <span style={{ color: syntax.prop }}>{d.prop}</span>
+                  <span style={punct}>:</span>{" "}
+                  <span style={{ color: syntax.value }}>{d.value}</span>
+                  <span style={punct}>;</span>
+                </Fragment>
+              ))}
+              {"\n"}
+              <span style={punct}>{"}"}</span>
+            </code>
+          )}
         </pre>
       </PopoverContent>
     </Popover>

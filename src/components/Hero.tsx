@@ -54,6 +54,7 @@ export function Hero() {
     theme,
     combination,
     palette,
+    displayColor,
     heroBackgroundColor,
     heroBg,
     onHero,
@@ -164,7 +165,7 @@ export function Hero() {
                 index={i}
                 variant="feature"
                 bgColor={paletteMvs[i]}
-                showContrastBorder={c.oklch === heroBackgroundColor}
+                showContrastBorder={displayColor(c) === heroBackgroundColor}
               />
             </motion.div>
           ))}

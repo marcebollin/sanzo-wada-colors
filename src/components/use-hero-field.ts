@@ -24,12 +24,16 @@ import { usePalette } from "./PaletteContext"
  * per frame.
  */
 export function useHeroField() {
-  const { theme, combination, colorFilterId } = usePalette()
+  const { theme, combination, colorFilterId, displayColor } = usePalette()
   const palette = getCombinationColors(combination)
+  const renderedPalette = palette.map((color) => ({
+    ...color,
+    oklch: displayColor(color),
+  }))
   const filterColor =
     colorFilterId != null ? getColor(colorFilterId) : undefined
   const heroRoles = filterColor
-    ? rolesForBackground(theme, filterColor.oklch)
+    ? rolesForBackground(theme, displayColor(filterColor))
     : { bg: theme.hero, on: theme.onHero, highlight: theme.heroCap }
 
   const heroBg = useAnimatedOklch(heroRoles.bg)
@@ -37,12 +41,14 @@ export function useHeroField() {
   const heroCap = useAnimatedOklch(heroRoles.highlight)
   const onHeroCap = useAnimatedOklch(readableForeground(heroRoles.highlight))
 
-  const dotColors = dotGradientColors(palette, heroRoles.bg)
+  const dotColors = dotGradientColors(renderedPalette, heroRoles.bg)
   const dotColorMvs = useAnimatedOklchArray(
     dotColors.length ? dotColors : [heroRoles.highlight],
   )
   const dotGradientRotation = useMotionValue("0")
-  const paletteMvs = useAnimatedOklchArray(palette.map((c) => c.oklch))
+  const paletteMvs = useAnimatedOklchArray(
+    renderedPalette.map((color) => color.oklch),
+  )
   const dotGradient = useTransform(
     [dotGradientRotation, ...dotColorMvs],
     ([rotation, ...colors]) =>
@@ -63,6 +69,7 @@ export function useHeroField() {
     theme,
     combination,
     palette,
+    displayColor,
     heroBackgroundColor: heroRoles.bg,
     heroBg,
     onHero,

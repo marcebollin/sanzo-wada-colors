@@ -316,18 +316,3 @@
 .palette-id-scroll::-webkit-scrollbar-thumb:hover {
   background-color: var(--p-paper);
 }
-
-/* Grid hover: dim tiles except the hovered one and any active selection. */
-.color-grid > * {
-  transition: filter 0.25s ease;
-}
-.color-grid:has(> :hover):not(:has(> [data-active]:hover))
-  > *:not(:hover):not([data-active]) {
-  filter: contrast(0.5);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .color-grid > * {
-    transition: none;
-  }
-}
