@@ -45,7 +45,16 @@ const WEBSITE_BODY = [
           Centro Botin museum
         </InlinePreviewCard>
         . As someone who has wrestled with color for a long time, I bought it
-        without hesitation.
+        without hesitation. You can{" "}
+        <a
+          href="https://a.co/d/0er5PDhE"
+          target="_blank"
+          rel="noreferrer"
+          className="underline decoration-current/35 underline-offset-4 transition hover:decoration-current"
+        >
+          purchase a copy online
+        </a>
+        .
       </>
     ),
   },
